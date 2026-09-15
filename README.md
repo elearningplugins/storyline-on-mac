@@ -34,6 +34,10 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline install from the app | **BLOCKED** — app forces a Desktop App self-update first; update runs Burn → CLR hosting fails | 04e |
 | Root cause of CLR hosting failure | **FOUND** — Wine gives 32-bit processes `0x7fff0000-0x7fffffff` (wow64 `default_zero_bits`) | 05 |
 | Patched `ntdll.so` research build | *in progress* — needs macOS 14.0 deployment target; session ended on a macOS process-launch hang | 06 |
+| Restart persistence, HiDPI, Dock launcher | **OK** (`~/Applications/Articulate 360.app`) | 04e |
+| Storyline install from the app | **BLOCKED** — app forces a Desktop App self-update first; update runs Burn → CLR hosting fails | 04e |
+| Root cause of CLR hosting failure | **FOUND** — Wine gives 32-bit processes `0x7fff0000-0x7fffffff` (wow64 `default_zero_bits`) | 05 |
+| Patched `ntdll.so` research build | *in progress* — needs macOS 14.0 deployment target; session ended on a macOS process-launch hang | 06 |
 | Storyline install + authoring (Gate 2) | not reached | |
 
 ## What worked
