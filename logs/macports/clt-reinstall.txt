@@ -1,0 +1,25 @@
+# CLT before reinstall: clang-1700.0.13.5, pkg receipt 16.4.0.0.1.1747106510, missing usr/include/c++/v1
+# CLT after reinstall 2026-09-15T02:59:35Z:
+/Library/Developer/CommandLineTools
+Apple clang version 17.0.0 (clang-1700.0.13.5)
+version: 16.4.0.0.1.1747106510
+MacOSX.sdk
+MacOSX12.1.sdk
+MacOSX12.3.sdk
+MacOSX14.5.sdk
+MacOSX14.sdk
+MacOSX15.2.sdk
+MacOSX15.5.sdk
+MacOSX15.sdk
+# CLT after reinstall 2026-09-15T04:42:48Z:
+drwxr-xr-x  5 root  wheel  160 Sep 14 22:14 /Library/Developer/CommandLineTools
+Apple clang version 17.0.0 (clang-1700.0.13.5)
+version: 16.4.0.0.1.1747106510
+MacOSX.sdk
+MacOSX14.5.sdk
+MacOSX14.sdk
+MacOSX15.2.sdk
+MacOSX15.5.sdk
+MacOSX15.sdk
+       0
+C++17 OK

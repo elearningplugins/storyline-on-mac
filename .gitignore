@@ -1,0 +1,11 @@
+# licensed / large inputs never go in the repo
+*.exe
+*.msi
+*.pkg
+*.tgz
+*.tar.gz
+prefixes/
+prefix-snapshots/
+inputs/
+winetricks-cache/
+.DS_Store

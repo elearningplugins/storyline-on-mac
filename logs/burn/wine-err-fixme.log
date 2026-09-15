@@ -1,0 +1,145 @@
+# cmd: /opt/local/bin/wine /Users/USER/StorylineLab/inputs/articulate-360.exe
+# exit: 67  end: 2026-09-15T05:02:31Z
+# input: bc725a70f065ef6ed5bd9ab689bf39423f051d030aacc827d90ed166a07c88e9  /Users/USER/StorylineLab/inputs/articulate-360.exe
+# macOS 15.7.9 24G830 x86_64
+# prefix: /Users/USER/StorylineLab/prefixes/wine-burn-clean
+# start: 2026-09-15T04:54:16Z
+# wine: wine-11.16  (  wine-devel @11.16_0+ffmpeg+gstreamer (active))
+# winver: REG_SZ    19045
+630958.041:00e4:00e8:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+630958.151:00e4:00e8:fixme:advapi:DecryptFileW (L"C:\\users\\USER\\AppData\\Local\\Temp\\{5ACDBF1C-69F8-4BD7-86A1-16C36F22453E}\\", 00000000): stub
+630958.402:00f0:00f4:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+630958.445:00f0:00f4:fixme:advapi:DecryptFileW (L"C:\\users\\USER\\AppData\\Local\\Temp\\{7DC6A203-3465-42BB-8ACD-8608215088E8}\\", 00000000): stub
+630961.153:00f0:00f4:fixme:mscoree:metahostpolicy_GetRequestedRuntime ignoring config flags
+630961.154:00f0:00f4:fixme:mscoree:parse_startup useLegacyV2RuntimeActivationPolicy=L"true" not implemented
+630961.197:00f0:00f4:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+630966.191:00f0:0148:fixme:nls:GetFileMUIPath stub: 0x10, L"C:\\windows\\system32\\tzres.dll", (null), 04B6C0F8, 06249F98, 04B6C0FC, 04B6C0F0
+630966.778:00f0:0148:fixme:msg:ChangeWindowMessageFilter c048 00000001
+630966.782:00f0:0148:fixme:dwmapi:DwmAttachMilContent (00010080) stub
+630966.785:00f0:014c:fixme:gdi:GdiEntry13 stub
+630968.364:00f0:014c:fixme:dwrite:dwritefactory_CreateMonitorRenderingParams (00000001): monitor setting ignored
+630968.519:00f0:0148:fixme:win:RegisterPowerSettingNotification (0002008A,{02731015-4510-4526-99e6-e5a17ebd1aea},0): stub
+630968.519:00f0:0148:fixme:wtsapi:WTSRegisterSessionNotification Stub 00020082 0x00000000
+630968.579:00f0:0148:fixme:msg:ChangeWindowMessageFilterEx 00020082 111 1 04B6EB6C
+630968.579:00f0:0148:fixme:msg:ChangeWindowMessageFilterEx 00020082 c044 1 04B6EB6C
+630968.627:00f0:0154:err:d3d:wined3d_check_gl_call >>>>>>> GL_INVALID_FRAMEBUFFER_OPERATION (0x506) from glClear @ dlls/wined3d/context_gl.c / 2246.
+630968.635:00f0:014c:fixme:d3d:wined3d_device_apply_stateblock Last Pixel Drawing Disabled, not handled yet.
+630968.635:00f0:0154:fixme:opengl:wow64_map_buffer Doing a copy of a mapped buffer (expect performance issues)
+630968.639:00f0:0154:fixme:d3d:state_linepattern_w Setting line patterns is not supported in OpenGL core contexts.
+630969.221:00f0:0148:fixme:dwrite:dwritetextanalyzer_AnalyzeNumberSubstitution (080946A0 0 14 0808E940): stub
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:10: extension 'GL_ARB_fragment_coord_conventions' is not supported
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:6: extension 'GL_ARB_uniform_buffer_object' is not supported
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:8: extension 'GL_EXT_texture_array' is not supported
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:9: extension 'GL_ARB_draw_instanced' is not supported
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #4:
+630969.675:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #5:
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:10: extension 'GL_ARB_fragment_coord_conventions' is not supported
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:6: extension 'GL_ARB_uniform_buffer_object' is not supported
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:8: extension 'GL_EXT_texture_array' is not supported
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: Output of vertex shader 'ffp_varying_diffuse' not read by fragment shader
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: Output of vertex shader 'ffp_varying_specular' not read by fragment shader
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #8:
+630969.709:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #9:
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:10: extension 'GL_ARB_fragment_coord_conventions' is not supported
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:6: extension 'GL_ARB_uniform_buffer_object' is not supported
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:8: extension 'GL_EXT_texture_array' is not supported
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:9: extension 'GL_ARB_draw_instanced' is not supported
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #10:
+630969.725:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #11:
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:10: extension 'GL_ARB_fragment_coord_conventions' is not supported
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:6: extension 'GL_ARB_uniform_buffer_object' is not supported
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:8: extension 'GL_EXT_texture_array' is not supported
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:9: extension 'GL_ARB_draw_instanced' is not supported
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #14:
+630969.763:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #15:
+631031.133:00f0:00f4:fixme:advapi:DecryptFileW (L"C:\\users\\USER\\AppData\\Local\\Temp\\{7DC6A203-3465-42BB-8ACD-8608215088E8}\\", 00000000): stub
+631031.150:00f0:00f4:fixme:exec:SHELL_execute flags ignored: 0x00000100
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:10: extension 'GL_ARB_fragment_coord_conventions' is not supported
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:6: extension 'GL_ARB_uniform_buffer_object' is not supported
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:8: extension 'GL_EXT_texture_array' is not supported
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log     WARNING: 0:9: extension 'GL_ARB_draw_instanced' is not supported
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #18:
+631031.242:00f0:0154:fixme:d3d_shader:print_glsl_info_log Info log received from GLSL shader #19:
+631031.471:0158:015c:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631032.019:0158:015c:fixme:ole:CoInitializeSecurity 0022F5F8, -1, 00000000, 00000000, 6, 2, 00000000, 12288, 00000000 stub
+631032.026:0158:015c:fixme:wuapi:automatic_updates_Pause 
+631032.027:0158:015c:fixme:sfc:SRSetRestorePointW 0022F4C0 0022F6D0
+631032.548:0158:0168:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\AB4A97610B127D68C45311DEABFBCD8AA7066F4B\\vc_redist.x86.exe", 00000000): stub
+631032.654:0158:0168:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\046F00C519900FCBF2E6E955FC155B11156A733B\\vc_redist.x64.exe", 00000000): stub
+631032.753:0158:0168:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\\Articulate.360.Package.msi", 00000000): stub
+631033.007:0174:0178:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631033.050:0174:0178:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{19BE48A9-06FE-4203-A353-73F4510CCDA9}\\", 00000000): stub
+631033.300:0180:0184:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631033.339:0180:0184:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{51C6297F-0A15-4030-844C-F6D8BF249C6A}\\", 00000000): stub
+631034.267:0180:0190:fixme:shell:SHAutoComplete stub
+631034.364:0180:0184:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{51C6297F-0A15-4030-844C-F6D8BF249C6A}\\", 00000000): stub
+631034.369:0180:0184:fixme:exec:SHELL_execute flags ignored: 0x00000100
+631034.597:0194:0198:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631035.092:0194:0198:fixme:ole:CoInitializeSecurity 0022F5F8, -1, 00000000, 00000000, 6, 2, 00000000, 12288, 00000000 stub
+631035.095:0194:0198:fixme:wuapi:automatic_updates_Pause 
+631035.097:0194:0198:fixme:sfc:SRSetRestorePointW 0022F4C0 0022F6D0
+631035.192:0194:01a4:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{286DC39B-5FB7-4AFF-9DD4-22DB47664CD7}v14.38.33135\\packages\\vcRuntimeMinimum_x86\\vc_runtimeMinimum_x86.msi", 00000000): stub
+631035.203:0194:01a4:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{286DC39B-5FB7-4AFF-9DD4-22DB47664CD7}v14.38.33135\\packages\\vcRuntimeMinimum_x86\\cab1.cab", 00000000): stub
+631035.212:0194:01a4:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{9C19C103-7DB1-44D1-A039-2C076A633A38}v14.38.33135\\packages\\vcRuntimeAdditional_x86\\vc_runtimeAdditional_x86.msi", 00000000): stub
+631035.239:0194:01a4:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{9C19C103-7DB1-44D1-A039-2C076A633A38}v14.38.33135\\packages\\vcRuntimeAdditional_x86\\cab1.cab", 00000000): stub
+631035.249:0194:0198:fixme:file:NtLockFile I/O completion on lock not implemented yet
+631035.264:0194:0198:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631036.248:0194:0198:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631036.248:0194:0198:fixme:wuapi:automatic_updates_Resume 
+631036.322:0180:0184:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631036.475:0174:0178:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631036.751:01b0:01b4:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631036.796:01b0:01b4:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{24259DF5-408C-41BA-864D-14510AA44744}\\", 00000000): stub
+631037.196:01bc:01c0:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631037.236:01bc:01c0:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{E6DCA0A0-0058-4CBA-B94A-844E201F130B}\\", 00000000): stub
+631038.120:01bc:01cc:fixme:shell:SHAutoComplete stub
+631038.202:01bc:01c0:fixme:advapi:DecryptFileW (L"C:\\windows\\Temp\\{E6DCA0A0-0058-4CBA-B94A-844E201F130B}\\", 00000000): stub
+631038.207:01bc:01c0:fixme:exec:SHELL_execute flags ignored: 0x00000100
+631038.495:01d0:01d4:fixme:heap:RtlSetHeapInformation HEAP_INFORMATION_CLASS 1 not implemented!
+631039.004:01d0:01d4:fixme:ole:CoInitializeSecurity 0022F5F8, -1, 00000000, 00000000, 6, 2, 00000000, 12288, 00000000 stub
+631039.010:01d0:01d4:fixme:wuapi:automatic_updates_Pause 
+631039.011:01d0:01d4:fixme:sfc:SRSetRestorePointW 0022F4C0 0022F6D0
+631039.170:01d0:01e0:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{AA0C8AB5-7297-4D46-A0D9-08096FE59E46}v14.38.33135\\packages\\vcRuntimeMinimum_amd64\\vc_runtimeMinimum_x64.msi", 00000000): stub
+631039.185:01d0:01e0:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{AA0C8AB5-7297-4D46-A0D9-08096FE59E46}v14.38.33135\\packages\\vcRuntimeMinimum_amd64\\cab1.cab", 00000000): stub
+631039.196:01d0:01e0:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{19AFE054-CA83-45D5-A9DB-4108EF4BD391}v14.38.33135\\packages\\vcRuntimeAdditional_amd64\\vc_runtimeAdditional_x64.msi", 00000000): stub
+631039.243:01d0:01e0:fixme:advapi:DecryptFileW (L"C:\\ProgramData\\Package Cache\\{19AFE054-CA83-45D5-A9DB-4108EF4BD391}v14.38.33135\\packages\\vcRuntimeAdditional_amd64\\cab1.cab", 00000000): stub
+631039.253:01d0:01d4:fixme:file:NtLockFile I/O completion on lock not implemented yet
+631039.275:01d0:01d4:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631040.282:01d0:01d4:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631040.282:01d0:01d4:fixme:wuapi:automatic_updates_Resume 
+631040.327:01bc:01c0:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631040.463:01b0:01b4:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631040.471:0158:015c:fixme:file:NtLockFile I/O completion on lock not implemented yet
+631040.537:0158:015c:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631041.129:01f0:01fc:fixme:thread:get_thread_times not implemented on this platform
+631043.073:0158:015c:fixme:msi:ITERATE_CreateShortcuts poorly handled shortcut format, advertised shortcut
+631043.113:0158:015c:fixme:msi:ITERATE_CreateShortcuts poorly handled shortcut format, advertised shortcut
+631043.195:0158:015c:fixme:msi:ITERATE_CreateShortcuts poorly handled shortcut format, advertised shortcut
+631043.279:0158:015c:fixme:msi:ITERATE_CreateShortcuts poorly handled shortcut format, advertised shortcut
+631043.997:023c:0240:fixme:mscoree:parse_startup useLegacyV2RuntimeActivationPolicy=L"true" not implemented
+631044.004:023c:0240:fixme:mscoree:get_runtime_info unsupported startup flags 2
+631044.050:023c:0240:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631044.741:023c:0240:fixme:mscoree:corruntimehost_UnloadDomain stub 013B6E90
+631044.746:023c:0240:fixme:mscoree:corruntimehost_Stop stub 013B6E90
+631045.295:0258:025c:fixme:mscoree:parse_startup useLegacyV2RuntimeActivationPolicy=L"true" not implemented
+631045.298:0258:025c:fixme:mscoree:get_runtime_info unsupported startup flags 2
+631045.308:0258:025c:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631047.530:0258:025c:fixme:taskschd:Principal_put_RunLevel 034956C8,1: stub
+631047.530:0258:025c:fixme:taskschd:Principal_QueryInterface interface {248919ae-e345-4a6d-8aeb-e0d3165c904e} is not implemented
+631047.547:0258:025c:fixme:taskschd:TaskSettings_get_IdleSettings 0340B5E0,0032E7A0: stub
+631047.547:0258:025c:fixme:taskschd:TaskSettings_QueryInterface interface {0ad9d0d7-0c7f-4ebb-9a5f-d1c648dca528} is not implemented
+631047.547:0258:025c:fixme:taskschd:TaskSettings_QueryInterface interface {2c05c3f0-6eed-4c05-a15f-ed7d7a98a369} is not implemented
+631047.563:0258:025c:fixme:mscoree:corruntimehost_UnloadDomain stub 013B6E70
+631047.566:0258:025c:fixme:mscoree:corruntimehost_Stop stub 013B6E70
+631047.572:0158:015c:err:msi:execute_script Execution of script 0 halted; action L"[InstallLocation=C:\\Program Files\\Articulate\\360\\Desktop Application x64\\;FileName=Articulate 360 Installer Service.exe;RegistrySettingsLocation=HKEY_LOCAL_MACHINE\\Software\\Articulate\\Common\\Settings;ChannelId=;ScheduledTaskDescription=Allows non-admin installation or updates of "... returned 1603
+631047.572:0158:015c:err:msi:ITERATE_Actions Execution halted, action L"InstallFinalize" returned 1603
+631451.436:00f0:0148:fixme:win:UnregisterPowerSettingNotification (DEADBEEF): stub
+631451.454:00f0:0148:fixme:wtsapi:WTSUnRegisterSessionNotification Stub 00020082
+631451.479:00f0:0148:fixme:dwmapi:DwmDetachMilContent (00010080) stub
+631451.676:0158:015c:fixme:wuapi:automatic_updates_Resume 
+631451.678:0158:015c:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631451.794:00f0:00f4:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub
+631451.934:00f0:00f4:err:mscoree:RuntimeHost_ExitProcess Process should have exited
+631451.934:00f0:00f4:err:mscoree:RuntimeHost_Invoke Method System.Environment:Exit raised an exception, hr=80070057
+631451.949:00f0:00f4:err:mscoree:expect_no_runtimes Process exited with a Mono runtime loaded.
+631452.412:00e4:00e8:fixme:ver:GetCurrentPackageId (0022FEA4 00000000): stub

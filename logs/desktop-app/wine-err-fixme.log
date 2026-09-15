@@ -1,0 +1,11 @@
+[ERROR] FATAL UNHANDLED EXCEPTION: Autofac.Core.DependencyResolutionException: An error occurred while attempting to automatically activate registration 'Autofac.Core.ServiceRegistration'. See the inner exception for information on the source of the failure. ---> Autofac.Core.DependencyResolutionException: An exception was thrown while activating λ:SerilogTraceListener.SerilogTraceListener -> λ:Serilog.Core.Logger. ---> System.TypeLoadException: Could not resolve type with token 01000082 from typeref (expected class 'System.Diagnostics.Eventing.Reader.EventLogInvalidDataException' in assembly 'System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')
+# cmd: /opt/local/bin/wine Articulate 360 Desktop App.exe
+# exit: 1  end: 2026-09-15T05:03:06Z
+# input: fda5260999d4b94b9dfcc474887e1660920a6ce623792d2eeb3c237abbf28755  Articulate 360 Desktop App.exe
+# macOS 15.7.9 24G830 x86_64
+# prefix: /Users/USER/StorylineLab/prefixes/wine-burn-noadmintask
+# start: 2026-09-15T05:03:02Z
+# wine: wine-11.16  (  wine-devel @11.16_0+ffmpeg+gstreamer (active))
+# winver: REG_SZ    19045
+631485.599:00d8:00dc:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+631486.453:00d8:00dc:fixme:nls:GetFileMUIPath stub: 0x10, L"C:\\windows\\system32\\tzres.dll", (null), 000000000051E200, 0000000005FF4540, 000000000051E208, 000000000051E1F8

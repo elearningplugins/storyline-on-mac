@@ -1,0 +1,31 @@
+[00F0:00F4][2026-09-14T23:54:17]i001: Burn v3.11.2.4516, Windows v10.0 (Build 19045: Service Pack 0), path: C:\users\USER\AppData\Local\Temp\{5ACDBF1C-69F8-4BD7-86A1-16C36F22453E}\.cr\articulate-360.exe
+[00F0:00F4][2026-09-14T23:54:17]i000: Initializing string variable 'ApplicationName' to value 'Articulate 360'
+[00F0:00F4][2026-09-14T23:54:17]i000: Initializing string variable 'PackageFileName' to value 'Articulate.360.Package.msi'
+[00F0:00F4][2026-09-14T23:54:17]i000: Initializing string variable 'PackageUpgradeCode' to value '92617AD6-B1BB-49BD-A986-9939F3D5F002'
+[00F0:00F4][2026-09-14T23:54:17]i000: Initializing string variable 'LaunchProcessInstallLocationRegistryKeys' to value 'HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service;HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application'
+[00F0:00F4][2026-09-14T23:54:17]i000: Initializing string variable 'LaunchProcessNames' to value 'Articulate 360 Desktop Service.exe;Articulate 360 Desktop App.exe'
+[00F0:00F4][2026-09-14T23:54:17]i009: Command Line: '-burn.clean.room=Z:\Users\USER\StorylineLab\inputs\articulate-360.exe -burn.filehandle.attached=140 -burn.filehandle.self=144'
+[00F0:00F4][2026-09-14T23:54:17]i000: Setting string variable 'WixBundleOriginalSource' to value 'Z:\Users\USER\StorylineLab\inputs\articulate-360.exe'
+[00F0:00F4][2026-09-14T23:54:17]i000: Setting string variable 'WixBundleOriginalSourceFolder' to value 'Z:\Users\USER\StorylineLab\inputs\'
+[00F0:00F4][2026-09-14T23:54:17]i000: Setting string variable 'WixBundleLog' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260914235417.log'
+[00F0:00F4][2026-09-14T23:54:17]i052: Condition 'VersionNT >= v6.0' evaluates to true.
+[00F0:00F4][2026-09-14T23:54:20]i000: Setting string variable 'WixBundleName' to value 'Articulate 360'
+[00F0:00F4][2026-09-14T23:54:20]i000: Setting string variable 'WixBundleManufacturer' to value 'Articulate Global, LLC'
+[00F0:00F4][2026-09-14T23:54:21]i000: Loading managed bootstrapper application.
+[00F0:00F4][2026-09-14T23:54:21]i000: Creating BA thread to run asynchronously.
+[00F0:00F4][2026-09-14T23:54:23]i100: Detect begin, 4 packages
+[00F0:00F4][2026-09-14T23:54:23]i000: Setting string variable 'NETFRAMEWORK45' to value '533320'
+[00F0:00F4][2026-09-14T23:54:23]i052: Condition 'NETFRAMEWORK45 >= 528040' evaluates to true.
+[00F0:00F4][2026-09-14T23:54:23]i000: Desired action is Install with state: Absent.
+[00F0:00F4][2026-09-14T23:54:23]i000: Preparing install.
+[00F0:00F4][2026-09-14T23:54:23]i000: Checking for conflicting packages...
+[00F0:00F4][2026-09-14T23:54:23]i000: No conflicting packages detected.
+[00F0:00F4][2026-09-14T23:54:23]i000: Package is not present or obsolete, continuing with installation.
+[00F0:00F4][2026-09-14T23:54:23]i000: Setting string variable 'CurrentUICulture' to value 'en-US'
+[00F0:00F4][2026-09-14T23:54:23]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.'
+[00F0:00F4][2026-09-14T23:54:23]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.'
+[00F0:00F4][2026-09-14T23:54:23]i101: Detected package: VisualCPlusPlusRedistributablex86, state: Absent, cached: None
+[00F0:00F4][2026-09-14T23:54:23]i101: Detected package: VisualCPlusPlusRedistributablex64, state: Absent, cached: None
+[00F0:00F4][2026-09-14T23:54:23]i101: Detected package: NetFx48Web, state: Present, cached: None
+[00F0:00F4][2026-09-14T23:54:23]i101: Detected package: Articulate.360.Package.msi, state: Absent, cached: None
+[00F0:00F4][2026-09-14T23:54:23]i199: Detect complete, result: 0x0

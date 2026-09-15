@@ -1,0 +1,4 @@
+Full Name: wine-devel @11.16_0+ffmpeg+gstreamer
+Build Dependencies:   flex, bison, gettext, mingw-w64, pkgconfig
+Library Dependencies: gnutls, freetype, gettext-runtime, libpcap, libsdl2, vulkan-loader, ffmpeg6, gstreamer1, gstreamer1-gst-plugins-base, gstreamer1-gst-plugins-good, gstreamer1-gst-plugins-bad, gstreamer1-gst-plugins-ugly, gstreamer1-gst-libav
+Runtime Dependencies: MoltenVK, mingw-w64-wine-gecko-2.47.4, mingw-w64-wine-mono-11.3.0

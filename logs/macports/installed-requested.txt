@@ -1,0 +1,2 @@
+The following ports are currently installed:
+  wine-devel @11.16_0+ffmpeg+gstreamer (active) requested_variants='' platform='darwin 24' archs='x86_64' date='2026-09-14T23:51:02-0500'

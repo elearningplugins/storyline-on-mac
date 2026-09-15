@@ -1,0 +1,47 @@
+[2026-09-15T00:03:06.0282730-05:00][000000d8:000000dc:00000001] Encountered an unhandled exception: Autofac.Core.DependencyResolutionException: An error occurred while attempting to automatically activate registration 'Autofac.Core.ServiceRegistration'. See the inner exception for information on the source of the failure. ---> Autofac.Core.DependencyResolutionException: An exception was thrown while activating λ:SerilogTraceListener.SerilogTraceListener -> λ:Serilog.Core.Logger. ---> System.TypeLoadException: Could not resolve type with token 01000082 from typeref (expected class 'System.Diagnostics.Eventing.Reader.EventLogInvalidDataException' in assembly 'System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')
+  at Serilog.Exceptions.Core.ExceptionEnricher..ctor (Serilog.Exceptions.Core.IDestructuringOptions destructuringOptions) [0x00052] in <0ed19eba72794c3399e1b3dc42ff4154>:0 
+  at Serilog.Exceptions.LoggerEnrichmentConfigurationExtensions.WithExceptionDetails (Serilog.Configuration.LoggerEnrichmentConfiguration loggerEnrichmentConfiguration) [0x0001d] in <0ed19eba72794c3399e1b3dc42ff4154>:0 
+  at Articulate.Internal.StartUpModule.<Load>b__3_3 (Autofac.IComponentContext ctx) [0x000a1] in <c7aa91a91a694f7296c719a98c86307c>:0 
+  at Autofac.RegistrationExtensions+<>c__DisplayClass41_0`1[T].<Register>b__0 (Autofac.IComponentContext c, System.Collections.Generic.IEnumerable`1[T] p) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Builder.RegistrationBuilder+<>c__DisplayClass0_0`1[T].<ForDelegate>b__0 (Autofac.IComponentContext c, System.Collections.Generic.IEnumerable`1[T] p) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Activators.Delegate.DelegateActivator.ActivateInstance (Autofac.IComponentContext context, System.Collections.Generic.IEnumerable`1[T] parameters) [0x00022] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Activators.Delegate.DelegateActivator.<ConfigurePipeline>b__2_0 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00009] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.DelegateMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.DisposalTrackingMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Articulate.Ioc.InitializableRegistrationModule+<>c.<Configure>b__0_2 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext c, System.Action`1[T] next) [0x00000] in <c7aa91a91a694f7296c719a98c86307c>:0 
+  at Autofac.Core.Resolving.Middleware.DelegateMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+   --- End of inner exception stack trace ---
+  at Autofac.Core.Resolving.Middleware.ActivatorErrorHandlingMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00031] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Articulate.Ioc.SerilogMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00059] in <c7aa91a91a694f7296c719a98c86307c>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Pipeline.ResolvePipeline.Invoke (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x0000a] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.RegistrationPipelineInvokeMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x0000b] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.SharingMiddleware+<>c__DisplayClass5_0.<Execute>b__0 () [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance (System.Guid id, System.Func`1[TResult] creator) [0x00046] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance (System.Guid primaryId, System.Nullable`1[T] qualifyingId, System.Func`1[TResult] creator) [0x00017] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.SharingMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x000b5] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.ScopeSelectionMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x00093] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Middleware.CircularDependencyDetectorMiddleware.Execute (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context, System.Action`1[T] next) [0x000a5] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.Pipeline.ResolvePipelineBuilder+<>c__DisplayClass14_0.<BuildPipeline>b__1 (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x00079] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Pipeline.ResolvePipeline.Invoke (Autofac.Core.Resolving.Pipeline.ResolveRequestContext context) [0x0000a] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.ResolveOperation.InvokePipeline (Autofac.ResolveRequest& request, Autofac.Core.Resolving.Pipeline.DefaultResolveRequestContext requestContext) [0x00006] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.ResolveOperation.GetOrCreateInstance (Autofac.Core.ISharingLifetimeScope currentOperationScope, Autofac.ResolveRequest& request) [0x000c0] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.ResolveOperation.ExecuteOperation (Autofac.ResolveRequest& request) [0x0007a] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Resolving.ResolveOperation.Execute (Autofac.ResolveRequest& request) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Lifetime.LifetimeScope.ResolveComponent (Autofac.ResolveRequest& request) [0x0002b] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Container.ResolveComponent (Autofac.ResolveRequest& request) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Core.Container.Autofac.IComponentContext.ResolveComponent (Autofac.ResolveRequest& request) [0x00000] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.Builder.StartableManager.StartStartableComponents (System.Collections.Generic.IDictionary`2[TKey,TValue] properties, Autofac.IComponentContext componentContext) [0x000fb] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+   --- End of inner exception stack trace ---
+  at Autofac.Builder.StartableManager.StartStartableComponents (System.Collections.Generic.IDictionary`2[TKey,TValue] properties, Autofac.IComponentContext componentContext) [0x00125] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Autofac.ContainerBuilder.Build (Autofac.Builder.ContainerBuildOptions options) [0x00054] in <78b80eadf4aa43f2b7cad3a57f5a416f>:0 
+  at Articulate.ProductContainerFactory.Create () [0x000c7] in <c7aa91a91a694f7296c719a98c86307c>:0 
+  at Articulate.ThreeSixty.App.Program.Main (System.String[] args) [0x00086] in <d22fa1fcbd4b4ac39a5df5a04931b32a>:0 

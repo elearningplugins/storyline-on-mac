@@ -1,0 +1,225 @@
+=== Logging started: 9/15/2026  12:01:23 ===
+Action start 12:01:23: INSTALL.
+=== Logging started: 9/15/2026  12:01:23 ===
+Action start 12:01:23: INSTALL.
+1: Articulate 360 2: {126A19EA-26BC-4253-A1C9-397733057610} 
+Action start 12:01:23: FindRelatedProducts.
+Action ended 12:01:23: FindRelatedProducts. Return value 1.
+Action start 12:01:23: LaunchConditions.
+Action ended 12:01:23: LaunchConditions. Return value 1.
+Action start 12:01:23: SetREINSTALLMODE.
+Action ended 12:01:23: SetREINSTALLMODE. Return value 1.
+Action start 12:01:23: ValidateProductID.
+Action ended 12:01:23: ValidateProductID. Return value 1.
+Action start 12:01:23: CostInitialize.
+Action ended 12:01:23: CostInitialize. Return value 1.
+Action start 12:01:23: FileCost.
+Action ended 12:01:23: FileCost. Return value 1.
+Action start 12:01:23: CostFinalize.
+Action ended 12:01:23: CostFinalize. Return value 1.
+Action start 12:01:23: MigrateFeatureStates.
+Action ended 12:01:23: MigrateFeatureStates. Return value 1.
+Action start 12:01:23: InstallValidate.
+Action ended 12:01:23: InstallValidate. Return value 1.
+Action start 12:01:23: InstallInitialize.
+Action ended 12:01:23: InstallInitialize. Return value 1.
+Action start 12:01:23: WixCloseApplications.
+Action start 12:01:24: WixCloseApplicationsDeferred.
+Action ended 12:01:24: WixCloseApplicationsDeferred. Return value 1.
+Action ended 12:01:24: WixCloseApplications. Return value 1.
+Action start 12:01:24: ProcessComponents.
+Action ended 12:01:24: ProcessComponents. Return value 1.
+Action start 12:01:24: UnpublishFeatures.
+Action ended 12:01:24: UnpublishFeatures. Return value 1.
+Action start 12:01:24: RemoveRegistryValues.
+Action ended 12:01:24: RemoveRegistryValues. Return value 1.
+Action start 12:01:24: RemoveShortcuts.
+Action ended 12:01:24: RemoveShortcuts. Return value 1.
+Action start 12:01:24: RemoveFiles.
+Action ended 12:01:24: RemoveFiles. Return value 1.
+Action start 12:01:24: InstallFiles.
+Action ended 12:01:24: InstallFiles. Return value 1.
+Action start 12:01:24: CreateShortcuts.
+Action ended 12:01:24: CreateShortcuts. Return value 1.
+Action start 12:01:24: WriteRegistryValues.
+Action ended 12:01:24: WriteRegistryValues. Return value 1.
+Action start 12:01:24: RegisterUser.
+Action ended 12:01:24: RegisterUser. Return value 1.
+Action start 12:01:24: RegisterProduct.
+Action ended 12:01:24: RegisterProduct. Return value 1.
+Action start 12:01:24: PublishFeatures.
+Action ended 12:01:24: PublishFeatures. Return value 1.
+Action start 12:01:24: PublishProduct.
+Action ended 12:01:24: PublishProduct. Return value 1.
+Action start 12:01:24: InstallExecute.
+Action start 12:01:24: WixCloseApplicationsDeferred.
+Action ended 12:01:24: WixCloseApplicationsDeferred. Return value 1.
+Action start 12:01:24: ProcessComponents.
+Action ended 12:01:24: ProcessComponents. Return value 1.
+Action start 12:01:24: UnpublishFeatures.
+Action ended 12:01:24: UnpublishFeatures. Return value 1.
+Action start 12:01:24: RemoveRegistryValues.
+Action ended 12:01:24: RemoveRegistryValues. Return value 1.
+Action start 12:01:24: RemoveShortcuts.
+Action ended 12:01:24: RemoveShortcuts. Return value 1.
+Action start 12:01:24: RemoveFiles.
+Action ended 12:01:25: RemoveFiles. Return value 1.
+Action start 12:01:25: InstallFiles.
+Action ended 12:01:26: InstallFiles. Return value 1.
+Action start 12:01:26: CreateShortcuts.
+Action ended 12:01:26: CreateShortcuts. Return value 1.
+Action start 12:01:26: WriteRegistryValues.
+Action ended 12:01:26: WriteRegistryValues. Return value 1.
+Action start 12:01:26: RegisterUser.
+Action ended 12:01:26: RegisterUser. Return value 1.
+Action start 12:01:26: RegisterProduct.
+Action ended 12:01:26: RegisterProduct. Return value 1.
+Action start 12:01:26: PublishFeatures.
+Action ended 12:01:26: PublishFeatures. Return value 1.
+Action start 12:01:26: PublishProduct.
+Action ended 12:01:26: PublishProduct. Return value 1.
+Action ended 12:01:26: InstallExecute. Return value 1.
+Action start 12:01:26: RemoveExistingProducts.
+Action ended 12:01:26: RemoveExistingProducts. Return value 1.
+Action start 12:01:26: CreateRegistryValuesAction.SetProperty.
+Action ended 12:01:26: CreateRegistryValuesAction.SetProperty. Return value 1.
+Action start 12:01:26: CreateRegistryValuesAction.
+Action ended 12:01:26: CreateRegistryValuesAction. Return value 1.
+Action start 12:01:26: DeleteScheduledTaskAction.SetProperty.
+Action ended 12:01:26: DeleteScheduledTaskAction.SetProperty. Return value 1.
+Action start 12:01:26: RegisterScheduledTaskAction.SetProperty.
+Action ended 12:01:26: RegisterScheduledTaskAction.SetProperty. Return value 1.
+Action start 12:01:26: RegisterScheduledTaskAction.
+Action ended 12:01:26: RegisterScheduledTaskAction. Return value 1.
+Action start 12:01:26: RepairRegistryKeysOnUpgrade.SetProperty.
+Action ended 12:01:26: RepairRegistryKeysOnUpgrade.SetProperty. Return value 1.
+Action start 12:01:26: InstallFinalize.
+Action start 12:01:26: CreateRegistryValuesAction.
+SFXCA: Extracting custom action to temporary directory: C:\users\USER\AppData\Local\Temp\msi3591.tmp-\
+SFXCA: Binding to CLR version v4.0.30319
+Calling custom action Articulate.CustomActions!Articulate.CustomActions.CustomActions.CreateRegistryValuesAction
+CreateRegistryValuesAction(...) started.
+CustomActionProperties.Get(RegistrySettingsLocation) = HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+CustomActionProperties.Get(CurrentUICulture) = en-US
+Setting CurrentUICulture to en-US under HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+CreateRegistryValuesAction(...) finished.
+SFXCA: Failed to unload app domain. Error code 0x80004001
+Action ended 12:01:28: CreateRegistryValuesAction. Return value 1.
+Action start 12:01:28: RegisterScheduledTaskAction.
+SFXCA: Extracting custom action to temporary directory: C:\users\USER\AppData\Local\Temp\msi3591.tmp-0\
+SFXCA: Binding to CLR version v4.0.30319
+Calling custom action Articulate.CustomActions!Articulate.CustomActions.CustomActions.RegisterScheduledTaskAction
+RegisterScheduledTaskAction(...) started.
+CustomActionProperties.Get(RegistrySettingsLocation) = HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+CustomActionProperties.Get(ChannelId) = 
+Setting non-admin installs supported to True
+Retrieving DisableNonAdminInstalls from HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+Setting disable non-admin installs to True
+Removing the scheduled task for non-admin installs.
+RegisterScheduledTaskAction(...) finished.
+SFXCA: Failed to unload app domain. Error code 0x80004001
+Action ended 12:01:31: RegisterScheduledTaskAction. Return value 1.
+Action ended 12:01:31: InstallFinalize. Return value 1.
+Action start 12:01:31: WixCheckRebootRequired.
+Action ended 12:01:31: WixCheckRebootRequired. Return value 1.
+Action ended 12:01:31: INSTALL. Return value 1.
+1: Articulate 360 2: {126A19EA-26BC-4253-A1C9-397733057610} 3: 1 
+Property(S): UpgradeCode = {92617AD6-B1BB-49BD-A986-9939F3D5F002}
+Property(S): DesktopService_InstallFolder = C:\Program Files\Articulate\360\Desktop Service x64\
+Property(S): DesktopApp_InstallFolder = C:\Program Files\Articulate\360\Desktop Application x64\
+Property(S): DESKTOPSERVICE_DE = C:\Program Files\Articulate\360\Desktop Service x64\de-DE\
+Property(S): DESKTOPSERVICE_ES = C:\Program Files\Articulate\360\Desktop Service x64\es\
+Property(S): DESKTOPSERVICE_FR = C:\Program Files\Articulate\360\Desktop Service x64\fr-FR\
+Property(S): DESKTOPAPP_DE = C:\Program Files\Articulate\360\Desktop Application x64\de-DE\
+Property(S): DESKTOPAPP_ES = C:\Program Files\Articulate\360\Desktop Application x64\es\
+Property(S): DESKTOPAPP_FR = C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\
+Property(S): StartMenuTileImagesFolder = C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\
+Property(S): Licenses = C:\Program Files\Articulate\360\Desktop Application x64\Licenses\
+Property(S): REINSTALLMODE = emus
+Property(S): WixCloseApplicationsDeferred = Articulate 360 Installer Service.exe?33?5000?1?Articulate 360 Desktop App.exe?33?5000?1?Articulate 360 Desktop Service.exe?33?5000?1
+Property(S): CreateRegistryValuesAction = RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;CurrentUICulture=en-US
+Property(S): RegisterScheduledTaskAction = InstallLocation=C:\Program Files\Articulate\360\Desktop Application x64\;FileName=Articulate 360 Installer Service.exe;RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;ScheduledTaskDescription=Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.
+Property(S): RepairRegistryKeysOnUpgrade = DesktopAppInstallFolder=C:\Program Files\Articulate\360\Desktop Application x64\;DesktopServiceInstallFolder=C:\Program Files\Articulate\360\Desktop Service x64\;AppPathSuffix=
+Property(S): INSTALLFOLDER = C:\Program Files\Articulate\360\
+Property(S): ArticulateFolder = C:\Program Files\Articulate\
+Property(S): DEFAULT_INSTALLFOLDER = C:\Program Files\Articulate\360\
+Property(S): ProgramFiles64Folder = C:\Program Files\
+Property(S): TARGETDIR = C:\
+Property(S): DesktopFolder = C:\users\USER\Desktop\
+Property(S): ProgramMenuFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\
+Property(S): System64Folder = C:\windows\system32\
+Property(S): SourceDir = C:\ProgramData\Package Cache\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\
+Property(S): ALLUSERS = 1
+Property(S): Manufacturer = Articulate Global, LLC
+Property(S): ProductCode = {126A19EA-26BC-4253-A1C9-397733057610}
+Property(S): ProductLanguage = 1033
+Property(S): ProductName = Articulate 360
+Property(S): ProductVersion = 1.125.37980.0
+Property(S): SecureCustomProperties = WIX_DOWNGRADE_DETECTED;WIX_UPGRADE_DETECTED
+Property(S): AdminUser = 1
+Property(S): Privileged = 1
+Property(S): MsiRunningElevated = 1
+Property(S): MsiTrueAdminUser = 1
+Property(S): CommonAppDataFolder = C:\ProgramData\
+Property(S): FavoritesFolder = C:\users\USER\Favorites\
+Property(S): FontsFolder = C:\windows\Fonts\
+Property(S): SendToFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\SendTo\
+Property(S): StartMenuFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\
+Property(S): StartupFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp\
+Property(S): TemplateFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Templates\
+Property(S): AdminToolsFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Administrative Tools\
+Property(S): AppDataFolder = C:\users\USER\AppData\Roaming\
+Property(S): SystemFolder = C:\windows\syswow64\
+Property(S): System16Folder = C:\windows\system32\
+Property(S): LocalAppDataFolder = C:\users\USER\AppData\Local\
+Property(S): MyPicturesFolder = C:\users\USER\Pictures\
+Property(S): PersonalFolder = C:\users\USER\Documents\
+Property(S): WindowsFolder = C:\windows\
+Property(S): PrintHoodFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Printer Shortcuts\
+Property(S): NetHoodFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Network Shortcuts\
+Property(S): RecentFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Recent\
+Property(S): PhysicalMemory = 16383
+Property(S): WindowsVolume = C:\
+Property(S): TempFolder = C:\users\USER\AppData\Local\Temp\
+Property(S): VersionNT = 603
+Property(S): MsiNTProductType = 1
+Property(S): WindowsBuild = 9600
+Property(S): ServicePackLevel = 0
+Property(S): VersionMsi = 5.0
+Property(S): VersionDatabase = 500
+Property(S): Intel = 6
+Property(S): MsiAMD64 = 6
+Property(S): Msix64 = 6
+Property(S): VersionNT64 = 603
+Property(S): ProgramFilesFolder = C:\Program Files (x86)\
+Property(S): CommonFiles64Folder = C:\Program Files\Common Files\
+Property(S): CommonFilesFolder = C:\Program Files (x86)\Common Files\
+Property(S): ScreenX = 1440
+Property(S): ScreenY = 900
+Property(S): ColorBits = 32
+Property(S): UserSID = S-1-5-21-0-0-0-1000
+Property(S): MsiNetAssemblySupport = 4.6.1590.0
+Property(S): UserLanguageID = 1033
+Property(S): SystemLanguageID = 1033
+Property(S): ProductState = -1
+Property(S): LogonUser = USER
+Property(S): ComputerName = HOST
+Property(S): UILevel = 2
+Property(S): PackageCode = {9EC2A37F-CF1B-461E-BA53-E08D1E4BEF3E}
+Property(S): DATABASE = C:\windows\Installer\2900.msi
+Property(S): OriginalDatabase = C:\ProgramData\Package Cache\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\Articulate.360.Package.msi
+Property(S): SOURCEDIR = C:\ProgramData\Package Cache\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\
+Property(S): ARPSYSTEMCOMPONENT = 1
+Property(S): MSIFASTINSTALL = 7
+Property(S): CURRENTUICULTURE = en-US
+Property(S): SCHEDULEDTASKDESCRIPTION = Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.
+Property(S): REBOOT = ReallySuppress
+Property(S): ACTION = INSTALL
+Property(S): EXECUTEACTION = INSTALL
+Property(S): CostingComplete = 1
+Property(S): ROOTDRIVE = C:\
+Property(S): INSTALLLEVEL = 1
+Property(S): OutOfDiskSpace = 0
+Property(S): OutOfNoRbDiskSpace = 0
+Property(S): CustomActionData = InstallLocation=C:\Program Files\Articulate\360\Desktop Application x64\;FileName=Articulate 360 Installer Service.exe;RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;ScheduledTaskDescription=Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.
+Action ended 12:01:31: INSTALL. Return value 1.

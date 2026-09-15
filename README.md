@@ -1,0 +1,62 @@
+# Storyline 360 on macOS (Intel) via Wine — research log
+
+Can the current Articulate 360 / Storyline 360 Windows apps run on an Intel Mac through upstream Wine — no VM, no Boot Camp, no CrossOver, no remote Windows, no licensing/auth bypass?
+
+Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Every experiment is recorded under [runs/](runs/) with sanitized logs under [logs/](logs/). Licensed binaries, Wine prefixes, and snapshots are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
+
+## Environment
+
+| | |
+|---|---|
+| Host | 2019 MacBook Pro 15,4 (Core i5, Iris Plus 645), macOS 15.7.9 |
+| Wine | MacPorts `wine-devel` 11.16 (`+ffmpeg +gstreamer`, binary archive), Wine Mono 11.3.0, Gecko 2.47.4 |
+| MacPorts | 2.12.6 Sequoia pkg, SHA-256 + Developer ID/notarization verified |
+| Input | `articulate-360.exe` (Burn 3.11.2, bundle 1.125.37980.0), SHA-256 `bc725a70…c88e9` |
+| Winetricks | release 20260125, tag commit `57063f0b…` |
+
+## Status board
+
+| Step | Result | Run |
+|---|---|---|
+| Xcode CLT | Was broken (missing libc++ headers); clean reinstall fixed it | logs/macports/clt-reinstall.txt |
+| MacPorts + Wine 11.16 install | OK — binary archives; only `gd2`/`graphviz` built from source | logs/macports/ |
+| Burn bootstrapper UI (WPF, under Wine Mono) | **Renders correctly** | 01 |
+| VC++ 2015–2022 x86 / x64 | **OK** (0x0) | 01 |
+| Core MSI, stock prefix | **FAIL** 0x80070643 — `RegisterScheduledTaskAction` hits Wine stub `ITaskSettings::get_IdleSettings` (E_NOTIMPL) | 01 |
+| Core MSI with `DisableNonAdminInstalls=true` | **OK** (0x0) — Articulate's documented setting skips the task | 02 |
+| `Articulate 360 Desktop App.exe`, Wine Mono | **FAIL** — TypeLoadException: `EventLogInvalidDataException` missing from Mono's System.Core | 03 |
+| Desktop App with real .NET Framework 4.8 | *in progress* | 04 |
+| Sign-in / entitlement / catalog (Gate 1) | not reached | |
+| Storyline install + authoring (Gate 2) | not reached | |
+
+## What worked
+
+- Upstream Wine 11.16 from MacPorts binary archives — no source build, no Gatekeeper workarounds.
+- Running the original `articulate-360.exe` unmodified. The WPF managed bootstrapper paints and runs its detect/plan/apply phases under Wine Mono.
+- Pre-setting `HKLM\Software\Articulate\Common\Settings\DisableNonAdminInstalls = "true"` (REG_SZ) in the prefix before install. This is Articulate's own enterprise deployment switch; it makes the installer skip Task Scheduler registration, which is the only part of the core MSI Wine can't handle.
+
+## What didn't
+
+- Xcode CLT as found on the machine: `clang++` could not find `<initializer_list>`. Any C++ source build fails until `rm -rf /Library/Developer/CommandLineTools && xcode-select --install`.
+- MacPorts `port -s` (force source build) is not needed and would be slow on this hardware; skip it unless patching Wine.
+- Core MSI in a stock prefix: Wine's `taskschd` stubs `get_IdleSettings`, and Articulate's custom action (using the managed TaskScheduler wrapper) throws on it. A Wine patch returning a stub `IIdleSettings` would also fix this (not attempted; registry route was cheaper).
+- Wine Mono as a stand-in for .NET Framework 4.8: good enough for the installer UI, not for the Desktop App (missing `System.Diagnostics.Eventing.Reader` types).
+
+## Reproduce
+
+```bash
+# prerequisites (privileged): MacPorts 2.12.6, then
+sudo port install wine-devel cabextract
+
+# build prefix with real .NET 4.8 + the registry value
+tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
+
+# run the installer with focused Wine logging
+tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/articulate-360.exe
+```
+
+`tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
+
+## Rules kept
+
+No Gatekeeper/SIP changes, no quarantine stripping, no `--no-sandbox`, no TLS/licensing/code-signing bypass, no patched Articulate binaries. The only change to Articulate's behavior is a registry value its own deployment guide documents.
