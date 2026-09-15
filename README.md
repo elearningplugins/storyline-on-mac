@@ -43,8 +43,24 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
 | Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate) | 09 |
+| Save / Player dialog / Publish | **FAIL** — managed NREs (null player), same root as Preview | 09 |
+| Text box editing | **FAIL** — `ID2D1Factory::CreateDCRenderTarget` returns E_FAIL (Wine d2d1 init path); likely root of all the nulls | 09 |
+| Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
-| Save / reopen / publish | *testing* | |
+
+
+## Current setup (what actually runs)
+
+- **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with two files replaced —
+  `x86_64-unix/ntdll.so` (patch 0001) and `x86_64-windows/dwrite.dll` (patch 0002) — plus a copy of the loader and a `share`
+  symlink. Built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. The prefix's `system32/dwrite.dll`
+  is also replaced with the patched copy.
+- **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
+  `DisableNonAdminInstalls=true`, Articulate 360 core laid out via `msiexec /a` + registry import, Storyline installed by the
+  official bundle, .NET Desktop Runtime 10 x64 from that bundle. Mac driver: `LeftCommandIsCtrl`/`RightCommandIsCtrl=y`;
+  `RetinaMode` currently `n` (WPF dialogs went blank with it on); `Direct3D\renderer` unset (default GL) as of Run 09.
+- **Launchers**: `~/Applications/Articulate 360.app` and `~/Applications/Storyline 360.app` (tools/launcher/) run the genuine
+  EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks.
 
 ## What worked
 
