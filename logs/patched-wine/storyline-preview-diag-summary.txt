@@ -1,0 +1,13 @@
+# CLR exceptions by HRESULT (seh trace, Storyline diag run)
+  15 info[0]=FFFFFFFF80131622
+   8 info[0]=FFFFFFFF80131515
+   6 info[0]=FFFFFFFF80131500
+   6 info[0]=FFFFFFFF80070002
+   5 info[0]=FFFFFFFF8013153B
+   5 info[0]=FFFFFFFF80131509
+   1 info[0]=FFFFFFFF80131620
+   1 info[0]=FFFFFFFF80070020
+
+# d3d11/dxgi notable
+ixme:d3d11:d3d11_create_device WARP driver not implemented, falling back to hardware.
+50

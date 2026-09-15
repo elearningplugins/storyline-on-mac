@@ -42,7 +42,9 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Install via Desktop App → Installer Service | **FAIL** — "Directory has unexpected ACL" (Wine security-descriptor round-trip) | 07 |
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
-| Gate 2 authoring (text, save, preview, publish) | *in progress* | |
+| Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate) | 09 |
+| CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
+| Save / reopen / publish | *testing* | |
 
 ## What worked
 
