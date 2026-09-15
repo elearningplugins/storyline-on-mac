@@ -1,0 +1,19 @@
+--- a/dlls/ntdll/unix/virtual.c
++++ b/dlls/ntdll/unix/virtual.c
+@@ -5138,6 +5138,16 @@
+     /* Round parameters to a page boundary */
+ 
+     if (is_beyond_limit( 0, size, working_set_limit )) return STATUS_WORKING_SET_LIMIT_RANGE;
++
++    /* A WoW64 process must never receive memory above its highest user address
++     * (0x7ffeffff without LAA); the 32-bit thunks pass a 2^n-1 mask that rounds up
++     * to 0x7fffffff and would expose the last 64K below 2G. Windows never does this,
++     * and the .NET CLR rejects such allocations and fails with E_OUTOFMEMORY. */
++    if (!*ret && is_wow64() && get_wow_user_space_limit())
++    {
++        ULONG_PTR wow_limit = get_wow_user_space_limit() - 1;
++        if (!limit_high || limit_high > wow_limit) limit_high = wow_limit;
++    }
+ 
+     if (*ret)
+     {
