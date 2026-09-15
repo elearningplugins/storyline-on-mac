@@ -1,0 +1,75 @@
+[0120:0124][2026-09-15T00:20:41]i001: Burn v3.11.2.4516, Windows v10.0 (Build 19045: Service Pack 0), path: C:\users\USER\AppData\Local\Temp\{EA7EABFB-85D4-4356-BE89-D8EB370D7262}\.cr\articulate-360.exe
+[0120:0124][2026-09-15T00:20:41]i000: Initializing string variable 'ApplicationName' to value 'Articulate 360'
+[0120:0124][2026-09-15T00:20:41]i000: Initializing string variable 'PackageFileName' to value 'Articulate.360.Package.msi'
+[0120:0124][2026-09-15T00:20:41]i000: Initializing string variable 'PackageUpgradeCode' to value '92617AD6-B1BB-49BD-A986-9939F3D5F002'
+[0120:0124][2026-09-15T00:20:41]i000: Initializing string variable 'LaunchProcessInstallLocationRegistryKeys' to value 'HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service;HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application'
+[0120:0124][2026-09-15T00:20:41]i000: Initializing string variable 'LaunchProcessNames' to value 'Articulate 360 Desktop Service.exe;Articulate 360 Desktop App.exe'
+[0120:0124][2026-09-15T00:20:41]i009: Command Line: '-burn.clean.room=Z:\Users\USER\StorylineLab\inputs\articulate-360.exe -burn.filehandle.attached=140 -burn.filehandle.self=144'
+[0120:0124][2026-09-15T00:20:41]i000: Setting string variable 'WixBundleOriginalSource' to value 'Z:\Users\USER\StorylineLab\inputs\articulate-360.exe'
+[0120:0124][2026-09-15T00:20:41]i000: Setting string variable 'WixBundleOriginalSourceFolder' to value 'Z:\Users\USER\StorylineLab\inputs\'
+[0120:0124][2026-09-15T00:20:41]i000: Setting string variable 'WixBundleLog' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915002041.log'
+[0120:0124][2026-09-15T00:20:41]i052: Condition 'VersionNT >= v6.0' evaluates to true.
+[0120:0124][2026-09-15T00:20:44]i000: Setting string variable 'WixBundleName' to value 'Articulate 360'
+[0120:0124][2026-09-15T00:20:44]i000: Setting string variable 'WixBundleManufacturer' to value 'Articulate Global, LLC'
+[0120:0124][2026-09-15T00:20:44]i000: Loading prerequisite bootstrapper application because managed host could not be loaded, error: 0x8007000e.
+[0120:0178][2026-09-15T00:20:44]i000: Setting numeric variable 'WixStdBALanguageId' to value 1033
+[0120:0178][2026-09-15T00:20:44]i000: Setting version variable 'WixBundleFileVersion' to value '1.125.37980.0'
+[0120:0124][2026-09-15T00:20:44]i100: Detect begin, 4 packages
+[0120:0124][2026-09-15T00:20:44]i000: Setting string variable 'NETFRAMEWORK45' to value '528049'
+[0120:0124][2026-09-15T00:20:44]i052: Condition 'NETFRAMEWORK45 >= 528040' evaluates to true.
+[0120:0124][2026-09-15T00:20:44]i101: Detected package: VisualCPlusPlusRedistributablex86, state: Absent, cached: None
+[0120:0124][2026-09-15T00:20:44]i101: Detected package: VisualCPlusPlusRedistributablex64, state: Absent, cached: None
+[0120:0124][2026-09-15T00:20:44]i101: Detected package: NetFx48Web, state: Present, cached: None
+[0120:0124][2026-09-15T00:20:44]i101: Detected package: Articulate.360.Package.msi, state: Absent, cached: None
+[0120:0124][2026-09-15T00:20:44]i199: Detect complete, result: 0x0
+[0120:0124][2026-09-15T00:21:23]i200: Plan begin, 4 packages, action: Install
+[0120:0124][2026-09-15T00:21:23]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex86
+[0120:0124][2026-09-15T00:21:23]i052: Condition 'VersionNT64' evaluates to true.
+[0120:0124][2026-09-15T00:21:23]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex64
+[0120:0124][2026-09-15T00:21:23]w321: Skipping dependency registration on package with no dependency providers: NetFx48Web
+[0120:0124][2026-09-15T00:21:23]i201: Planned package: VisualCPlusPlusRedistributablex86, state: Absent, default requested: Present, ba requested: None, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[0120:0124][2026-09-15T00:21:23]i201: Planned package: VisualCPlusPlusRedistributablex64, state: Absent, default requested: Present, ba requested: None, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[0120:0124][2026-09-15T00:21:23]i201: Planned package: NetFx48Web, state: Present, default requested: Present, ba requested: Present, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[0120:0124][2026-09-15T00:21:23]i201: Planned package: Articulate.360.Package.msi, state: Absent, default requested: Present, ba requested: None, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[0120:0124][2026-09-15T00:21:23]i299: Plan complete, result: 0x0
+[0120:0124][2026-09-15T00:21:23]i300: Apply begin
+[0120:0124][2026-09-15T00:21:23]i010: Launching elevated engine process.
+[0120:0124][2026-09-15T00:21:23]i011: Launched elevated engine process.
+[0120:0124][2026-09-15T00:21:24]i012: Connected to elevated engine.
+[017C:0180][2026-09-15T00:21:24]i358: Pausing automatic updates.
+[017C:0180][2026-09-15T00:21:24]i359: Paused automatic updates.
+[017C:0180][2026-09-15T00:21:24]i360: Creating a system restore point.
+[017C:0180][2026-09-15T00:21:24]i361: Created a system restore point.
+[017C:0180][2026-09-15T00:21:24]i370: Session begin, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, options: 0x7, disable resume: No
+[017C:0180][2026-09-15T00:21:24]i000: Caching bundle from: 'C:\users\USER\AppData\Local\Temp\{6F142E43-B2EC-4774-9A36-E02884CC8B23}\.be\Articulate.360.Bundle.exe' to: 'C:\ProgramData\Package Cache\{27d51978-81a5-4cec-aef1-a407a7893eeb}\Articulate.360.Bundle.exe'
+[017C:0180][2026-09-15T00:21:24]i320: Registering bundle dependency provider: {27d51978-81a5-4cec-aef1-a407a7893eeb}, version: 1.125.37980.0
+[017C:0180][2026-09-15T00:21:24]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: Active, restart initiated: No, disable resume: No
+[017C:0180][2026-09-15T00:21:24]i372: Session end, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: ARP, restart: None, disable resume: No
+[017C:0180][2026-09-15T00:21:24]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: ARP, restart initiated: No, disable resume: No
+[0120:0124][2026-09-15T00:21:24]i399: Apply complete, result: 0x0, restart: None, ba requested restart:  No
+[0120:0124][2026-09-15T00:21:24]i500: Shutting down, exit code: 0x0
+[0120:0124][2026-09-15T00:21:24]i000: The prerequisites were already installed. The bootstrapper application will not be reloaded to prevent an infinite loop.
+[0120:0124][2026-09-15T00:21:24]i410: Variable: ApplicationName = Articulate 360
+[0120:0124][2026-09-15T00:21:24]i410: Variable: LaunchProcessInstallLocationRegistryKeys = HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service;HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application
+[0120:0124][2026-09-15T00:21:24]i410: Variable: LaunchProcessNames = Articulate 360 Desktop Service.exe;Articulate 360 Desktop App.exe
+[0120:0124][2026-09-15T00:21:24]i410: Variable: NETFRAMEWORK45 = 528049
+[0120:0124][2026-09-15T00:21:24]i410: Variable: PackageFileName = Articulate.360.Package.msi
+[0120:0124][2026-09-15T00:21:24]i410: Variable: PackageUpgradeCode = 92617AD6-B1BB-49BD-A986-9939F3D5F002
+[0120:0124][2026-09-15T00:21:24]i410: Variable: VersionNT = 10.0.0.0
+[0120:0124][2026-09-15T00:21:24]i410: Variable: VersionNT64 = 10.0.0.0
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleAction = 5
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleElevated = 1
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleFileVersion = 1.125.37980.0
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleLog = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915002041.log
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleManufacturer = Articulate Global, LLC
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleName = Articulate 360
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleOriginalSource = Z:\Users\USER\StorylineLab\inputs\articulate-360.exe
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleOriginalSourceFolder = Z:\Users\USER\StorylineLab\inputs\
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleProviderKey = {27d51978-81a5-4cec-aef1-a407a7893eeb}
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleSourceProcessFolder = Z:\Users\USER\StorylineLab\inputs\
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleSourceProcessPath = Z:\Users\USER\StorylineLab\inputs\articulate-360.exe
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleTag = 92617AD6-B1BB-49BD-A986-9939F3D5F002
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleUILevel = 4
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixBundleVersion = 1.125.37980.0
+[0120:0124][2026-09-15T00:21:24]i410: Variable: WixStdBALanguageId = 1033
+[0120:0124][2026-09-15T00:21:25]i007: Exit code: 0x0, restarting: No

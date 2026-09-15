@@ -1,0 +1,5 @@
+vc_redist.x86.exe exit=0
+vc_redist.x64.exe exit=0
+core msi exit=67
+Desktop Application x64
+Desktop Service x64

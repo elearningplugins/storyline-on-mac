@@ -1,0 +1,14 @@
+  46 err:ole:get_stub_manager_from_ipid not found for ipid {ffffffff-ffff-ffff-feca-00009c010000}
+  46 err:ole:get_stub_manager_from_ipid not found for ipid {ffffffff-ffff-ffff-feca-00000c010000}
+   2 err:ole:CoGetContextToken apartment not initialised
+   2 err:kerberos:kerberos_LsaApInitializePackage no Kerberos support, expect problems
+   2 err:d3d:wined3d_check_gl_call >>>>>>> GL_INVALID_FRAMEBUFFER_OPERATION (0x506) from glClear @ dlls/wined3d/context_gl.c / 2246.
+   2 err:combase:RoGetActivationFactory Failed to find library for L"Windows.Foundation.Diagnostics.AsyncCausalityTracer"
+   1 err:ntdll:NtQueryInformationToken Unhandled token information class TokenDeviceGroups
+   1 # winver: REG_SZ    19045
+   1 # wine: wine-11.16  (  wine-devel @11.16_0+ffmpeg+gstreamer (active))
+   1 # start: 2026-09-15T05:27:19Z
+   1 # prefix: /Users/USER/StorylineLab/prefixes/wine-dotnet48-noadmintask
+   1 # macOS 15.7.9 24G830 x86_64
+   1 # input: fda5260999d4b94b9dfcc474887e1660920a6ce623792d2eeb3c237abbf28755  Articulate 360 Desktop App.exe
+   1 # cmd: /opt/local/bin/wine Articulate 360 Desktop App.exe

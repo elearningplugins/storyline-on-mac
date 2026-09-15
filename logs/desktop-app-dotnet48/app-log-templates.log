@@ -1,0 +1,437 @@
+2026-09-15T05:27:23 Info Starting LaunchDarkly Client {0} built with target framework {1} |   
+2026-09-15T05:27:23 Error {0}: {1} |   
+2026-09-15T05:27:23 Info Network availability is now {0} |   
+2026-09-15T05:27:23 Info Starting cleanup of early access features. |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:24 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:27:24 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:23 Info Feature Flags: {@FeatureFlags} |   
+2026-09-15T05:27:24 Info Available Features: {@Features} |   
+2026-09-15T05:27:24 Info Initializing RpcClient for {Product} {Version}, Culture: {Culture}, Process: {ProcessId} |   
+2026-09-15T05:27:24 Info Attempting to connect to RPC server, max attempts: {MaxAttempts} |   
+2026-09-15T05:27:24 Info Remoting service is not alive, starting service |   
+2026-09-15T05:27:24 Info Starting ConnectAsync to named pipe |   
+2026-09-15T05:27:24 Info Connecting to named pipe |   
+2026-09-15T05:27:30 Info Setting up JSON-RPC client |   
+2026-09-15T05:27:30 Info Configuring server factories with client info: {Product} {Version} |   
+2026-09-15T05:27:36 Info RPC client successfully connected and configured |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Info Successfully connected to RPC server on attempt {Attempt} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Warning Failed to determine whether or not current user is an administrator |   
+2026-09-15T05:27:36 Info Application Startup {Name} v{Version} |   
+2026-09-15T05:27:36 Info Application Channel {ToUpperInvariant} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:36 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Setting analytics endpoint to {endpoint} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:37 Info SetLatestDesktopProduct |   
+2026-09-15T05:27:39 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:39 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:40 Error failed to enable event log events |   
+2026-09-15T05:27:40 Info Initialize() Product metas: {productMetas} |   
+2026-09-15T05:27:40 Info CreateProducts() Products: {res} |   
+2026-09-15T05:27:40 Info Articulate 360 state {State} is not {ExpectedState} |   
+2026-09-15T05:27:40 Info canUpdate |   
+2026-09-15T05:27:40 Info Skipping Storyline updates - Desktop App update takes precedence |   
+2026-09-15T05:27:40 Info TryUpdateAsync({OnStartup}) |   
+2026-09-15T05:27:40 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:43 Info Creating RPC proxy for interface {InterfaceName} |   
+2026-09-15T05:27:43 Info Unknown feature flag {0}; returning default value |   
+2026-09-15T05:27:43 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:43 Info Unknown feature flag {0}; returning default value |   
+2026-09-15T05:27:43 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:27:43 Info Feature Flags: {@FeatureFlags} |   
+2026-09-15T05:27:45 Info Start loading |   
+2026-09-15T05:27:45 Info session retrieved |   
+2026-09-15T05:27:45 Info destination page is {DestinationPage}, updating session listeners |   
+2026-09-15T05:27:45 Info Updating Session: {NewSessionSignInResult} |   
+2026-09-15T05:27:45 Info UpdateAsync {SignInResult} | SignedOut  
+2026-09-15T05:27:45 Info session listeners updated |   
+2026-09-15T05:27:45 Info begin finish loading |   
+2026-09-15T05:27:45 Info FinishLoadingAsync {loadingState} |   
+2026-09-15T05:27:45 Info loading finished |   
+2026-09-15T05:27:45 Info Setting current page to {DestinationPage} |   
+2026-09-15T05:27:45 Info ChangeSessionStateAsync | SignedOut Unknown 
+2026-09-15T05:27:45 Info new session is equal to current session, returning. |   
+2026-09-15T05:27:45 Info SessionChangedAsync | SignedOut Unknown 
+2026-09-15T05:27:51 Info Starting OIDC login listener with {OidcListenerName} strategy |   OidcCustomUrlSchemeListener
+2026-09-15T05:27:51 Info BeginLoginAsync |   
+2026-09-15T05:30:51 Error Error while processing OIDC login response for {OidcListenerName}: {LoginResultError} |   OidcCustomUrlSchemeListener
+2026-09-15T05:30:51 Info Starting OIDC login listener with {OidcListenerName} strategy |   OidcLoopbackListener
+2026-09-15T05:30:54 Info Sign in response protocol version: {ProtocolVersion} |   
+2026-09-15T05:30:54 Info Sign in response http method: {HttpMethod} |   
+2026-09-15T05:30:54 Info Sign in response length: {ContentLength} |   
+2026-09-15T05:30:54 Info Sign in response headers ({HeaderCount} total): |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info     {HeaderKey}: {HeaderValue} |   
+2026-09-15T05:30:54 Info Sign in auto-submit form result is empty: {IsEmpty} |   
+2026-09-15T05:30:54 Info Start loading |   
+2026-09-15T05:30:56 Info Setting analytics endpoint to {endpoint} |   
+2026-09-15T05:30:56 Info session retrieved |   
+2026-09-15T05:30:56 Info destination page is {DestinationPage}, updating session listeners |   
+2026-09-15T05:30:56 Info Updating Session: {NewSessionSignInResult} |   
+2026-09-15T05:30:57 Info UpdateProfileListeners |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Info {AvailableNotificationsCount} product desktop notifications available |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Info previousProductMetas: {previousProductMetas} |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Info UpdateAvatarListener |   
+2026-09-15T05:30:57 Info UpdateProfileAsync |   
+2026-09-15T05:30:57 Info UpdateAsync {SignInResult} | SignedIn  
+2026-09-15T05:30:57 Info session listeners updated |   
+2026-09-15T05:30:57 Info begin finish loading |   
+2026-09-15T05:30:57 Info awaiting product synchronization |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Info Checking for available product desktop notifications |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Warning LaunchDarkly client has not yet been initialized. Returning default value |   
+2026-09-15T05:30:57 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:57 Info Feature Flags: {@FeatureFlags} |   
+2026-09-15T05:30:58 Info {AvailableNotificationsCount} product desktop notifications available |   
+2026-09-15T05:30:58 Info Product metas: {productMetas} |   
+2026-09-15T05:30:58 Info installed version is {ToInstallationString} |   
+2026-09-15T05:30:58 Info Detect {metas} |   
+2026-09-15T05:30:58 Info Unknown feature flag {0}; returning default value |   
+2026-09-15T05:30:58 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:58 Info Unknown feature flag {0}; returning default value |   
+2026-09-15T05:30:58 Warning Attempted to find {flag} in LaunchDarkly but got {null} or {defaultValue} |   
+2026-09-15T05:30:58 Info Feature Flags: {@FeatureFlags} |   
+2026-09-15T05:30:58 Info installed version is {ToInstallationString} |   
+2026-09-15T05:30:58 Info Detect {metas} |   
+2026-09-15T05:30:58 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:58 Info {Product} constructed |   
+2026-09-15T05:30:58 Info {LeastStableChannel} is the least stable available channel, returning OutOfDate |   
+2026-09-15T05:30:58 Info DetectDesktopAppState {latestMetaInAnyChannel} {installedVersion} |   
+2026-09-15T05:30:58 Info Detect {metas} |   
+2026-09-15T05:30:58 Info {Product} new ProductState: {ProductState} |   
+2026-09-15T05:30:58 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:58 Info {Product} constructed |   
+2026-09-15T05:30:58 Info installed version is {ToInstallationString} |   
+2026-09-15T05:30:58 Info Detect {metas} |   
+2026-09-15T05:30:58 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:58 Info {Product} constructed |   
+2026-09-15T05:30:59 Info installed version is {ToInstallationString} |   
+2026-09-15T05:30:59 Info Detect {metas} |   
+2026-09-15T05:30:59 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:59 Info {Product} constructed |   
+2026-09-15T05:30:59 Info installed version is {ToInstallationString} |   
+2026-09-15T05:30:59 Info Detect {metas} |   
+2026-09-15T05:30:59 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:59 Info {Product} constructed |   
+2026-09-15T05:30:59 Info CreateProducts() Products: {res} |   
+2026-09-15T05:30:59 Info Notifying Updated Products |   
+2026-09-15T05:30:59 Info Notifying Added or Removed Products |   
+2026-09-15T05:30:59 Info {LeastStableChannel} is the least stable available channel, returning OutOfDate |   
+2026-09-15T05:30:59 Info DetectDesktopAppState {latestMetaInAnyChannel} {installedVersion} |   
+2026-09-15T05:30:59 Info Detect {metas} |   
+2026-09-15T05:30:59 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:59 Info NotifyUpdated |   
+2026-09-15T05:30:59 Info Added Products: {addedProducts} |   
+2026-09-15T05:30:59 Info Removed Products: {removedProducts} |   
+2026-09-15T05:30:59 Info Updated Products: {updatedProducts} |   
+2026-09-15T05:30:59 Info changed from {InstallableProduct} to {NewProduct} |   
+2026-09-15T05:30:59 Info SetLatestDesktopProduct |   
+2026-09-15T05:30:59 Info UpdateMetas {clearStorylineProducts} |   
+2026-09-15T05:30:59 Info previousProductMetas: {previousProductMetas} |   
+2026-09-15T05:30:59 Info Product metas: {productMetas} |   
+2026-09-15T05:30:59 Info CreateProducts() Products: {res} |   
+2026-09-15T05:30:59 Info Notifying Updated Products |   
+2026-09-15T05:30:59 Info {LeastStableChannel} is the least stable available channel, returning OutOfDate |   
+2026-09-15T05:30:59 Info DetectDesktopAppState {latestMetaInAnyChannel} {installedVersion} |   
+2026-09-15T05:30:59 Info Detect {metas} |   
+2026-09-15T05:30:59 Info DetectState {forceUpdate} |   
+2026-09-15T05:30:59 Info NotifyUpdated |   
+2026-09-15T05:31:00 Info installed version is {ToInstallationString} |   
+2026-09-15T05:31:00 Info Detect {metas} |   
+2026-09-15T05:31:00 Info DetectState {forceUpdate} |   
+2026-09-15T05:31:00 Info NotifyUpdated |   
+2026-09-15T05:31:00 Info Added Products: {addedProducts} |   
+2026-09-15T05:31:00 Info Removed Products: {removedProducts} |   
+2026-09-15T05:31:00 Info Updated Products: {updatedProducts} |   
+2026-09-15T05:31:00 Info SetLatestDesktopProduct |   
+2026-09-15T05:31:00 Info UpdateMetas {clearStorylineProducts} |   
+2026-09-15T05:31:00 Info FinishLoadingAsync {loadingState} |   
+2026-09-15T05:31:00 Info loading finished |   
+2026-09-15T05:31:00 Info Setting current page to {DestinationPage} |   
+2026-09-15T05:31:00 Info previousProductMetas: {previousProductMetas} |   
+2026-09-15T05:31:00 Info ChangeSessionStateAsync | SignedIn Active 
+2026-09-15T05:31:00 Info new session is equal to current session, returning. |   
+2026-09-15T05:31:00 Info SessionChangedAsync | SignedIn Active 
+2026-09-15T05:31:00 Info Product metas: {productMetas} |   
+2026-09-15T05:31:00 Info CreateProducts() Products: {res} |   
+2026-09-15T05:31:00 Info Notifying Updated Products |   
+2026-09-15T05:31:00 Info {LeastStableChannel} is the least stable available channel, returning OutOfDate |   
+2026-09-15T05:31:00 Info DetectDesktopAppState {latestMetaInAnyChannel} {installedVersion} |   
+2026-09-15T05:31:00 Info Detect {metas} |   
+2026-09-15T05:31:00 Info DetectState {forceUpdate} |   
+2026-09-15T05:31:00 Info NotifyUpdated |   
+2026-09-15T05:31:00 Info installed version is {ToInstallationString} |   
+2026-09-15T05:31:00 Info Detect {metas} |   
+2026-09-15T05:31:00 Info DetectState {forceUpdate} |   
+2026-09-15T05:31:00 Info NotifyUpdated |   
+2026-09-15T05:31:00 Info Added Products: {addedProducts} |   
+2026-09-15T05:31:00 Info Removed Products: {removedProducts} |   
+2026-09-15T05:31:00 Info Updated Products: {updatedProducts} |   
+2026-09-15T05:31:00 Info SetLatestDesktopProduct |   
+2026-09-15T05:31:00 Info UpdateMetas {clearStorylineProducts} |   

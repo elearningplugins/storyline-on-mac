@@ -25,17 +25,26 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Core MSI, stock prefix | **FAIL** 0x80070643 — `RegisterScheduledTaskAction` hits Wine stub `ITaskSettings::get_IdleSettings` (E_NOTIMPL) | 01 |
 | Core MSI with `DisableNonAdminInstalls=true` | **OK** (0x0) — Articulate's documented setting skips the task | 02 |
 | `Articulate 360 Desktop App.exe`, Wine Mono | **FAIL** — TypeLoadException: `EventLogInvalidDataException` missing from Mono's System.Core | 03 |
-| Desktop App with real .NET Framework 4.8 | *in progress* | 04 |
-| Sign-in / entitlement / catalog (Gate 1) | not reached | |
+| Original EXE, real .NET 4.8 prefix | **degrades** — Burn can't host managed BA (0x8007000e), installs nothing | 04a |
+| Core MSI direct, real .NET 4.8 | **FAIL** 1603 — DTF custom action can't create CLR AppDomain (0x8007000E) | 04b |
+| Core MSI admin layout (`msiexec /a`) + registry import | **OK** | 04c |
+| `Articulate 360 Desktop App.exe`, real .NET 4.8 | **RUNS** — service spawned, RPC OK, HTTPS OK | 04d |
+| Sign-in / entitlement / catalog (Gate 1) | **PASS** via OIDC loopback fallback (custom-scheme handler timed out on macOS) | 04d |
 | Storyline install + authoring (Gate 2) | not reached | |
 
 ## What worked
+
+- **Articulate 360 Desktop App signs in and shows the full catalog under Wine 11.16 + real .NET Framework 4.8** (Run 04). Desktop Service is spawned by the app; no Windows service or scheduled task needed.
+- `msiexec /a` (administrative install) lays the core package out without running any custom action; the only registry the real installer writes is three small keys, imported from a prefix where it did complete.
+- Articulate's own OIDC loopback fallback completes sign-in when the `articulate://` custom scheme has no macOS handler. A transport-only handler app is provided in `tools/macos-url-bridge/` for the primary path.
 
 - Upstream Wine 11.16 from MacPorts binary archives — no source build, no Gatekeeper workarounds.
 - Running the original `articulate-360.exe` unmodified. The WPF managed bootstrapper paints and runs its detect/plan/apply phases under Wine Mono.
 - Pre-setting `HKLM\Software\Articulate\Common\Settings\DisableNonAdminInstalls = "true"` (REG_SZ) in the prefix before install. This is Articulate's own enterprise deployment switch; it makes the installer skip Task Scheduler registration, which is the only part of the core MSI Wine can't handle.
 
 ## What didn't
+
+- Native CLR hosting under real .NET 4.8 in Wine: both WiX Burn's `mbahost` and DTF `SFXCA` fail with 0x8007000E creating an AppDomain, while managed EXEs run normally. This blocks the Burn UI and every DTF custom action in Articulate's MSIs. Open item — will matter for Storyline's MSI.
 
 - Xcode CLT as found on the machine: `clang++` could not find `<initializer_list>`. Any C++ source build fails until `rm -rf /Library/Developer/CommandLineTools && xcode-select --install`.
 - MacPorts `port -s` (force source build) is not needed and would be slow on this hardware; skip it unless patching Wine.
