@@ -1,0 +1,171 @@
+--- a/dlls/dwrite/analyzer.c
++++ b/dlls/dwrite/analyzer.c
+@@ -2194,18 +2194,135 @@
+     IDWriteFontFace *face, FLOAT font_em_size, DWRITE_SCRIPT_ANALYSIS sa, UINT32 length, UINT32 glyph_count,
+     const WCHAR *text, const UINT16 *clustermap, const DWRITE_SHAPING_GLYPH_PROPERTIES *prop, DWRITE_JUSTIFICATION_OPPORTUNITY *jo)
+ {
+-    FIXME("(%p %.2f %u %u %u %s %p %p %p): stub\n", face, font_em_size, sa.script, length, glyph_count,
++    UINT32 i, c;
++
++    TRACE("(%p %.2f %u %u %u %s %p %p %p)\n", face, font_em_size, sa.script, length, glyph_count,
+         debugstr_wn(text, length), clustermap, prop, jo);
+-    return E_NOTIMPL;
++
++    if (!glyph_count) return S_OK;
++    if (!prop || !jo || (length && (!text || !clustermap))) return E_INVALIDARG;
++
++    memset(jo, 0, glyph_count * sizeof(*jo));
++
++    /* Mark glyphs whose cluster starts with white space as blank opportunities, since the shaper
++       does not classify them. */
++    for (c = 0; c < length; ++c)
++    {
++        UINT32 g = clustermap[c];
++        if (g >= glyph_count) continue;
++        if (c > 0 && clustermap[c - 1] == g) continue;
++        if (text[c] == ' ' || text[c] == 0xa0 || text[c] == '\t' || text[c] == 0x3000)
++        {
++            jo[g].expansionMaximum = font_em_size * 1.5f;
++            jo[g].compressionMaximum = font_em_size / 8.0f;
++            jo[g].expansionPriority = 1;
++            jo[g].compressionPriority = 1;
++            jo[g].allowResidualExpansion = 1;
++            jo[g].allowResidualCompression = 1;
++            jo[g].applyToTrailingEdge = 1;
++        }
++    }
++
++    for (i = 0; i < glyph_count; ++i)
++    {
++        if (jo[i].expansionPriority) continue;
++        switch (prop[i].justification)
++        {
++        case SCRIPT_JUSTIFY_BLANK:
++        case SCRIPT_JUSTIFY_ARABIC_BLANK:
++            jo[i].expansionMaximum = font_em_size * 1.5f;
++            jo[i].compressionMaximum = font_em_size / 8.0f;
++            jo[i].expansionPriority = 1;
++            jo[i].compressionPriority = 1;
++            jo[i].allowResidualExpansion = 1;
++            jo[i].allowResidualCompression = 1;
++            jo[i].applyToTrailingEdge = 1;
++            break;
++        case SCRIPT_JUSTIFY_CHARACTER:
++            if (prop[i].isZeroWidthSpace || prop[i].isDiacritic) break;
++            jo[i].expansionMaximum = font_em_size / 4.0f;
++            jo[i].compressionMaximum = font_em_size / 16.0f;
++            jo[i].expansionPriority = 2;
++            jo[i].compressionPriority = 2;
++            jo[i].allowResidualExpansion = 1;
++            jo[i].applyToTrailingEdge = 1;
++            break;
++        default:
++            break;
++        }
++    }
++
++    return S_OK;
+ }
+ 
+ static HRESULT WINAPI dwritetextanalyzer1_JustifyGlyphAdvances(IDWriteTextAnalyzer2 *iface,
+     FLOAT width, UINT32 glyph_count, const DWRITE_JUSTIFICATION_OPPORTUNITY *jo, const FLOAT *advances,
+     const DWRITE_GLYPH_OFFSET *offsets, FLOAT *justifiedadvances, DWRITE_GLYPH_OFFSET *justifiedoffsets)
+ {
+-    FIXME("(%.2f %u %p %p %p %p %p): stub\n", width, glyph_count, jo, advances, offsets, justifiedadvances,
++    FLOAT total = 0.0f, delta, capacity, applied;
++    UINT32 i, priority;
++    BOOL expand;
++
++    TRACE("(%.2f %u %p %p %p %p %p)\n", width, glyph_count, jo, advances, offsets, justifiedadvances,
+         justifiedoffsets);
+-    return E_NOTIMPL;
++
++    if (!glyph_count) return S_OK;
++    if (!jo || !advances || !justifiedadvances) return E_INVALIDARG;
++
++    memcpy(justifiedadvances, advances, glyph_count * sizeof(*advances));
++    if (justifiedoffsets)
++    {
++        if (offsets) memcpy(justifiedoffsets, offsets, glyph_count * sizeof(*offsets));
++        else memset(justifiedoffsets, 0, glyph_count * sizeof(*offsets));
++    }
++
++    for (i = 0; i < glyph_count; ++i) total += advances[i];
++    delta = width - total;
++    if (delta == 0.0f) return S_OK;
++    expand = delta > 0.0f;
++    if (!expand) delta = -delta;
++
++    /* Distribute the difference by priority (lower values first), proportionally to each
++       opportunity's capacity, then hand any residual to the opportunities that allow it. */
++    for (priority = 1; priority < 256 && delta > 0.0f; ++priority)
++    {
++        capacity = 0.0f;
++        for (i = 0; i < glyph_count; ++i)
++        {
++            if (expand && jo[i].expansionPriority == priority) capacity += jo[i].expansionMaximum;
++            if (!expand && jo[i].compressionPriority == priority) capacity += jo[i].compressionMaximum;
++        }
++        if (capacity <= 0.0f) continue;
++        applied = min(delta, capacity);
++        for (i = 0; i < glyph_count; ++i)
++        {
++            FLOAT max = expand ? jo[i].expansionMaximum : jo[i].compressionMaximum;
++            FLOAT amount;
++            if ((expand ? jo[i].expansionPriority : jo[i].compressionPriority) != priority || max <= 0.0f) continue;
++            amount = applied * (max / capacity);
++            if (!expand) amount = -amount;
++            justifiedadvances[i] += amount;
++            if (jo[i].applyToLeadingEdge && justifiedoffsets) justifiedoffsets[i].advanceOffset += amount;
++        }
++        delta -= applied;
++    }
++
++    if (delta > 0.0f)
++    {
++        UINT32 residual = 0;
++        for (i = 0; i < glyph_count; ++i)
++            if (expand ? jo[i].allowResidualExpansion : jo[i].allowResidualCompression) residual++;
++        if (residual)
++        {
++            FLOAT amount = delta / residual;
++            if (!expand) amount = -amount;
++            for (i = 0; i < glyph_count; ++i)
++                if (expand ? jo[i].allowResidualExpansion : jo[i].allowResidualCompression)
++                    justifiedadvances[i] += amount;
++        }
++    }
++
++    return S_OK;
+ }
+ 
+ static HRESULT WINAPI dwritetextanalyzer1_GetJustifiedGlyphs(IDWriteTextAnalyzer2 *iface,
+@@ -2215,10 +2332,26 @@
+     const DWRITE_SHAPING_GLYPH_PROPERTIES *prop, UINT32 *actual_count, UINT16 *modified_clustermap,
+     UINT16 *modified_indices, FLOAT *modified_advances, DWRITE_GLYPH_OFFSET *modified_offsets)
+ {
+-    FIXME("(%p %.2f %u %u %u %u %p %p %p %p %p %p %p %p %p %p %p): stub\n", face, font_em_size, sa.script,
++    TRACE("(%p %.2f %u %u %u %u %p %p %p %p %p %p %p %p %p %p %p)\n", face, font_em_size, sa.script,
+         length, glyph_count, max_glyphcount, clustermap, indices, advances, justifiedadvances, justifiedoffsets,
+         prop, actual_count, modified_clustermap, modified_indices, modified_advances, modified_offsets);
+-    return E_NOTIMPL;
++
++    /* No kashida insertion: the justified glyph run is the input run with the justified advances. */
++    if (!actual_count) return E_INVALIDARG;
++    *actual_count = glyph_count;
++    if (max_glyphcount < glyph_count) return E_NOT_SUFFICIENT_BUFFER;
++    if (!glyph_count) return S_OK;
++    if (!indices || !justifiedadvances || !modified_indices || !modified_advances) return E_INVALIDARG;
++
++    if (modified_clustermap && clustermap) memcpy(modified_clustermap, clustermap, length * sizeof(*clustermap));
++    memcpy(modified_indices, indices, glyph_count * sizeof(*indices));
++    memcpy(modified_advances, justifiedadvances, glyph_count * sizeof(*justifiedadvances));
++    if (modified_offsets)
++    {
++        if (justifiedoffsets) memcpy(modified_offsets, justifiedoffsets, glyph_count * sizeof(*justifiedoffsets));
++        else memset(modified_offsets, 0, glyph_count * sizeof(*modified_offsets));
++    }
++    return S_OK;
+ }
+ 
+ static HRESULT WINAPI dwritetextanalyzer2_GetGlyphOrientationTransform(IDWriteTextAnalyzer2 *iface,

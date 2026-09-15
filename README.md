@@ -40,7 +40,8 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Patched `ntdll.so` research build | **WORKS** — core MSI custom actions run; original EXE installs end-to-end under real .NET 4.8 | 06 |
 | Storyline install (official bundle, direct) | **INSTALLED** — all 5 packages 0x0 incl. .NET Desktop Runtime 10 | 07 |
 | Install via Desktop App → Installer Service | **FAIL** — "Directory has unexpected ACL" (Wine security-descriptor round-trip) | 07 |
-| Storyline authoring (Gate 2) | *next* | |
+| Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
+| New Project → text layout | **FAIL → patched** — Wine `dwrite` justification stubs (E_NOTIMPL); implemented in patch 0002, verifying | 08 |
 
 ## What worked
 

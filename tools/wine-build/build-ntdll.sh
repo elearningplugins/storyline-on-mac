@@ -26,3 +26,9 @@ rm "$M/lib/wine/x86_64-unix/ntdll.so" "$M/lib/wine/x86_64-unix/wine"
 cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"; cp /opt/local/lib/wine/x86_64-unix/wine "$M/lib/wine/x86_64-unix/wine"
 cp /opt/local/bin/wine "$M/bin/wine"; ln -sf /opt/local/bin/wineserver "$M/bin/wineserver"; ln -sfn /opt/local/share "$M/share"
 echo "patched wine at $M/bin/wine"; "$M/bin/wine" --version
+# --- dwrite (PE) : IDWriteTextAnalyzer1 justification methods (patch 0002) ---
+cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" 2>/dev/null \
+  && git apply "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" || echo "dwrite patch already applied"; }
+cd "$B" && make -j4 dlls/dwrite/x86_64-windows/dwrite.dll > make-dwrite.log 2>&1
+rm -f "$M/lib/wine/x86_64-windows/dwrite.dll"; cp "$B/dlls/dwrite/x86_64-windows/dwrite.dll" "$M/lib/wine/x86_64-windows/dwrite.dll"
+echo "patched dwrite.dll in $M (also copy it over <prefix>/drive_c/windows/system32/dwrite.dll)"

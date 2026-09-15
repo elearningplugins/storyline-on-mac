@@ -1,0 +1,12 @@
+   1 [832:1132:0915/094214.315:ERROR:net\dns\address_sorter_win.cc:157] SIO_ADDRESS_LIST_SORT failed 10045
+   1 [832:1068:0915/094213.100:ERROR:net\base\network_change_notifier_win.cc:213] WSALookupServiceBegin failed with: 8
+   1 [832:1060:0915/094214.308:ERROR:net\dns\address_sorter_win.cc:157] SIO_ADDRESS_LIST_SORT failed 10045
+   1 [832:1060:0915/094213.388:ERROR:net\dns\address_sorter_win.cc:157] SIO_ADDRESS_LIST_SORT failed 10045
+   1 [804:808:0915/094213.044:ERROR:components\viz\service\main\viz_main_impl.cc:190] Exiting GPU process due to errors during initialization
+   1 [804:808:0915/094213.033:ERROR:ui\gl\init\gl_initializer_win.cc:155] GLDisplayEGL::Initialize failed.
+   1 [804:808:0915/094213.033:ERROR:ui\gl\gl_display.cc:673] Initialization of all (1) EGL display types failed.
+   1 [804:808:0915/094213.033:ERROR:ui\gl\gl_display.cc:638] eglInitialize D3D11 failed with error EGL_NOT_INITIALIZED
+   1 [804:808:0915/094213.032:ERROR:ui\gl\egl_util.cc:92] EGL Driver message (Critical) eglInitialize: No available renderers.
+   1 [804:808:0915/094213.008:ERROR:ui\gl\init\gl_initializer_win.cc:155] GLDisplayEGL::Initialize failed.
+   1 [804:808:0915/094213.008:ERROR:ui\gl\gl_display.cc:673] Initialization of all (1) EGL display types failed.
+   1 [804:808:0915/094213.008:ERROR:ui\gl\gl_display.cc:638] eglInitialize D3D11 failed with error EGL_NOT_INITIALIZED
