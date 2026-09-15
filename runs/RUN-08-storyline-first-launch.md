@@ -24,3 +24,12 @@ into the prefix's system32 copy. Result: pending.
 ## Usability notes
 - ⌘C/⌘V do not act as Ctrl-C/V by default; set `HKCU\Software\Wine\Mac Driver\LeftCommandIsCtrl=y` (+Right). Done.
 - Storyline's error report opens in Wine's Notepad; select-all + Ctrl-C works to copy it out.
+
+## Result with patch 0002
+- New Project → **project created, full authoring window renders**: ribbon (Home/Insert/Slides/Design/Transitions/Animations/
+  View/Help), Story View with scene + slide, Triggers panel, Slide Properties, status bar (1920×1080, "Clean" theme).
+- 0 managed exceptions in the Wine log after relaunch; dwrite silent. Text layout path (SharpDX → IDWriteTextAnalyzer1) works.
+- Main process ~118% CPU while loading: CEF GPU process crashed/restarted 26× (ANGLE D3D11 init) before Chromium gave up;
+  plus wined3d for WinForms/WPF surfaces. Remaining fixmes are noise (DPI hosting behavior stubs, EMF record types for
+  ribbon icons, font charset). logs/patched-wine/storyline-authoring-fixme-summary.txt
+- Next: launch with `--disable-gpu` to skip the GPU retry loop; then Gate 2 items (text box, save/reopen, preview, publish).

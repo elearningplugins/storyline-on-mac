@@ -41,7 +41,8 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline install (official bundle, direct) | **INSTALLED** — all 5 packages 0x0 incl. .NET Desktop Runtime 10 | 07 |
 | Install via Desktop App → Installer Service | **FAIL** — "Directory has unexpected ACL" (Wine security-descriptor round-trip) | 07 |
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
-| New Project → text layout | **FAIL → patched** — Wine `dwrite` justification stubs (E_NOTIMPL); implemented in patch 0002, verifying | 08 |
+| New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
+| Gate 2 authoring (text, save, preview, publish) | *in progress* | |
 
 ## What worked
 

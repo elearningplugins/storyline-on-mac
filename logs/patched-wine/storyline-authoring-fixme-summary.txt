@@ -1,0 +1,30 @@
+1770 0024:fixme:system:SetThreadDpiHostingBehavior 
+ 885 0024:fixme:system:GetThreadDpiHostingBehavior 
+ 187 0024:fixme:enhmetafile:PlayEnhMetaFileRecord
+ 139 02c0:fixme:process:NtQueryInformationProcess ProcessCycleTime 
+  52 0450:err:d3d:validate_state_table State STATE_RENDER
+  46 0198:err:ole:get_stub_manager_from_ipid not found for ipid {ffffffff-ffff-ffff-feca-000094010000}
+  46 0024:err:ole:get_stub_manager_from_ipid not found for ipid {ffffffff-ffff-ffff-feca-000020000000}
+  35 07f8:fixme:font:get_nearest_charset returning
+  35 07f8:fixme:font:find_matching_face Untranslated charset
+  34 0024:fixme:font:get_nearest_charset returning
+  31 0320:fixme:process:CreateProcessInternalW Unsupported attribute
+  28 0058:fixme:nsi:ipv6_forward_enumerate_all not implemented
+  27 0024:fixme:ntdll:EtwEventSetInformation 
+  26 0bc8:err:d3d:validate_state_table State STATE_RENDER
+  26 0b6c:err:d3d:validate_state_table State STATE_RENDER
+  26 0b10:err:d3d:validate_state_table State STATE_RENDER
+  26 0ab4:err:d3d:validate_state_table State STATE_RENDER
+  26 0a58:err:d3d:validate_state_table State STATE_RENDER
+  26 0a00:err:d3d:validate_state_table State STATE_RENDER
+  26 09a0:err:d3d:validate_state_table State STATE_RENDER
+  26 0948:err:d3d:validate_state_table State STATE_RENDER
+  26 08ec:err:d3d:validate_state_table State STATE_RENDER
+  26 0834:err:d3d:validate_state_table State STATE_RENDER
+  26 07d4:err:d3d:validate_state_table State STATE_RENDER
+  26 0770:err:d3d:validate_state_table State STATE_RENDER
+  26 0718:err:d3d:validate_state_table State STATE_RENDER
+  26 060c:err:d3d:validate_state_table State STATE_RENDER
+  26 05f8:err:d3d:validate_state_table State STATE_RENDER
+  26 05a0:err:d3d:validate_state_table State STATE_RENDER
+  26 0584:err:d3d:validate_state_table State STATE_RENDER
