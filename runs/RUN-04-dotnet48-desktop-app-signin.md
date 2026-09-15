@@ -41,3 +41,16 @@
 
 ## Gate 1 status
 launch ✔ · services running ✔ · authenticate ✔ · entitlement ✔ · catalog ✔ · Storyline install ▢ · restart/update survival ▢
+
+## 04e — Restart persistence, HiDPI, launcher, Storyline install attempt
+- Relaunch: app came up already SignedIn/Active with no browser round-trip → **restart persistence OK**.
+- HiDPI: `HKCU\Software\Wine\Mac Driver\RetinaMode=y` + `LogPixels=192` + ClearType keys → crisp text. Side effect: WPF secondary
+  dialogs rendered blank ("Unable to Install" dialog had no body). Reverted to RetinaMode=n/96 DPI to read dialogs. Re-enable later.
+- Dock: process was Wine's loader → Dock said "wine". Built `~/Applications/Articulate 360.app` (tools/launcher/): the bundle
+  contains a copy of the 13 KB `wine` loader + `Contents/lib → /opt/local/lib` symlink so the loader finds ntdll.so; a script execs
+  it against the pinned prefix. macOS now shows the bundle name and a vector-rendered icns (tools/launcher/makeicon2.swift).
+- Menu-bar icon is Wine proxying the Windows tray icon; right-click gives the app's tray menu; cannot be extended natively.
+- **Storyline Install click → "Unable to Install": app requires a Desktop App update first.** The Desktop Service had already
+  downloaded the newer `Articulate.360.Bundle.exe` into Package Cache. Accepting the update → app beachballs (main thread blocked),
+  no Burn log written. Cause: the self-update runs Burn, whose managed host fails in this prefix (0x8007000E, see 04a).
+- The CLR-hosting failure is now the single blocker for: Burn UI, Burn-driven self-update, DTF custom actions in every Articulate MSI.
