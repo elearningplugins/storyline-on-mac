@@ -24,3 +24,24 @@ switches (CefSettings in Articulate code — not modifiable under the plan rules
 
 ## Still OK
 New Project, ribbon, Story View, slide editing UI, text layout (dwrite patch) — no Wine-side errors.
+
+## Save / Player / Publish / text editing (same session, later)
+- Save → NRE at `Project.CreateXElement` ("The project file could not be saved").
+- Home → Player → NRE at `PlayerPropertiesDialog.Show(IPlayersFactory …)` — the players factory yields no player.
+- Publish → TargetInvocationException while constructing publish target UIs.
+- Insert text box + type → **`SharpDX.Direct2D1.Factory.CreateDCRenderTarget → E_FAIL`** in Articulate's DirectWrite
+  renderer (`RenderingEngine.CreateRenderTarget`). Wine 11.16 implements `ID2D1DCRenderTarget`; the failure is inside its init
+  (D2D device / DXGI-surface render target / GDI-compatible surface). This is the first concrete Wine-side failure in the
+  authoring path and the most likely root of the thumbnail/player/save/preview nulls (all consume the same text renderer).
+- Traced facts: all 6 FileNotFound CLR exceptions are misses on Articulate's own `ApiCache` (benign); Open Sans is installed;
+  the player package `Frames\StoryFrame.frame` extracts cleanly; the unregistered CLSID {a8d4f123-…} comes from a network
+  thread (.NET/Chromium), not the player.
+- CEF GPU process, traced: `dxgi_device_init: Failed to create a wined3d device, returning 0x80004005` — wined3d device
+  creation fails in the GPU process under the Vulkan renderer (`HKCU\Software\Wine\Direct3D\renderer=vulkan`, set in Run 08).
+  To test: remove the key (default GL) and re-check both CEF and CreateDCRenderTarget.
+
+## INCIDENT — T2 (bridgeOS) panic, whole machine rebooted
+`/Library/Logs/DiagnosticReports/ProxiedDevice-Bridge/panic-full-2026-09-15-152955.0003.ips`:
+`ANS2 Recoverable Panic - assert failed … power(13)` (AppleStorageProcessorANS2 = the SSD controller on the T2).
+Context: sustained multi-hundred-MB/min log writes from `WINEDEBUG=+file,+seh` traces, Storyline + Chromium I/O, ~13 GB free.
+Rules from here: no `+file`/`+relay`/broad `+seh` traces; only narrow channels; check `df` before tracing; keep ≥25 GB free.
