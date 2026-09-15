@@ -24,5 +24,5 @@ M="$LAB/wine-patched"; rm -rf "$M"; mkdir -p "$M/lib/wine" "$M/bin"
 for d in /opt/local/lib/wine/*; do n=$(basename "$d"); mkdir -p "$M/lib/wine/$n"; for f in "$d"/*; do ln -s "$f" "$M/lib/wine/$n/$(basename "$f")"; done; done
 rm "$M/lib/wine/x86_64-unix/ntdll.so" "$M/lib/wine/x86_64-unix/wine"
 cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"; cp /opt/local/lib/wine/x86_64-unix/wine "$M/lib/wine/x86_64-unix/wine"
-cp /opt/local/bin/wine "$M/bin/wine"; ln -sf /opt/local/bin/wineserver "$M/bin/wineserver"
+cp /opt/local/bin/wine "$M/bin/wine"; ln -sf /opt/local/bin/wineserver "$M/bin/wineserver"; ln -sfn /opt/local/share "$M/share"
 echo "patched wine at $M/bin/wine"; "$M/bin/wine" --version

@@ -23,3 +23,16 @@ Build: tools/wine-build/build-ntdll.sh (only `dlls/ntdll/ntdll.so`; /opt/local u
 - Then the original `articulate-360.exe` under patched Wine (expect the WPF bootstrapper to load under real .NET), then the
   Desktop App self-update, then Storyline. Switch the launcher's `Contents/lib` symlink to the mirror when it proves out.
 - Remove the temporary `wowclamp` TRACE line before proposing upstream.
+
+## Result (continued after the hang cleared on its own)
+- The `msiexec` segfault was NOT the deployment target: the lib mirror lacked `share/wine/nls`, so ntdll's case tables were
+  NULL and `towupper` crashed inside `find_env_var` (macOS crash report). Fixed by `ln -s /opt/local/share $M/share`
+  (build-ntdll.sh updated). The 14.0 target is kept anyway to match MacPorts.
+- **Core MSI direct install with the clamp: exit 0.** Both DTF custom actions hosted the CLR and ran
+  (`CreateRegistryValuesAction`, `RegisterScheduledTaskAction`). Trace: 109 allocations had limit_high=0x7fffffff clamped to
+  0x7fff0000; zero allocations at 0x7fff0000. logs/patched-wine/core-msi-direct.log, clamp-summary.txt
+- **Original `articulate-360.exe` (/passive) in a fresh real-.NET-4.8 prefix under the patched Wine: full success.**
+  `Loading managed bootstrapper application` → VC++ x86 0x0 → VC++ x64 0x0 → core MSI 0x0 → `Apply complete, result: 0x0`.
+  logs/patched-wine/burn-original-exe.log
+- Conclusion: one ~8-line ntdll fix turns "Will Not Install" into "installs with the vendor's own bootstrapper".
+  Upstream candidate: dlls/ntdll/unix/virtual.c (clamp WoW64 limit_high) — remove the TRACE line first.

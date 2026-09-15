@@ -1,0 +1,7 @@
+ 385 is_wow64=0 wowlimit=0 limit_high=0
+  21 is_wow64=0 wowlimit=0 limit_high=7fffffff
+ 182 is_wow64=1 wowlimit=7fff0000 limit_high=0
+ 109 is_wow64=1 wowlimit=7fff0000 limit_high=7fffffff
+  21 is_wow64=1 wowlimit=ffff0000 limit_high=0
+   1 is_wow64=1 wowlimit=ffff0000 limit_high=7fffffff
+  13 is_wow64=1 wowlimit=ffff0000 limit_high=ffffffff

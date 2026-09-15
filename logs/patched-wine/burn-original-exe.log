@@ -1,0 +1,112 @@
+[010C:0110][2026-09-15T07:05:08]i001: Burn v3.11.2.4516, Windows v10.0 (Build 19045: Service Pack 0), path: C:\users\USER\AppData\Local\Temp\{E6E7F5F4-9883-4124-8EE0-BD7C4E3B6120}\.cr\articulate-360.exe
+[010C:0110][2026-09-15T07:05:08]i000: Initializing string variable 'ApplicationName' to value 'Articulate 360'
+[010C:0110][2026-09-15T07:05:08]i000: Initializing string variable 'PackageFileName' to value 'Articulate.360.Package.msi'
+[010C:0110][2026-09-15T07:05:08]i000: Initializing string variable 'PackageUpgradeCode' to value '92617AD6-B1BB-49BD-A986-9939F3D5F002'
+[010C:0110][2026-09-15T07:05:08]i000: Initializing string variable 'LaunchProcessInstallLocationRegistryKeys' to value 'HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service;HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application'
+[010C:0110][2026-09-15T07:05:08]i000: Initializing string variable 'LaunchProcessNames' to value 'Articulate 360 Desktop Service.exe;Articulate 360 Desktop App.exe'
+[010C:0110][2026-09-15T07:05:08]i009: Command Line: '-burn.clean.room=Z:\Users\USER\StorylineLab\inputs\articulate-360.exe -burn.filehandle.attached=140 -burn.filehandle.self=144 /passive /norestart'
+[010C:0110][2026-09-15T07:05:08]i000: Setting string variable 'WixBundleOriginalSource' to value 'Z:\Users\USER\StorylineLab\inputs\articulate-360.exe'
+[010C:0110][2026-09-15T07:05:08]i000: Setting string variable 'WixBundleOriginalSourceFolder' to value 'Z:\Users\USER\StorylineLab\inputs\'
+[010C:0110][2026-09-15T07:05:08]i000: Setting string variable 'WixBundleLog' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508.log'
+[010C:0110][2026-09-15T07:05:08]i052: Condition 'VersionNT >= v6.0' evaluates to true.
+[010C:0110][2026-09-15T07:05:10]i000: Setting string variable 'WixBundleName' to value 'Articulate 360'
+[010C:0110][2026-09-15T07:05:10]i000: Setting string variable 'WixBundleManufacturer' to value 'Articulate Global, LLC'
+[010C:0110][2026-09-15T07:05:10]i000: Loading managed bootstrapper application.
+[010C:0110][2026-09-15T07:05:10]i000: Creating BA thread to run asynchronously.
+[010C:0110][2026-09-15T07:05:11]i100: Detect begin, 4 packages
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'NETFRAMEWORK45' to value '528049'
+[010C:0110][2026-09-15T07:05:11]i052: Condition 'NETFRAMEWORK45 >= 528040' evaluates to true.
+[010C:0110][2026-09-15T07:05:11]i000: Desired action is Install with state: Absent.
+[010C:0110][2026-09-15T07:05:11]i000: Preparing install.
+[010C:0110][2026-09-15T07:05:11]i000: Checking for conflicting packages...
+[010C:0110][2026-09-15T07:05:11]i000: No conflicting packages detected.
+[010C:0110][2026-09-15T07:05:11]i000: Package is not present or obsolete, continuing with installation.
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'CurrentUICulture' to value 'en-US'
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.'
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.'
+[010C:0110][2026-09-15T07:05:11]i101: Detected package: VisualCPlusPlusRedistributablex86, state: Absent, cached: None
+[010C:0110][2026-09-15T07:05:11]i101: Detected package: VisualCPlusPlusRedistributablex64, state: Absent, cached: None
+[010C:0110][2026-09-15T07:05:11]i101: Detected package: NetFx48Web, state: Present, cached: None
+[010C:0110][2026-09-15T07:05:11]i101: Detected package: Articulate.360.Package.msi, state: Absent, cached: None
+[010C:0110][2026-09-15T07:05:11]i199: Detect complete, result: 0x0
+[010C:0110][2026-09-15T07:05:11]i200: Plan begin, 4 packages, action: Install
+[010C:0110][2026-09-15T07:05:11]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex86
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'WixBundleLog_VisualCPlusPlusRedistributablex86' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_000_VisualCPlusPlusRedistributablex86.log'
+[010C:0110][2026-09-15T07:05:11]i052: Condition 'VersionNT64' evaluates to true.
+[010C:0110][2026-09-15T07:05:11]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex64
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'WixBundleLog_VisualCPlusPlusRedistributablex64' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_001_VisualCPlusPlusRedistributablex64.log'
+[010C:0110][2026-09-15T07:05:11]w321: Skipping dependency registration on package with no dependency providers: NetFx48Web
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'WixBundleRollbackLog_Articulate.360.Package.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_002_Articulate.360.Package.msi_rollback.log'
+[010C:0110][2026-09-15T07:05:11]i000: Setting string variable 'WixBundleLog_Articulate.360.Package.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_002_Articulate.360.Package.msi.log'
+[010C:0110][2026-09-15T07:05:11]i201: Planned package: VisualCPlusPlusRedistributablex86, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: None, cache: Yes, uncache: No, dependency: None
+[010C:0110][2026-09-15T07:05:11]i201: Planned package: VisualCPlusPlusRedistributablex64, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: None, cache: Yes, uncache: No, dependency: None
+[010C:0110][2026-09-15T07:05:11]i201: Planned package: NetFx48Web, state: Present, default requested: Present, ba requested: Present, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[010C:0110][2026-09-15T07:05:11]i201: Planned package: Articulate.360.Package.msi, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: Uninstall, cache: Yes, uncache: No, dependency: Register
+[010C:0110][2026-09-15T07:05:11]i000: Plan complete. Applying action.
+[010C:0110][2026-09-15T07:05:11]i299: Plan complete, result: 0x0
+[010C:0110][2026-09-15T07:05:11]i300: Apply begin
+[010C:0110][2026-09-15T07:05:11]i000: Checking for conflicting packages...
+[010C:0110][2026-09-15T07:05:11]i000: No conflicting packages detected.
+[010C:0110][2026-09-15T07:05:11]i010: Launching elevated engine process.
+[010C:0110][2026-09-15T07:05:11]i011: Launched elevated engine process.
+[010C:0110][2026-09-15T07:05:11]i012: Connected to elevated engine.
+[0170:0174][2026-09-15T07:05:12]i358: Pausing automatic updates.
+[0170:0174][2026-09-15T07:05:12]i359: Paused automatic updates.
+[0170:0174][2026-09-15T07:05:12]i360: Creating a system restore point.
+[0170:0174][2026-09-15T07:05:12]i361: Created a system restore point.
+[0170:0174][2026-09-15T07:05:12]i370: Session begin, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, options: 0x7, disable resume: No
+[0170:0174][2026-09-15T07:05:12]i000: Caching bundle from: 'C:\users\USER\AppData\Local\Temp\{A40490F9-B640-40BB-953C-69727D5467AF}\.be\Articulate.360.Bundle.exe' to: 'C:\ProgramData\Package Cache\{27d51978-81a5-4cec-aef1-a407a7893eeb}\Articulate.360.Bundle.exe'
+[0170:0174][2026-09-15T07:05:12]i320: Registering bundle dependency provider: {27d51978-81a5-4cec-aef1-a407a7893eeb}, version: 1.125.37980.0
+[0170:0174][2026-09-15T07:05:12]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: Active, restart initiated: No, disable resume: No
+[0170:0184][2026-09-15T07:05:12]i305: Verified acquired payload: VisualCPlusPlusRedistributablex86 at path: C:\ProgramData\Package Cache\.unverified\VisualCPlusPlusRedistributablex86, moving to: C:\ProgramData\Package Cache\AB4A97610B127D68C45311DEABFBCD8AA7066F4B\vc_redist.x86.exe.
+[0170:0184][2026-09-15T07:05:12]i305: Verified acquired payload: VisualCPlusPlusRedistributablex64 at path: C:\ProgramData\Package Cache\.unverified\VisualCPlusPlusRedistributablex64, moving to: C:\ProgramData\Package Cache\046F00C519900FCBF2E6E955FC155B11156A733B\vc_redist.x64.exe.
+[0170:0184][2026-09-15T07:05:12]i305: Verified acquired payload: Articulate.360.Package.msi at path: C:\ProgramData\Package Cache\.unverified\Articulate.360.Package.msi, moving to: C:\ProgramData\Package Cache\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\Articulate.360.Package.msi.
+[0170:0174][2026-09-15T07:05:12]i301: Applying execute package: VisualCPlusPlusRedistributablex86, action: Install, path: C:\ProgramData\Package Cache\AB4A97610B127D68C45311DEABFBCD8AA7066F4B\vc_redist.x86.exe, arguments: '"C:\ProgramData\Package Cache\AB4A97610B127D68C45311DEABFBCD8AA7066F4B\vc_redist.x86.exe" /quiet /norestart'
+[010C:0110][2026-09-15T07:05:16]i319: Applied execute package: VisualCPlusPlusRedistributablex86, result: 0x0, restart: None
+[0170:0174][2026-09-15T07:05:16]i301: Applying execute package: VisualCPlusPlusRedistributablex64, action: Install, path: C:\ProgramData\Package Cache\046F00C519900FCBF2E6E955FC155B11156A733B\vc_redist.x64.exe, arguments: '"C:\ProgramData\Package Cache\046F00C519900FCBF2E6E955FC155B11156A733B\vc_redist.x64.exe" /quiet /norestart'
+[010C:0110][2026-09-15T07:05:19]i319: Applied execute package: VisualCPlusPlusRedistributablex64, result: 0x0, restart: None
+[0170:0174][2026-09-15T07:05:19]i323: Registering package dependency provider: {126A19EA-26BC-4253-A1C9-397733057610}, version: 1.125.37980.0, package: Articulate.360.Package.msi
+[0170:0174][2026-09-15T07:05:19]i301: Applying execute package: Articulate.360.Package.msi, action: Install, path: C:\ProgramData\Package Cache\{126A19EA-26BC-4253-A1C9-397733057610}v1.125.37980.0\Articulate.360.Package.msi, arguments: ' ARPSYSTEMCOMPONENT="1" MSIFASTINSTALL="7" WIXFAILWHENDEFERRED="" CURRENTUICULTURE="en-US" INSTALLFOLDER="" SCHEDULEDTASKDESCRIPTION="Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled."'
+[010C:0110][2026-09-15T07:05:24]i319: Applied execute package: Articulate.360.Package.msi, result: 0x0, restart: None
+[0170:0174][2026-09-15T07:05:24]i325: Registering dependency: {27d51978-81a5-4cec-aef1-a407a7893eeb} on package provider: {126A19EA-26BC-4253-A1C9-397733057610}, package: Articulate.360.Package.msi
+[0170:0174][2026-09-15T07:05:24]i372: Session end, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: ARP, restart: None, disable resume: No
+[0170:0174][2026-09-15T07:05:24]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{27d51978-81a5-4cec-aef1-a407a7893eeb}, resume: ARP, restart initiated: No, disable resume: No
+[010C:0110][2026-09-15T07:05:24]i000: Apply complete, setting final result to 0.
+[010C:0110][2026-09-15T07:05:24]i000: Apply complete, not showing finished view. Executing finished command.
+[010C:0110][2026-09-15T07:05:24]i000: Executing finish command, ActionTaken=Install, FinalResult=0
+[010C:0110][2026-09-15T07:05:24]i000: Process tuple: C:\Program Files\Articulate\360\Desktop Service x64\|Articulate 360 Desktop Service.exe
+[010C:0110][2026-09-15T07:05:24]i000: Launching C:\Program Files\Articulate\360\Desktop Service x64\Articulate 360 Desktop Service.exe, Attempt number 1
+[010C:0110][2026-09-15T07:05:24]i000: ProcessFactory.StartNew(C:\Program Files\Articulate\360\Desktop Service x64\Articulate 360 Desktop Service.exe, )
+[010C:0110][2026-09-15T07:05:24]i000: Process tuple: C:\Program Files\Articulate\360\Desktop Application x64\|Articulate 360 Desktop App.exe
+[010C:0110][2026-09-15T07:05:24]i000: Launching C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.exe, Attempt number 1
+[010C:0110][2026-09-15T07:05:24]i000: ProcessFactory.StartNew(C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.exe, )
+[010C:0110][2026-09-15T07:05:24]i399: Apply complete, result: 0x0, restart: None, ba requested restart:  No
+[010C:0110][2026-09-15T07:05:24]i500: Shutting down, exit code: 0x0
+[010C:0110][2026-09-15T07:05:24]i410: Variable: ApplicationName = Articulate 360
+[010C:0110][2026-09-15T07:05:24]i410: Variable: CurrentUICulture = en-US
+[010C:0110][2026-09-15T07:05:24]i410: Variable: InstallerServiceScheduledTaskDescription = Allows non-admin installation or updates of Articulate 360 software. If this task is disabled or stopped, installing or updating Articulate 360 software will require admin privileges. This task uninstalls itself when Articulate 360 is uninstalled.
+[010C:0110][2026-09-15T07:05:24]i410: Variable: LaunchProcessInstallLocationRegistryKeys = HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service;HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application
+[010C:0110][2026-09-15T07:05:24]i410: Variable: LaunchProcessNames = Articulate 360 Desktop Service.exe;Articulate 360 Desktop App.exe
+[010C:0110][2026-09-15T07:05:24]i410: Variable: NETFRAMEWORK45 = 528049
+[010C:0110][2026-09-15T07:05:24]i410: Variable: PackageFileName = Articulate.360.Package.msi
+[010C:0110][2026-09-15T07:05:24]i410: Variable: PackageUpgradeCode = 92617AD6-B1BB-49BD-A986-9939F3D5F002
+[010C:0110][2026-09-15T07:05:24]i410: Variable: VersionNT = 10.0.0.0
+[010C:0110][2026-09-15T07:05:24]i410: Variable: VersionNT64 = 10.0.0.0
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleAction = 5
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleElevated = 1
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleLog = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508.log
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleLog_Articulate.360.Package.msi = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_002_Articulate.360.Package.msi.log
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleLog_VisualCPlusPlusRedistributablex64 = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_001_VisualCPlusPlusRedistributablex64.log
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleLog_VisualCPlusPlusRedistributablex86 = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_000_VisualCPlusPlusRedistributablex86.log
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleManufacturer = Articulate Global, LLC
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleName = Articulate 360
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleOriginalSource = Z:\Users\USER\StorylineLab\inputs\articulate-360.exe
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleOriginalSourceFolder = Z:\Users\USER\StorylineLab\inputs\
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleProviderKey = {27d51978-81a5-4cec-aef1-a407a7893eeb}
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleRollbackLog_Articulate.360.Package.msi = C:\users\USER\AppData\Local\Temp\Articulate_360_20260915070508_002_Articulate.360.Package.msi_rollback.log
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleSourceProcessFolder = Z:\Users\USER\StorylineLab\inputs\
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleSourceProcessPath = Z:\Users\USER\StorylineLab\inputs\articulate-360.exe
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleTag = 92617AD6-B1BB-49BD-A986-9939F3D5F002
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleUILevel = 3
+[010C:0110][2026-09-15T07:05:24]i410: Variable: WixBundleVersion = 1.125.37980.0
+[010C:0110][2026-09-15T07:05:25]i007: Exit code: 0x0, restarting: No

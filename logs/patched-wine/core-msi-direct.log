@@ -1,0 +1,1103 @@
+1: 0 2: 1033 3: 1252 
+=== Logging started: 9/15/2026  7:04:33 ===
+Message type: 0, Argument: 1033, 1252
+Message type: 1, Argument: Articulate 360
+Action 7:04:33: INSTALL. 
+Action start 7:04:33: INSTALL.
+1: 0 2: 1033 3: 1252 
+1: 0 2: 1033 3: 1252 
+=== Logging started: 9/15/2026  7:04:33 ===
+Message type: 0, Argument: 1033, 1252
+Message type: 1, Argument: Articulate 360
+Action 7:04:33: INSTALL. 
+Action start 7:04:33: INSTALL.
+1: Articulate 360 2: {126A19EA-26BC-4253-A1C9-397733057610} 
+Action 7:04:33: FindRelatedProducts. Searching for related applications
+Action start 7:04:33: FindRelatedProducts.
+Action ended 7:04:33: FindRelatedProducts. Return value 1.
+Action 7:04:33: LaunchConditions. Evaluating launch conditions
+Action start 7:04:33: LaunchConditions.
+Action ended 7:04:33: LaunchConditions. Return value 1.
+Action 7:04:33: SetREINSTALLMODE. 
+Action start 7:04:33: SetREINSTALLMODE.
+Action ended 7:04:33: SetREINSTALLMODE. Return value 1.
+Action 7:04:33: ValidateProductID. 
+Action start 7:04:33: ValidateProductID.
+Action ended 7:04:33: ValidateProductID. Return value 1.
+Action 7:04:33: CostInitialize. Computing space requirements
+Action start 7:04:33: CostInitialize.
+Action ended 7:04:33: CostInitialize. Return value 1.
+Action 7:04:33: FileCost. Computing space requirements
+Action start 7:04:33: FileCost.
+Action ended 7:04:33: FileCost. Return value 1.
+Action 7:04:33: CostFinalize. Computing space requirements
+Action start 7:04:33: CostFinalize.
+Action ended 7:04:33: CostFinalize. Return value 1.
+Action 7:04:33: MigrateFeatureStates. Migrating feature states from related applications
+Action start 7:04:33: MigrateFeatureStates.
+Action ended 7:04:33: MigrateFeatureStates. Return value 1.
+Action 7:04:33: InstallValidate. Validating install
+Action start 7:04:33: InstallValidate.
+Action ended 7:04:33: InstallValidate. Return value 1.
+Action 7:04:33: InstallInitialize. 
+Action start 7:04:33: InstallInitialize.
+Action ended 7:04:33: InstallInitialize. Return value 1.
+Action 7:04:33: WixCloseApplications. 
+Action start 7:04:33: WixCloseApplications.
+Action 7:04:33: WixCloseApplicationsDeferred. 
+Action start 7:04:33: WixCloseApplicationsDeferred.
+Action ended 7:04:33: WixCloseApplicationsDeferred. Return value 1.
+Action ended 7:04:33: WixCloseApplications. Return value 1.
+Action 7:04:33: ProcessComponents. Updating component registration
+Action start 7:04:33: ProcessComponents.
+Action ended 7:04:33: ProcessComponents. Return value 1.
+Action 7:04:33: UnpublishFeatures. Unpublishing Product Features
+Action start 7:04:33: UnpublishFeatures.
+Action ended 7:04:33: UnpublishFeatures. Return value 1.
+Action 7:04:33: RemoveRegistryValues. Removing system registry values
+Action start 7:04:33: RemoveRegistryValues.
+Action ended 7:04:33: RemoveRegistryValues. Return value 1.
+Action 7:04:33: RemoveShortcuts. Removing shortcuts
+Action start 7:04:33: RemoveShortcuts.
+Action ended 7:04:33: RemoveShortcuts. Return value 1.
+Action 7:04:33: RemoveFiles. Removing files
+Action start 7:04:33: RemoveFiles.
+Action ended 7:04:33: RemoveFiles. Return value 1.
+Action 7:04:33: InstallFiles. Copying new files
+Action start 7:04:33: InstallFiles.
+Action ended 7:04:33: InstallFiles. Return value 1.
+Action 7:04:33: CreateShortcuts. Creating shortcuts
+Action start 7:04:33: CreateShortcuts.
+Action ended 7:04:33: CreateShortcuts. Return value 1.
+Action 7:04:33: WriteRegistryValues. Writing system registry values
+Action start 7:04:33: WriteRegistryValues.
+Action ended 7:04:33: WriteRegistryValues. Return value 1.
+Action 7:04:33: RegisterUser. Registering user
+Action start 7:04:33: RegisterUser.
+Action ended 7:04:33: RegisterUser. Return value 1.
+Action 7:04:33: RegisterProduct. Registering product
+Action start 7:04:33: RegisterProduct.
+Action ended 7:04:33: RegisterProduct. Return value 1.
+Action 7:04:33: PublishFeatures. Publishing Product Features
+Action start 7:04:33: PublishFeatures.
+Action ended 7:04:33: PublishFeatures. Return value 1.
+Action 7:04:33: PublishProduct. Publishing product information
+Action start 7:04:33: PublishProduct.
+Action ended 7:04:33: PublishProduct. Return value 1.
+Action 7:04:33: InstallExecute. 
+Action start 7:04:33: InstallExecute.
+Action 7:04:33: WixCloseApplicationsDeferred. 
+Action start 7:04:33: WixCloseApplicationsDeferred.
+Action ended 7:04:33: WixCloseApplicationsDeferred. Return value 1.
+Action 7:04:33: ProcessComponents. Updating component registration
+Action start 7:04:33: ProcessComponents.
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {14852EC6-14A4-5C36-B98F-5685F968EB45} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Characters.Rendering.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {79EC0E0B-0C38-5CD4-8D06-E2CA4C949E9C} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Api.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A8311B4B-8F1C-5E10-A97A-375850FF8411} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ContentLibrary.Core.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9808550A-DDDE-5AD4-BA1C-160BCFA90C69} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ContentLibrary.Core.XmlSerializers.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B471D5FA-7469-578A-8CE9-690E4129FAE3} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate 360 Desktop Service.exe 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C75313E6-E51F-5EA3-8C28-A506ED23B563} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate 360 Desktop Service.exe.config 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5E675F87-2111-51BE-92DF-FAA05412D3FB} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Common.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {30DF4974-ECFB-55B6-8428-B173F4F7FF2C} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Model.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C99B686F-FF8F-5CE2-80CF-1660E885DC3F} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ContentLibrary.Resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {45F16D64-7599-5471-B055-74939FA59B43} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Remoting.Server.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F9AEAD3C-F711-5CF7-BF2F-ED672649A244} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Core.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4022AF1A-11E1-5A29-96ED-6A6E35CA2590} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Remoting.Model.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2C89A70D-DB73-5C95-B04E-31FF9A0EAE6A} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.ThreeSixty.Remoting.Model.config 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A518ACDB-8EB4-5B82-9D51-5830343EA2C5} 3: 02:\Software\Articulate\360\Desktop Service\Install Location 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5E0F264F-09D1-51B7-BAD8-8FE372B7730A} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.exe 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {03D92B72-F2EC-5405-816C-E25F8EFA922A} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.exe.config 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A5C4740A-6659-59C2-8261-48D1D77501F8} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.App.Icons.exe 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2670F2A6-5FEF-53A3-886C-279802139474} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.App.View.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {27EC1384-7720-57B1-B187-8E9D52A6F945} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.App.ViewModel.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4946BE4F-57D1-5DF9-A0A1-586510866838} 3: 02:\Software\Articulate\360\Desktop Application\Install Location 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5FF2D14E-DDE8-58E9-B58A-D2E47DD6F89A} 3: 02:\Software\Articulate\Common\Settings\Install Root 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E37D1278-4DE8-5076-888E-D22CE03222DE} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B0A07181-AFBB-506D-954C-16882640D4D7} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Configuration.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5960D1E9-7090-5F37-9AE0-E01A12CDAC19} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Desktop.InstalledPackages.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FA1361F8-9BC2-55E2-8424-5A2337E363F8} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Drawing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5C2A1C97-EECB-5799-9E31-6A7074D2B0B1} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {96CAA809-2BEF-5A80-B6D9-B0CB5D1FC881} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.IntelPrimitives.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E83ACA12-76FB-5000-8047-FDD3B88278B1} 3: C:\Program Files\Articulate\360\Desktop Service x64\Articulate.Doubles.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {DAFC237A-8632-54A7-9F13-7FAEA661343D} 3: C:\Program Files\Articulate\360\Desktop Service x64\de-DE\Articulate.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {89DAA62E-27E9-5B3F-BF58-8AF0D47E85E9} 3: C:\Program Files\Articulate\360\Desktop Service x64\de-DE\Articulate.ContentLibrary.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F6E396BF-1348-5814-A257-171904715B0F} 3: C:\Program Files\Articulate\360\Desktop Service x64\de-DE\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2B47894B-BC3A-5A44-9BEF-CA247C92A3FC} 3: C:\Program Files\Articulate\360\Desktop Service x64\es\Articulate.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {75F2A7C3-D948-57E6-B141-A7C1E28BD6AE} 3: C:\Program Files\Articulate\360\Desktop Service x64\es\Articulate.ContentLibrary.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B9D8DE9D-AA5C-5CB9-A718-852DC0EE39AC} 3: C:\Program Files\Articulate\360\Desktop Service x64\es\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {521D994C-9712-5342-939C-44261EF074BC} 3: C:\Program Files\Articulate\360\Desktop Service x64\fr-FR\Articulate.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8587F2DD-B833-559F-8ACD-0196309560C7} 3: C:\Program Files\Articulate\360\Desktop Service x64\fr-FR\Articulate.ContentLibrary.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {05F628F7-A6E8-5682-B396-6027ABF73051} 3: C:\Program Files\Articulate\360\Desktop Service x64\fr-FR\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C508B06F-09EA-537C-BB57-93D072962E09} 3: C:\Program Files\Articulate\360\Desktop Service x64\Castle.Core.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D41C2D5A-562B-5A20-AAC2-067A4BC2D23B} 3: C:\Program Files\Articulate\360\Desktop Service x64\MessagePack.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {24340D92-5BE3-5EC4-8FB2-427FACEA36D6} 3: C:\Program Files\Articulate\360\Desktop Service x64\MessagePack.Annotations.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4A7996D3-B7C3-5EAB-A796-C98FE8513563} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Bcl.AsyncInterfaces.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {3939022F-F631-5B2D-9AAD-0607DAB2F241} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.NET.StringTools.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {AA2A29DF-742E-5FA7-99E1-8E2F761A3247} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Win32.Registry.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1A501457-F116-5372-A1A4-BD55BC105D6A} 3: C:\Program Files\Articulate\360\Desktop Service x64\MimeMapping.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1090B715-3DB0-5580-A85A-ED13FCC58560} 3: C:\Program Files\Articulate\360\Desktop Service x64\Nerdbank.Streams.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A5EA3381-11D3-55E7-BC6C-D3117EFDA487} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1CA8F4A3-B862-5B94-8080-629D0B6425FA} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Enrichers.Demystifier.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {398C9C57-8F93-523C-90FC-D3D89F339EA9} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Enrichers.GlobalLogContext.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {EFD4AB8B-C427-58BC-B8EC-23A0EE819EB1} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Enrichers.Process.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A6933A1D-3951-5B25-B8A2-F62A445B7767} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Enrichers.Thread.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9B131A08-2333-59B3-A1EC-E1AC080D9C10} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Exceptions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9C0471A6-4110-56ED-B97C-F01ABFAA4D5B} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Extensions.Hosting.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D83E1829-E31D-5618-8779-959FA5ABDE2E} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Extensions.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {91C0CE98-AD10-5927-9B92-E399347AA62E} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Formatting.Compact.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F66A0FFF-A2B6-5D4E-A6C5-A98379A72D24} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Sinks.Async.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4868945B-D2C2-5A86-94EB-80E51098FEA5} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Sinks.File.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E43092FA-D88D-5585-BD81-9BE7A63F31B4} 3: C:\Program Files\Articulate\360\Desktop Service x64\Serilog.Sinks.Seq.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {15A12464-FFC0-50B2-BBA7-17CAAA5D33DA} 3: C:\Program Files\Articulate\360\Desktop Service x64\SerilogTraceListener.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1A726043-71DF-5C00-9B03-B26E9F224FD7} 3: C:\Program Files\Articulate\360\Desktop Service x64\SerilogTracing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {54FCDE1C-8483-5866-A582-3885710011B0} 3: C:\Program Files\Articulate\360\Desktop Service x64\StreamJsonRpc.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2ACF3220-A5E7-51EE-A6FD-30DE035D8E69} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Buffers.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {29747646-7B89-50E1-A344-AA4C9732D313} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Diagnostics.DiagnosticSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {529DA2A1-CA53-5DEF-AF4C-3DCF35AAE8B0} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Memory.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {733E3CA9-17F7-5AF2-AB7C-B1BA3F4F94CE} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Numerics.Vectors.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {24D2EE03-3E93-5D49-9F65-D419E3E294E2} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.IO.Pipelines.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {85EFF714-532E-525B-89E5-61D2C5A95843} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Runtime.CompilerServices.Unsafe.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {40DC5675-B1F8-546C-AAD0-6C7F70EF8E41} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Text.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {335CF4FC-E6E8-5288-ABCB-BBB7F9730EF6} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Threading.Channels.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {77226B78-DFB6-51D8-8853-0E988103BD3F} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Threading.Tasks.Dataflow.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FEB53942-F699-5E8E-AADB-BF38930E17EB} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Threading.Tasks.Extensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F6B5E470-21DB-56DA-B7E6-FA9179C6779F} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.ValueTuple.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {10673429-5E85-5B96-A7E4-A7D4536F37A4} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.ClientSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {58C01B9C-7633-5D4D-94E1-EA4057548C04} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.CommonSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {24317C81-0246-5E51-A6F4-E654D7B2A2F8} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.EventSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6D3F1BAA-9903-5B66-85AF-179CDE36C46D} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.InternalSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {DD7090F8-8105-54D9-B84F-37819B502F10} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4A62A742-2CC8-570B-BC9B-50B3F557C635} 3: C:\Program Files\Articulate\360\Desktop Service x64\LaunchDarkly.Logging.Microsoft.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7C4882BE-7DAD-5940-ACAD-97775DE5FC46} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Maui.Essentials.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BACCA46D-D625-5B9D-BEF9-CFFEBA584919} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Maui.Graphics.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2D3CB010-880D-5CE4-931D-9BE690353DCD} 3: C:\Program Files\Articulate\360\Desktop Service x64\Analytics.NET.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {82042AE3-9A83-5E38-9A2C-5E508181B07F} 3: C:\Program Files\Articulate\360\Desktop Service x64\Autofac.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9296FB18-2D31-5536-BE96-2BA4CFDE3C4B} 3: C:\Program Files\Articulate\360\Desktop Service x64\Autofac.Extensions.DependencyInjection.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F060575B-BF43-56DE-8724-00510C11A238} 3: C:\Program Files\Articulate\360\Desktop Service x64\Ben.Demystifier.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1E82C701-AD67-5D0E-ACA1-F017AFD8A8BF} 3: C:\Program Files\Articulate\360\Desktop Service x64\BouncyCastle.Cryptography.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {222AD6F8-6E92-5C99-9187-6AA34CF7F497} 3: C:\Program Files\Articulate\360\Desktop Service x64\ICSharpCode.SharpZipLib.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {3AFF83F0-C9DE-5273-AF4E-A377BFB526AB} 3: C:\Program Files\Articulate\360\Desktop Service x64\IdentityModel.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D5F4CDF4-B464-5E1F-99EB-D23EF6CAB2D2} 3: C:\Program Files\Articulate\360\Desktop Service x64\WixToolset.Dtf.WindowsInstaller.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {77A0DC90-1D5B-54F0-A9CF-1877688516CC} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {CCE99DC9-350D-5A9F-A861-DF8938837136} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.Binder.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {ACAD0275-5348-526C-A3CF-DAEB0F620226} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.CommandLine.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2BB15A95-4BB8-512A-88F5-1B748B93F5A1} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {432326E7-290B-5218-AC6F-046708589DAF} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.EnvironmentVariables.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {03ADF336-0455-5D7C-83EA-D6BC5234B68B} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.FileExtensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4305DEC3-F550-5EAE-97DD-5661D8196EA2} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Configuration.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C27A06EC-EFCA-597B-995E-DE2D6722C989} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.DependencyInjection.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4387B4EF-6633-5719-9FCB-D57931A00024} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.FileProviders.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {EB01DFA2-5102-573C-9F20-DEE75126927D} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.FileProviders.Physical.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {CB0A6391-1BC9-5602-B7B4-72583AF9031E} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.FileSystemGlobbing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1B480F22-FE79-59CA-9D9B-CC4465B42D47} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {747FA161-5934-5D07-8054-EB9B03750107} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Logging.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B18D972E-6CE7-5F97-BD30-CBAE0A3D3E3B} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0A637AC2-698E-5E9A-84B9-C4E307C2F176} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Logging.EventLog.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0D811AA7-754C-572B-BC39-097FD7290970} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Logging.TraceSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E1A8F364-4BDC-555F-BF5C-D77DCF5E37ED} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Options.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D1D9D439-752A-5226-891D-5977D348A2D1} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Options.ConfigurationExtensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {61ADF2DB-63B6-5197-A98C-DE40E9282BB9} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Options.DataAnnotations.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {02F5ECB5-DBC1-5C51-82D6-7705C836C23D} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Primitives.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {52BB2A03-B296-5EBE-85D8-861CDAC92517} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Extensions.Hosting.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {08A2B991-122A-5BCA-A726-1B6A7B8E6A1A} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.VisualStudio.Threading.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7E1C5546-2E5D-5584-9C5A-E735B655B372} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.VisualStudio.Validation.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0A77E254-E43C-5309-82D6-ED7D281CF170} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.Xaml.Behaviors.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {356F90E1-107B-5CDF-BD78-4AE79EBCCAFF} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.IdentityModel.JsonWebTokens.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6C18512B-DF7D-558C-934D-C235919AD928} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.IdentityModel.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0EF6F933-0067-5617-B48A-2A0B6B716666} 3: C:\Program Files\Articulate\360\Desktop Service x64\Microsoft.IdentityModel.Tokens.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5329F1DC-5556-5E58-AA28-6DA7230E4CBB} 3: C:\Program Files\Articulate\360\Desktop Service x64\Mindscape.Raygun4Net.NetCore.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {466E92CE-D14B-54B9-9A9D-4C2E27D0C0D2} 3: C:\Program Files\Articulate\360\Desktop Service x64\Mindscape.Raygun4Net.NetCore.Common.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {87DE6C44-4AAA-5E0E-AD93-26226A2AC2AD} 3: C:\Program Files\Articulate\360\Desktop Service x64\Newtonsoft.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {170D780D-653B-5206-A4C1-431B55825440} 3: C:\Program Files\Articulate\360\Desktop Service x64\ResvgNet.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {147AFBFD-181C-5DDA-97A1-297C7F335C1B} 3: C:\Program Files\Articulate\360\Desktop Service x64\resvg_net.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {667EE7CF-3206-5936-9B17-5C9AF983AA05} 3: C:\Program Files\Articulate\360\Desktop Service x64\Svg.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7121FB37-A180-50B7-A20A-FD2BD795D709} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Collections.Immutable.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {77ED8936-3530-5915-95D7-096B23950CEF} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.IdentityModel.Tokens.Jwt.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {650D0E75-384B-5CCC-AA4C-6D2E4F9BEAFC} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Net.Http.Formatting.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C6C4FA03-0824-5172-BE83-59CF315338F9} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Reactive.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4F990DBF-20A1-5391-A356-3C84E1EEA62D} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Reflection.Metadata.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {ECB799DF-DDE9-5361-A7B1-E81AC01F174F} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Text.Encoding.CodePages.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D57FD778-9638-514A-87B8-AF622EF73E81} 3: C:\Program Files\Articulate\360\Desktop Service x64\System.Text.Encodings.Web.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {EC8267D7-3C1B-5792-8859-3C0E20BCC4F2} 3: C:\Program Files\Articulate\360\Desktop Service x64\YurlDotNet.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {93984BCE-9114-578B-B91F-35D00CE6756F} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {80C3F4F7-8F7E-50BF-8D95-A6A3F32928B7} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Configuration.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2C2FBE97-F8A1-5511-AE1E-CFBDB448D612} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Text.Forms.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9389DDAB-5FAB-5CE2-A884-97020E71AD9D} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Drawing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1AA0A097-C911-5520-8FEB-392CED119F6D} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Ribbon.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FF1194AE-07D5-56C5-AD3B-F59FD6DEDA62} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Text.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {248A36D9-DD18-5661-92C9-163D58DA7CEE} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Bridgewater.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6A06E71E-736F-5D38-A177-CF1FC09770A4} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Text.Platform.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5FC0EB2A-2FA6-52CF-90A2-2711D5F93892} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Text.Platform.DirectWrite.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6CF6E440-8FCA-51E5-B182-7DDC7AE6387F} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Windows.Forms.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1B0AE078-55FC-5703-B008-21686C3A26EC} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Desktop.InstalledPackages.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {15BE47C3-1636-5FA7-A32E-F61FF7D35DFA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Common.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {13EF2FF7-F60A-598F-BD38-74415A401EDA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Design.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {3BAA91EC-A393-5954-BF34-0CEF378970EC} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Remoting.Client.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {813A372C-0A2F-5EC1-BC37-A0E7826FD2D7} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Facade.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D0B5EA6D-2DA5-57FB-8E5C-D5A8F7559BC6} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Installer Service.exe 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {39AA96D7-0712-5C89-B7E2-CA80231DEF9C} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Installer Service.exe.config 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BDA54340-F834-5ECE-A057-61FAD24FEB79} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Model.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0FEFCBBA-F696-5777-9215-8CBED99AAE6F} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Remoting.Model.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6F886CDF-B39E-5716-BC3D-59200DC939FB} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.ThreeSixty.Remoting.Model.config 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {52A8D790-CE44-5A00-BAA2-767BDBAA57BA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {33BA6F8F-6032-5748-A943-89ACDF61316E} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Wpf.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7BA66825-F785-51FE-9CA5-30B2CD878B87} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate.Doubles.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {CB2BD216-4400-5B0E-B7D4-4FB47AD34DE3} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B91CA497-28DD-5EC9-9A97-95A84E227AF6} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate 360 Desktop App.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {DB79B704-0E10-53EF-B283-95EB060695D0} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.ThreeSixty.App.View.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {086C6024-1F71-5903-AB2C-166AF453828D} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.ThreeSixty.App.ViewModel.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5413EB0D-5279-508B-A6F1-AB8B3A0EF2A0} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.ThreeSixty.Design.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B7B79830-6CE1-548C-88F3-EAEC724459C1} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.ThreeSixty.Facade.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {286E97B5-E847-5375-B49E-2851755ACF39} 3: C:\Program Files\Articulate\360\Desktop Application x64\de-DE\Articulate.Wpf.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8596CD63-270A-5F7E-8DC9-2889CC17D405} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {34EF65E9-7AE1-5A3C-ADF9-273AD5A44E10} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate 360 Desktop App.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {92DD0050-6D71-52BB-9E0C-50CFD774D3F1} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.ThreeSixty.App.View.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A2D8F91E-F0C9-5892-BD2E-CE4E5C4C59DC} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.ThreeSixty.App.ViewModel.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F32DE018-1818-5C1C-8B67-CD59A8B4F7A7} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.ThreeSixty.Design.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4E0676B8-E20C-51A0-8E92-C313720DB87D} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.ThreeSixty.Facade.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FAF58925-651B-5E08-932C-42B2B37F584E} 3: C:\Program Files\Articulate\360\Desktop Application x64\es\Articulate.Wpf.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {048987A3-2BF8-520A-A4E4-515BF1948951} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.Resources.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {757CFB28-C210-55D5-A62F-B85333B6E6A8} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate 360 Desktop App.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {CD2D29A4-82B6-5779-97B4-E435311221BF} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.ThreeSixty.App.View.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {25A1E0BA-EF08-5453-BEC9-3205E54C2907} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.ThreeSixty.App.ViewModel.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {98FF8788-E8DE-5141-941D-CFFF41B45BFB} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.ThreeSixty.Design.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B907A6FD-3852-520B-A0BB-97D13A21B6ED} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.ThreeSixty.Facade.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E79C6173-9E85-5B45-9F68-EC9D3CC89899} 3: C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\Articulate.Wpf.resources.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D5061A65-8145-5BBD-8981-14CE678189A6} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtyMedium.scale-100.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D48359D4-92AA-5B76-9EF5-E652BFE5D238} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtyMedium.scale-140.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2A8D9292-6AE4-50B0-BF99-CAFD4D971F0A} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtyMedium.scale-180.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2C4FAE68-2CA0-579E-870B-99DE7B83BD89} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtyMedium.scale-80.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A1AC7833-FD13-51DF-8856-06D7D8150C7F} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtySmall.scale-100.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {035693B5-AB32-51F3-ABB7-09149F56CCD3} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtySmall.scale-140.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {1B472C51-F031-524A-8D15-6A66D609DF28} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtySmall.scale-180.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6528AD1C-E30E-5A4D-AD3B-7CBC4C0FED5E} 3: C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\ThreeSixtySmall.scale-80.png 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FCC8DF83-6664-5AD2-8DC5-7254A418A056} 3: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.VisualElementsManifest.xml 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BA54D444-9908-51FB-9167-4F91B5D3FBF1} 3: C:\Program Files\Articulate\360\Desktop Application x64\Resources.pri 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {250E2AC8-5DBD-5886-BADC-7E4354B1BC07} 3: C:\Program Files\Articulate\360\Desktop Application x64\Castle.Core.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A268957C-F14F-50C4-B2ED-A1AB6737D9C2} 3: C:\Program Files\Articulate\360\Desktop Application x64\MessagePack.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {31045A9E-7F52-533F-B49D-C9FB02E812DA} 3: C:\Program Files\Articulate\360\Desktop Application x64\MessagePack.Annotations.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8A06CF3B-5869-53D5-84AF-703125BE5062} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Bcl.AsyncInterfaces.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {995D4A15-12AC-5E5F-91E5-4AC0C0E4C31D} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.NET.StringTools.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {73350481-842B-52AD-AAEB-F32520CBE9EB} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Win32.Registry.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6977F3D9-3B47-5276-8D7B-367CEA5263F5} 3: C:\Program Files\Articulate\360\Desktop Application x64\Nerdbank.Streams.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E868F1D5-430C-56AA-9837-79B3F46CF32F} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {50E7A59D-2A09-546D-8969-85E61D63F2E6} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Enrichers.Demystifier.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {EAF5C007-AB07-5B39-845F-93C48A45F7DA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Enrichers.GlobalLogContext.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B27F89F7-82F1-5753-9805-96E87DFDBFBF} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Enrichers.Process.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0169DA3C-5C39-5A0E-AA57-9DF9F20852A7} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Enrichers.Thread.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0036C3F3-5F87-509D-ACA9-764EBDC53A11} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Exceptions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8D0F0EDA-7719-50CD-95EE-671E687E91EB} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Extensions.Hosting.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {808791DE-9DC0-508B-84E5-3119C51B2241} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Extensions.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5D8436ED-6736-5C30-B554-B0B4D330016B} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Formatting.Compact.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {56216655-D8E8-59C7-8B88-66A8396E92A6} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Sinks.Async.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {40E407F4-FB46-5ACB-8269-77E7CB800F54} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Sinks.File.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FBE20C03-0E70-5A37-8C5F-E658E32095CF} 3: C:\Program Files\Articulate\360\Desktop Application x64\Serilog.Sinks.Seq.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2F0F1357-36CA-5001-B4A4-D6E863DA250A} 3: C:\Program Files\Articulate\360\Desktop Application x64\SerilogTraceListener.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {410650C1-9673-588F-986F-6CBD913076A2} 3: C:\Program Files\Articulate\360\Desktop Application x64\SerilogTracing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {56092BCE-387C-5A92-BC87-C8CCAE77C49F} 3: C:\Program Files\Articulate\360\Desktop Application x64\StreamJsonRpc.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {281B8ECA-6EA7-5652-9ABF-89A6B32F1E0F} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Buffers.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {2529B033-09A2-5920-8CB4-A04B328FE0E1} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Diagnostics.DiagnosticSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BEF79EB3-95BD-5933-955C-16F3E5E97102} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Memory.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {34CF94F1-D7A5-58D2-907A-53C78CB9D1E7} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.IO.Pipelines.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {277ED08F-774D-53A9-BE86-B808D42D24F2} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Numerics.Vectors.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {80CC82EF-1B41-50AB-90B7-A24D89ECCDFD} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Runtime.CompilerServices.Unsafe.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {871AA3B3-BF31-581B-83E0-5A7355B16EFE} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Text.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A12F9818-BE16-5E99-AFEE-C46ADBBA4BEF} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Threading.Tasks.Dataflow.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A852ADA5-52B0-5AD8-9D50-ED54CC005612} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Threading.Tasks.Extensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7595A163-4AA1-5356-B4CE-E84914A423F8} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Threading.Channels.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F7AA39E2-6FB5-5E91-82BC-40C62519B402} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.ValueTuple.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FAEE923C-FAB2-5FE7-B46C-0A050474F6DC} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.ClientSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9E58727D-B150-52C2-A22B-D0B70B2CACB9} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.CommonSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {16E00B15-879B-55D3-A2D4-8E45EF0A45DE} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.EventSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {35C4B385-0FF2-5638-9523-EB048BF6A6A5} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.InternalSdk.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {4C081C03-31DC-50A7-97C1-3C8E2146D44C} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {595DC0B6-5E5F-51D3-AC2C-73F491356DD9} 3: C:\Program Files\Articulate\360\Desktop Application x64\LaunchDarkly.Logging.Microsoft.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9FA27FAC-4DB4-5B40-AC6E-C3B1E0A0E032} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Maui.Essentials.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8853F9BE-51CC-5078-A1FF-AF3585D16907} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Maui.Graphics.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {610DD35E-E254-5BB8-B459-64874CF3476E} 3: C:\Program Files\Articulate\360\Desktop Application x64\Analytics.NET.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {628FE2BF-D799-5812-9845-E2E8B31709E4} 3: C:\Program Files\Articulate\360\Desktop Application x64\Autofac.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E2A972FC-0DA1-5697-A58C-3F068A82800C} 3: C:\Program Files\Articulate\360\Desktop Application x64\Autofac.Extensions.DependencyInjection.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {64CF9A88-87B6-59A0-B62B-60EBF9A37690} 3: C:\Program Files\Articulate\360\Desktop Application x64\IdentityModel.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BE4D0AB6-78D3-54A0-B76B-22BA24CB0439} 3: C:\Program Files\Articulate\360\Desktop Application x64\IdentityModel.OidcClient.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {80E930A4-53A6-5FBF-B532-3458F2FE14E7} 3: C:\Program Files\Articulate\360\Desktop Application x64\Ben.Demystifier.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {8D0C5F26-F866-5874-8FED-04B8DBEF46DF} 3: C:\Program Files\Articulate\360\Desktop Application x64\BouncyCastle.Cryptography.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F08AD06B-FF82-5C9B-8000-3075B14F2D58} 3: C:\Program Files\Articulate\360\Desktop Application x64\ICSharpCode.SharpZipLib.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A1D2C640-B63C-5D0B-B2B3-B8674AF5BD62} 3: C:\Program Files\Articulate\360\Desktop Application x64\WixToolset.Dtf.WindowsInstaller.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {9DCBA675-AF2B-5DC9-8705-639AF0B22B83} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {872C816B-E1CC-5C7E-A4DC-136010130D96} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.Binder.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {DDDD7A58-ADF2-5EE7-B3C8-80311DFF99EC} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.CommandLine.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6BB8287E-FE7F-5AAC-9D89-808328758A68} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BE1FECA1-800E-53DD-A186-9655D2C7225E} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.EnvironmentVariables.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {11CD4817-A0BF-58C5-B786-7AC7AD49B4DF} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.FileExtensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {A1E1C6E7-2C02-52B4-869F-296BB82D7C2E} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Configuration.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {0A80E804-9014-5E50-AFE6-DF17B75F7B46} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.DependencyInjection.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {ABA4C980-947D-5D2C-B5FF-5E1360D22294} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.FileProviders.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {58E51F4A-B89E-5A0B-93B0-8D4B8210B0EF} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.FileProviders.Physical.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {3B768DBE-E293-599E-8C1F-20DB0D573889} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.FileSystemGlobbing.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {AA1E5BD2-732F-5759-9D53-84DD4CCADC91} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F0327392-E866-53CA-AD26-B0AD12B1C37D} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Logging.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C30D95E7-8123-5099-9B19-3C12D82F8988} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6068C15A-6C54-5044-A901-77B954887D04} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Logging.EventLog.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C263B343-BA7B-5592-8DCB-C12328B0514B} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Logging.TraceSource.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {FCA10305-713D-5182-ACA4-EC4F7E9625AA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Options.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F50B7F78-C4F8-5EF7-AE8B-9829CB2EE1DE} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Options.ConfigurationExtensions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {D4C9921D-F384-58AA-AEF3-DB729394D8BA} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Options.DataAnnotations.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {20E9C4B0-A5EB-52B2-96C6-574A094E3597} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Primitives.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C7C9363D-481C-5E3E-BDBD-71B064E664F2} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Extensions.Hosting.Abstractions.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {F3F35F27-272B-54E8-B263-1DE4860582EE} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.VisualStudio.Threading.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {30B0E2CE-1364-5902-9720-C793B33B5E52} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.VisualStudio.Validation.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {48F375B1-56C5-508C-A247-C0AEEB1DB462} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.Xaml.Behaviors.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {6EBD4B1F-818C-59C5-A897-1881E49B5C75} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.IdentityModel.JsonWebTokens.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E56D0248-F557-58A1-815D-97ECB16CCF31} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.IdentityModel.Logging.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E5FAACF4-146C-5F15-B7E1-07EE847F8741} 3: C:\Program Files\Articulate\360\Desktop Application x64\Microsoft.IdentityModel.Tokens.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B10D2EFC-18BD-5BC2-980E-1119F50E9302} 3: C:\Program Files\Articulate\360\Desktop Application x64\Mindscape.Raygun4Net.NetCore.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E99821C1-D952-5B08-BAE7-10FA9583674D} 3: C:\Program Files\Articulate\360\Desktop Application x64\Mindscape.Raygun4Net.NetCore.Common.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {5B474EEA-DBC4-50E4-B718-B82C9A229F59} 3: C:\Program Files\Articulate\360\Desktop Application x64\Newtonsoft.Json.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {B960714C-4DAA-5EBD-B838-741B27CA5B9A} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Collections.Immutable.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {83324CE2-122F-5DFC-8854-64DD9C7F466B} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.IdentityModel.Tokens.Jwt.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E6D9961D-0A5C-50CA-A74C-548148576DB2} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Reactive.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {7AF2C392-BFCF-5B67-B5EC-0DD34502CBAA} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Reflection.Metadata.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {BC15753C-0B70-57B8-BF10-BEDAE72025DF} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Text.Encoding.CodePages.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {996EADCF-1F5E-5D25-A6DB-6BAF13F912F4} 3: C:\Program Files\Articulate\360\Desktop Application x64\System.Text.Encodings.Web.dll 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {E2B06FD8-6A1E-5ADF-86DA-2F5304DBB072} 3: C:\Program Files\Articulate\360\Desktop Application x64\Licenses\ThirdPartyNoticeThreeSixty.html 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {953AAB79-D927-5D33-89FC-2BB93FE81C94} 3: C:\Program Files\Articulate\360\Desktop Application x64\Licenses\ChromiumCredits.html 
+1: {126A19EA-26BC-4253-A1C9-397733057610} 2: {C0C5CEE5-CFDB-5F83-8048-41CE50FC49F0} 3: C:\Program Files\Articulate\360\Desktop Application x64\Licenses\IntelPrimitivesAdditionalSoftware.txt 
+Action ended 7:04:33: ProcessComponents. Return value 1.
+Action 7:04:33: UnpublishFeatures. Unpublishing Product Features
+Action start 7:04:33: UnpublishFeatures.
+Action ended 7:04:33: UnpublishFeatures. Return value 1.
+Action 7:04:33: RemoveRegistryValues. Removing system registry values
+Action start 7:04:33: RemoveRegistryValues.
+Action ended 7:04:33: RemoveRegistryValues. Return value 1.
+Action 7:04:33: RemoveShortcuts. Removing shortcuts
+Action start 7:04:33: RemoveShortcuts.
+Action ended 7:04:33: RemoveShortcuts. Return value 1.
+Action 7:04:33: RemoveFiles. Removing files
+Action start 7:04:33: RemoveFiles.
+File: Articulate.Characters.Rendering.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ContentLibrary.Core.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ContentLibrary.Core.XmlSerializers.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ContentLibrary.Resources.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Api.dll, Directory: DesktopService_InstallFolder
+File: Articulate 360 Desktop App.exe, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.App.Icons.exe, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.App.View.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.App.ViewModel.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Common.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Core.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Model.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Model.config, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Model.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Server.dll, Directory: DesktopService_InstallFolder
+File: Articulate 360 Desktop Service.exe, Directory: DesktopService_InstallFolder
+File: Articulate 360 Desktop App.exe.config, Directory: DesktopApp_InstallFolder
+File: Articulate 360 Desktop App.VisualElementsManifest.xml, Directory: DesktopApp_InstallFolder
+File: Articulate 360 Desktop Service.exe.config, Directory: DesktopService_InstallFolder
+File: ChromiumCredits.html, Directory: Licenses
+File: IntelPrimitivesAdditionalSoftware.txt, Directory: Licenses
+File: ThirdPartyNoticeThreeSixty.html, Directory: Licenses
+File: Analytics.NET.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Bridgewater.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Configuration.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Desktop.InstalledPackages.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Doubles.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Drawing.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Resources.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Ribbon.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Text.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Text.Forms.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Text.Platform.DirectWrite.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Text.Platform.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Common.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Design.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Facade.dll, Directory: DesktopApp_InstallFolder
+File: Articulate 360 Installer Service.exe, Directory: DesktopApp_InstallFolder
+File: Articulate 360 Installer Service.exe.config, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Model.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Client.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Model.config, Directory: DesktopApp_InstallFolder
+File: Articulate.ThreeSixty.Remoting.Model.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Windows.Forms.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Wpf.dll, Directory: DesktopApp_InstallFolder
+File: Autofac.dll, Directory: DesktopApp_InstallFolder
+File: Autofac.Extensions.DependencyInjection.dll, Directory: DesktopApp_InstallFolder
+File: Ben.Demystifier.dll, Directory: DesktopApp_InstallFolder
+File: BouncyCastle.Cryptography.dll, Directory: DesktopApp_InstallFolder
+File: Castle.Core.dll, Directory: DesktopApp_InstallFolder
+File: Articulate.Resources.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate 360 Desktop App.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.ThreeSixty.App.View.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.ThreeSixty.Design.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.ThreeSixty.Facade.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.Wpf.resources.dll, Directory: DESKTOPAPP_DE
+File: Articulate.Resources.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate 360 Desktop App.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.ThreeSixty.App.View.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.ThreeSixty.Design.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.ThreeSixty.Facade.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.Wpf.resources.dll, Directory: DESKTOPAPP_ES
+File: Articulate.Resources.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate 360 Desktop App.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate.ThreeSixty.App.View.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate.ThreeSixty.Design.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate.ThreeSixty.Facade.resources.dll, Directory: DESKTOPAPP_FR
+File: Articulate.Wpf.resources.dll, Directory: DESKTOPAPP_FR
+File: ICSharpCode.SharpZipLib.dll, Directory: DesktopApp_InstallFolder
+File: IdentityModel.dll, Directory: DesktopApp_InstallFolder
+File: IdentityModel.OidcClient.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.ClientSdk.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.CommonSdk.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.EventSource.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.InternalSdk.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.Logging.dll, Directory: DesktopApp_InstallFolder
+File: LaunchDarkly.Logging.Microsoft.dll, Directory: DesktopApp_InstallFolder
+File: MessagePack.Annotations.dll, Directory: DesktopApp_InstallFolder
+File: MessagePack.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Bcl.AsyncInterfaces.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.Abstractions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.Binder.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.CommandLine.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.EnvironmentVariables.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.FileExtensions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Configuration.Json.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.DependencyInjection.Abstractions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.DependencyInjection.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.FileProviders.Abstractions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.FileProviders.Physical.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.FileSystemGlobbing.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Hosting.Abstractions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Logging.Abstractions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Logging.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Logging.EventLog.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Logging.TraceSource.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Options.ConfigurationExtensions.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Options.DataAnnotations.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Options.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Extensions.Primitives.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.IdentityModel.JsonWebTokens.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.IdentityModel.Logging.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.IdentityModel.Tokens.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Maui.Essentials.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Maui.Graphics.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.NET.StringTools.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.VisualStudio.Threading.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.VisualStudio.Validation.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Win32.Registry.dll, Directory: DesktopApp_InstallFolder
+File: Microsoft.Xaml.Behaviors.dll, Directory: DesktopApp_InstallFolder
+File: Mindscape.Raygun4Net.NetCore.Common.dll, Directory: DesktopApp_InstallFolder
+File: Mindscape.Raygun4Net.NetCore.dll, Directory: DesktopApp_InstallFolder
+File: Nerdbank.Streams.dll, Directory: DesktopApp_InstallFolder
+File: Newtonsoft.Json.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Enrichers.Demystifier.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Enrichers.GlobalLogContext.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Enrichers.Process.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Enrichers.Thread.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Exceptions.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Extensions.Hosting.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Extensions.Logging.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Formatting.Compact.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Sinks.Async.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Sinks.File.dll, Directory: DesktopApp_InstallFolder
+File: Serilog.Sinks.Seq.dll, Directory: DesktopApp_InstallFolder
+File: SerilogTraceListener.dll, Directory: DesktopApp_InstallFolder
+File: SerilogTracing.dll, Directory: DesktopApp_InstallFolder
+File: StreamJsonRpc.dll, Directory: DesktopApp_InstallFolder
+File: System.Buffers.dll, Directory: DesktopApp_InstallFolder
+File: System.Collections.Immutable.dll, Directory: DesktopApp_InstallFolder
+File: System.Diagnostics.DiagnosticSource.dll, Directory: DesktopApp_InstallFolder
+File: System.IdentityModel.Tokens.Jwt.dll, Directory: DesktopApp_InstallFolder
+File: System.IO.Pipelines.dll, Directory: DesktopApp_InstallFolder
+File: System.Memory.dll, Directory: DesktopApp_InstallFolder
+File: System.Numerics.Vectors.dll, Directory: DesktopApp_InstallFolder
+File: System.Reactive.dll, Directory: DesktopApp_InstallFolder
+File: System.Reflection.Metadata.dll, Directory: DesktopApp_InstallFolder
+File: System.Runtime.CompilerServices.Unsafe.dll, Directory: DesktopApp_InstallFolder
+File: System.Text.Encoding.CodePages.dll, Directory: DesktopApp_InstallFolder
+File: System.Text.Encodings.Web.dll, Directory: DesktopApp_InstallFolder
+File: System.Text.Json.dll, Directory: DesktopApp_InstallFolder
+File: System.Threading.Channels.dll, Directory: DesktopApp_InstallFolder
+File: System.Threading.Tasks.Dataflow.dll, Directory: DesktopApp_InstallFolder
+File: System.Threading.Tasks.Extensions.dll, Directory: DesktopApp_InstallFolder
+File: System.ValueTuple.dll, Directory: DesktopApp_InstallFolder
+File: WixToolset.Dtf.WindowsInstaller.dll, Directory: DesktopApp_InstallFolder
+File: Analytics.NET.dll, Directory: DesktopService_InstallFolder
+File: Articulate.Configuration.dll, Directory: DesktopService_InstallFolder
+File: Articulate.Desktop.InstalledPackages.dll, Directory: DesktopService_InstallFolder
+File: Articulate.dll, Directory: DesktopService_InstallFolder
+File: Articulate.Doubles.dll, Directory: DesktopService_InstallFolder
+File: Articulate.Drawing.dll, Directory: DesktopService_InstallFolder
+File: Articulate.IntelPrimitives.dll, Directory: DesktopService_InstallFolder
+File: Articulate.Resources.dll, Directory: DesktopService_InstallFolder
+File: Autofac.dll, Directory: DesktopService_InstallFolder
+File: Autofac.Extensions.DependencyInjection.dll, Directory: DesktopService_InstallFolder
+File: Ben.Demystifier.dll, Directory: DesktopService_InstallFolder
+File: BouncyCastle.Cryptography.dll, Directory: DesktopService_InstallFolder
+File: Castle.Core.dll, Directory: DesktopService_InstallFolder
+File: Articulate.ContentLibrary.Resources.resources.dll, Directory: DESKTOPSERVICE_DE
+File: Articulate.resources.dll, Directory: DESKTOPSERVICE_DE
+File: Articulate.Resources.resources.dll, Directory: DESKTOPSERVICE_DE
+File: Articulate.ContentLibrary.Resources.resources.dll, Directory: DESKTOPSERVICE_ES
+File: Articulate.resources.dll, Directory: DESKTOPSERVICE_ES
+File: Articulate.Resources.resources.dll, Directory: DESKTOPSERVICE_ES
+File: Articulate.ContentLibrary.Resources.resources.dll, Directory: DESKTOPSERVICE_FR
+File: Articulate.resources.dll, Directory: DESKTOPSERVICE_FR
+File: Articulate.Resources.resources.dll, Directory: DESKTOPSERVICE_FR
+File: ICSharpCode.SharpZipLib.dll, Directory: DesktopService_InstallFolder
+File: IdentityModel.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.ClientSdk.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.CommonSdk.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.EventSource.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.InternalSdk.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.Logging.dll, Directory: DesktopService_InstallFolder
+File: LaunchDarkly.Logging.Microsoft.dll, Directory: DesktopService_InstallFolder
+File: MessagePack.Annotations.dll, Directory: DesktopService_InstallFolder
+File: MessagePack.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Bcl.AsyncInterfaces.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.Abstractions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.Binder.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.CommandLine.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.FileExtensions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.Json.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.DependencyInjection.Abstractions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.DependencyInjection.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.FileProviders.Abstractions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.FileProviders.Physical.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.FileSystemGlobbing.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Hosting.Abstractions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Logging.Abstractions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Logging.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Logging.EventLog.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Logging.TraceSource.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Options.ConfigurationExtensions.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Options.DataAnnotations.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Options.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Primitives.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.IdentityModel.JsonWebTokens.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.IdentityModel.Logging.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.IdentityModel.Tokens.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Maui.Essentials.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Maui.Graphics.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.NET.StringTools.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.VisualStudio.Threading.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.VisualStudio.Validation.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Win32.Registry.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Xaml.Behaviors.dll, Directory: DesktopService_InstallFolder
+File: MimeMapping.dll, Directory: DesktopService_InstallFolder
+File: Mindscape.Raygun4Net.NetCore.Common.dll, Directory: DesktopService_InstallFolder
+File: Mindscape.Raygun4Net.NetCore.dll, Directory: DesktopService_InstallFolder
+File: Microsoft.Extensions.Configuration.EnvironmentVariables.dll, Directory: DesktopService_InstallFolder
+File: Nerdbank.Streams.dll, Directory: DesktopService_InstallFolder
+File: Newtonsoft.Json.dll, Directory: DesktopService_InstallFolder
+File: resvg_net.dll, Directory: DesktopService_InstallFolder
+File: ResvgNet.dll, Directory: DesktopService_InstallFolder
+File: Serilog.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Enrichers.Demystifier.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Enrichers.GlobalLogContext.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Enrichers.Process.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Enrichers.Thread.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Exceptions.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Extensions.Hosting.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Extensions.Logging.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Formatting.Compact.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Sinks.Async.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Sinks.File.dll, Directory: DesktopService_InstallFolder
+File: Serilog.Sinks.Seq.dll, Directory: DesktopService_InstallFolder
+File: SerilogTraceListener.dll, Directory: DesktopService_InstallFolder
+File: SerilogTracing.dll, Directory: DesktopService_InstallFolder
+File: StreamJsonRpc.dll, Directory: DesktopService_InstallFolder
+File: Svg.dll, Directory: DesktopService_InstallFolder
+File: System.Buffers.dll, Directory: DesktopService_InstallFolder
+File: System.Collections.Immutable.dll, Directory: DesktopService_InstallFolder
+File: System.Diagnostics.DiagnosticSource.dll, Directory: DesktopService_InstallFolder
+File: System.IdentityModel.Tokens.Jwt.dll, Directory: DesktopService_InstallFolder
+File: System.IO.Pipelines.dll, Directory: DesktopService_InstallFolder
+File: System.Memory.dll, Directory: DesktopService_InstallFolder
+File: System.Net.Http.Formatting.dll, Directory: DesktopService_InstallFolder
+File: System.Numerics.Vectors.dll, Directory: DesktopService_InstallFolder
+File: System.Reactive.dll, Directory: DesktopService_InstallFolder
+File: System.Reflection.Metadata.dll, Directory: DesktopService_InstallFolder
+File: System.Runtime.CompilerServices.Unsafe.dll, Directory: DesktopService_InstallFolder
+File: System.Text.Encoding.CodePages.dll, Directory: DesktopService_InstallFolder
+File: System.Text.Encodings.Web.dll, Directory: DesktopService_InstallFolder
+File: System.Text.Json.dll, Directory: DesktopService_InstallFolder
+File: System.Threading.Channels.dll, Directory: DesktopService_InstallFolder
+File: System.Threading.Tasks.Dataflow.dll, Directory: DesktopService_InstallFolder
+File: System.Threading.Tasks.Extensions.dll, Directory: DesktopService_InstallFolder
+File: System.ValueTuple.dll, Directory: DesktopService_InstallFolder
+File: WixToolset.Dtf.WindowsInstaller.dll, Directory: DesktopService_InstallFolder
+File: YurlDotNet.dll, Directory: DesktopService_InstallFolder
+File: Resources.pri, Directory: DesktopApp_InstallFolder
+File: ThreeSixtyMedium.scale-100.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtyMedium.scale-140.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtyMedium.scale-180.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtyMedium.scale-80.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtySmall.scale-100.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtySmall.scale-140.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtySmall.scale-180.png, Directory: StartMenuTileImagesFolder
+File: ThreeSixtySmall.scale-80.png, Directory: StartMenuTileImagesFolder
+Action ended 7:04:33: RemoveFiles. Return value 1.
+Action 7:04:33: InstallFiles. Copying new files
+Action start 7:04:33: InstallFiles.
+File: Articulate.Characters.Rendering.dll,  Directory: DesktopService_InstallFolder,  Size: 27808
+File: Articulate.ContentLibrary.Core.dll,  Directory: DesktopService_InstallFolder,  Size: 139936
+File: Articulate.ContentLibrary.Core.XmlSerializers.dll,  Directory: DesktopService_InstallFolder,  Size: 38048
+File: Articulate.ContentLibrary.Resources.dll,  Directory: DesktopService_InstallFolder,  Size: 107680
+File: Articulate.ThreeSixty.Api.dll,  Directory: DesktopService_InstallFolder,  Size: 356000
+File: Articulate 360 Desktop App.exe,  Directory: DesktopApp_InstallFolder,  Size: 453280
+File: Articulate.ThreeSixty.App.Icons.exe,  Directory: DesktopApp_InstallFolder,  Size: 205984
+File: Articulate.ThreeSixty.App.View.dll,  Directory: DesktopApp_InstallFolder,  Size: 549024
+File: Articulate.ThreeSixty.App.ViewModel.dll,  Directory: DesktopApp_InstallFolder,  Size: 471712
+File: Articulate.ThreeSixty.Common.dll,  Directory: DesktopService_InstallFolder,  Size: 66208
+File: Articulate.ThreeSixty.Core.dll,  Directory: DesktopService_InstallFolder,  Size: 557216
+File: Articulate.ThreeSixty.Model.dll,  Directory: DesktopService_InstallFolder,  Size: 552608
+File: Articulate.ThreeSixty.Remoting.Model.config,  Directory: DesktopService_InstallFolder,  Size: 381
+File: Articulate.ThreeSixty.Remoting.Model.dll,  Directory: DesktopService_InstallFolder,  Size: 174752
+File: Articulate.ThreeSixty.Remoting.Server.dll,  Directory: DesktopService_InstallFolder,  Size: 151712
+File: Articulate 360 Desktop Service.exe,  Directory: DesktopService_InstallFolder,  Size: 217760
+File: Articulate 360 Desktop App.exe.config,  Directory: DesktopApp_InstallFolder,  Size: 13731
+File: Articulate 360 Desktop App.VisualElementsManifest.xml,  Directory: DesktopApp_InstallFolder,  Size: 341
+File: Articulate 360 Desktop Service.exe.config,  Directory: DesktopService_InstallFolder,  Size: 13207
+File: ChromiumCredits.html,  Directory: Licenses,  Size: 5586999
+File: IntelPrimitivesAdditionalSoftware.txt,  Directory: Licenses,  Size: 22878
+File: ThirdPartyNoticeThreeSixty.html,  Directory: Licenses,  Size: 523764
+File: Analytics.NET.dll,  Directory: DesktopApp_InstallFolder,  Size: 37536
+File: Articulate.Bridgewater.dll,  Directory: DesktopApp_InstallFolder,  Size: 853152
+File: Articulate.Configuration.dll,  Directory: DesktopApp_InstallFolder,  Size: 175264
+File: Articulate.Desktop.InstalledPackages.dll,  Directory: DesktopApp_InstallFolder,  Size: 52896
+File: Articulate.dll,  Directory: DesktopApp_InstallFolder,  Size: 2215584
+File: Articulate.Doubles.dll,  Directory: DesktopApp_InstallFolder,  Size: 42144
+File: Articulate.Drawing.dll,  Directory: DesktopApp_InstallFolder,  Size: 459424
+File: Articulate.Resources.dll,  Directory: DesktopApp_InstallFolder,  Size: 7608480
+File: Articulate.Ribbon.dll,  Directory: DesktopApp_InstallFolder,  Size: 455840
+File: Articulate.Text.dll,  Directory: DesktopApp_InstallFolder,  Size: 430240
+File: Articulate.Text.Forms.dll,  Directory: DesktopApp_InstallFolder,  Size: 76960
+File: Articulate.Text.Platform.DirectWrite.dll,  Directory: DesktopApp_InstallFolder,  Size: 138912
+File: Articulate.Text.Platform.dll,  Directory: DesktopApp_InstallFolder,  Size: 343200
+File: Articulate.ThreeSixty.Common.dll,  Directory: DesktopApp_InstallFolder,  Size: 66208
+File: Articulate.ThreeSixty.Design.dll,  Directory: DesktopApp_InstallFolder,  Size: 187040
+File: Articulate.ThreeSixty.Facade.dll,  Directory: DesktopApp_InstallFolder,  Size: 31392
+File: Articulate 360 Installer Service.exe,  Directory: DesktopApp_InstallFolder,  Size: 270496
+File: Articulate 360 Installer Service.exe.config,  Directory: DesktopApp_InstallFolder,  Size: 12019
+File: Articulate.ThreeSixty.Model.dll,  Directory: DesktopApp_InstallFolder,  Size: 552608
+File: Articulate.ThreeSixty.Remoting.Client.dll,  Directory: DesktopApp_InstallFolder,  Size: 104608
+File: Articulate.ThreeSixty.Remoting.Model.config,  Directory: DesktopApp_InstallFolder,  Size: 381
+File: Articulate.ThreeSixty.Remoting.Model.dll,  Directory: DesktopApp_InstallFolder,  Size: 174752
+File: Articulate.Windows.Forms.dll,  Directory: DesktopApp_InstallFolder,  Size: 3143328
+File: Articulate.Wpf.dll,  Directory: DesktopApp_InstallFolder,  Size: 2145440
+File: Autofac.dll,  Directory: DesktopApp_InstallFolder,  Size: 385184
+File: Autofac.Extensions.DependencyInjection.dll,  Directory: DesktopApp_InstallFolder,  Size: 39584
+File: Ben.Demystifier.dll,  Directory: DesktopApp_InstallFolder,  Size: 83104
+File: BouncyCastle.Cryptography.dll,  Directory: DesktopApp_InstallFolder,  Size: 6966744
+File: Castle.Core.dll,  Directory: DesktopApp_InstallFolder,  Size: 434336
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 133792
+File: Articulate 360 Desktop App.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 14496
+File: Articulate.ThreeSixty.App.View.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 17568
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 32416
+File: Articulate.ThreeSixty.Design.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 17568
+File: Articulate.ThreeSixty.Facade.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 16032
+File: Articulate.Wpf.resources.dll,  Directory: DESKTOPAPP_DE,  Size: 25760
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 136864
+File: Articulate 360 Desktop App.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 14496
+File: Articulate.ThreeSixty.App.View.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 17568
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 31392
+File: Articulate.ThreeSixty.Design.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 17568
+File: Articulate.ThreeSixty.Facade.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 16032
+File: Articulate.Wpf.resources.dll,  Directory: DESKTOPAPP_ES,  Size: 25760
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 136352
+File: Articulate 360 Desktop App.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 14496
+File: Articulate.ThreeSixty.App.View.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 17568
+File: Articulate.ThreeSixty.App.ViewModel.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 32416
+File: Articulate.ThreeSixty.Design.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 17568
+File: Articulate.ThreeSixty.Facade.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 16032
+File: Articulate.Wpf.resources.dll,  Directory: DESKTOPAPP_FR,  Size: 26272
+File: ICSharpCode.SharpZipLib.dll,  Directory: DesktopApp_InstallFolder,  Size: 264352
+File: IdentityModel.dll,  Directory: DesktopApp_InstallFolder,  Size: 163920
+File: IdentityModel.OidcClient.dll,  Directory: DesktopApp_InstallFolder,  Size: 67744
+File: LaunchDarkly.ClientSdk.dll,  Directory: DesktopApp_InstallFolder,  Size: 140816
+File: LaunchDarkly.CommonSdk.dll,  Directory: DesktopApp_InstallFolder,  Size: 88080
+File: LaunchDarkly.EventSource.dll,  Directory: DesktopApp_InstallFolder,  Size: 58728
+File: LaunchDarkly.InternalSdk.dll,  Directory: DesktopApp_InstallFolder,  Size: 83984
+File: LaunchDarkly.Logging.dll,  Directory: DesktopApp_InstallFolder,  Size: 32104
+File: LaunchDarkly.Logging.Microsoft.dll,  Directory: DesktopApp_InstallFolder,  Size: 27088
+File: MessagePack.Annotations.dll,  Directory: DesktopApp_InstallFolder,  Size: 28832
+File: MessagePack.dll,  Directory: DesktopApp_InstallFolder,  Size: 390816
+File: Microsoft.Bcl.AsyncInterfaces.dll,  Directory: DesktopApp_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Configuration.Abstractions.dll,  Directory: DesktopApp_InstallFolder,  Size: 41968
+File: Microsoft.Extensions.Configuration.Binder.dll,  Directory: DesktopApp_InstallFolder,  Size: 59888
+File: Microsoft.Extensions.Configuration.CommandLine.dll,  Directory: DesktopApp_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Configuration.dll,  Directory: DesktopApp_InstallFolder,  Size: 57840
+File: Microsoft.Extensions.Configuration.EnvironmentVariables.dll,  Directory: DesktopApp_InstallFolder,  Size: 35304
+File: Microsoft.Extensions.Configuration.FileExtensions.dll,  Directory: DesktopApp_InstallFolder,  Size: 41968
+File: Microsoft.Extensions.Configuration.Json.dll,  Directory: DesktopApp_InstallFolder,  Size: 41440
+File: Microsoft.Extensions.DependencyInjection.Abstractions.dll,  Directory: DesktopApp_InstallFolder,  Size: 76744
+File: Microsoft.Extensions.DependencyInjection.dll,  Directory: DesktopApp_InstallFolder,  Size: 108016
+File: Microsoft.Extensions.FileProviders.Abstractions.dll,  Directory: DesktopApp_InstallFolder,  Size: 36320
+File: Microsoft.Extensions.FileProviders.Physical.dll,  Directory: DesktopApp_InstallFolder,  Size: 61936
+File: Microsoft.Extensions.FileSystemGlobbing.dll,  Directory: DesktopApp_InstallFolder,  Size: 59376
+File: Microsoft.Extensions.Hosting.Abstractions.dll,  Directory: DesktopApp_InstallFolder,  Size: 46912
+File: Microsoft.Extensions.Logging.Abstractions.dll,  Directory: DesktopApp_InstallFolder,  Size: 80840
+File: Microsoft.Extensions.Logging.dll,  Directory: DesktopApp_InstallFolder,  Size: 65000
+File: Microsoft.Extensions.Logging.EventLog.dll,  Directory: DesktopApp_InstallFolder,  Size: 40920
+File: Microsoft.Extensions.Logging.TraceSource.dll,  Directory: DesktopApp_InstallFolder,  Size: 36312
+File: Microsoft.Extensions.Options.ConfigurationExtensions.dll,  Directory: DesktopApp_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Options.DataAnnotations.dll,  Directory: DesktopApp_InstallFolder,  Size: 37320
+File: Microsoft.Extensions.Options.dll,  Directory: DesktopApp_InstallFolder,  Size: 79304
+File: Microsoft.Extensions.Primitives.dll,  Directory: DesktopApp_InstallFolder,  Size: 60872
+File: Microsoft.IdentityModel.JsonWebTokens.dll,  Directory: DesktopApp_InstallFolder,  Size: 76504
+File: Microsoft.IdentityModel.Logging.dll,  Directory: DesktopApp_InstallFolder,  Size: 36960
+File: Microsoft.IdentityModel.Tokens.dll,  Directory: DesktopApp_InstallFolder,  Size: 169168
+File: Microsoft.Maui.Essentials.dll,  Directory: DesktopApp_InstallFolder,  Size: 142496
+File: Microsoft.Maui.Graphics.dll,  Directory: DesktopApp_InstallFolder,  Size: 180896
+File: Microsoft.NET.StringTools.dll,  Directory: DesktopApp_InstallFolder,  Size: 41928
+File: Microsoft.VisualStudio.Threading.dll,  Directory: DesktopApp_InstallFolder,  Size: 624840
+File: Microsoft.VisualStudio.Validation.dll,  Directory: DesktopApp_InstallFolder,  Size: 48336
+File: Microsoft.Win32.Registry.dll,  Directory: DesktopApp_InstallFolder,  Size: 36928
+File: Microsoft.Xaml.Behaviors.dll,  Directory: DesktopApp_InstallFolder,  Size: 156888
+File: Mindscape.Raygun4Net.NetCore.Common.dll,  Directory: DesktopApp_InstallFolder,  Size: 117920
+File: Mindscape.Raygun4Net.NetCore.dll,  Directory: DesktopApp_InstallFolder,  Size: 20128
+File: Nerdbank.Streams.dll,  Directory: DesktopApp_InstallFolder,  Size: 238456
+File: Newtonsoft.Json.dll,  Directory: DesktopApp_InstallFolder,  Size: 722376
+File: Serilog.dll,  Directory: DesktopApp_InstallFolder,  Size: 175264
+File: Serilog.Enrichers.Demystifier.dll,  Directory: DesktopApp_InstallFolder,  Size: 16544
+File: Serilog.Enrichers.GlobalLogContext.dll,  Directory: DesktopApp_InstallFolder,  Size: 21152
+File: Serilog.Enrichers.Process.dll,  Directory: DesktopApp_InstallFolder,  Size: 17568
+File: Serilog.Enrichers.Thread.dll,  Directory: DesktopApp_InstallFolder,  Size: 17568
+File: Serilog.Exceptions.dll,  Directory: DesktopApp_InstallFolder,  Size: 55456
+File: Serilog.Extensions.Hosting.dll,  Directory: DesktopApp_InstallFolder,  Size: 26784
+File: Serilog.Extensions.Logging.dll,  Directory: DesktopApp_InstallFolder,  Size: 54432
+File: Serilog.Formatting.Compact.dll,  Directory: DesktopApp_InstallFolder,  Size: 20640
+File: Serilog.Sinks.Async.dll,  Directory: DesktopApp_InstallFolder,  Size: 27296
+File: Serilog.Sinks.File.dll,  Directory: DesktopApp_InstallFolder,  Size: 49312
+File: Serilog.Sinks.Seq.dll,  Directory: DesktopApp_InstallFolder,  Size: 61600
+File: SerilogTraceListener.dll,  Directory: DesktopApp_InstallFolder,  Size: 19616
+File: SerilogTracing.dll,  Directory: DesktopApp_InstallFolder,  Size: 58016
+File: StreamJsonRpc.dll,  Directory: DesktopApp_InstallFolder,  Size: 693304
+File: System.Buffers.dll,  Directory: DesktopApp_InstallFolder,  Size: 34248
+File: System.Collections.Immutable.dll,  Directory: DesktopApp_InstallFolder,  Size: 263128
+File: System.Diagnostics.DiagnosticSource.dll,  Directory: DesktopApp_InstallFolder,  Size: 233968
+File: System.IdentityModel.Tokens.Jwt.dll,  Directory: DesktopApp_InstallFolder,  Size: 94416
+File: System.IO.Pipelines.dll,  Directory: DesktopApp_InstallFolder,  Size: 96200
+File: System.Memory.dll,  Directory: DesktopApp_InstallFolder,  Size: 155632
+File: System.Numerics.Vectors.dll,  Directory: DesktopApp_InstallFolder,  Size: 120776
+File: System.Reactive.dll,  Directory: DesktopApp_InstallFolder,  Size: 1369352
+File: System.Reflection.Metadata.dll,  Directory: DesktopApp_InstallFolder,  Size: 498120
+File: System.Runtime.CompilerServices.Unsafe.dll,  Directory: DesktopApp_InstallFolder,  Size: 29680
+File: System.Text.Encoding.CodePages.dll,  Directory: DesktopApp_InstallFolder,  Size: 776648
+File: System.Text.Encodings.Web.dll,  Directory: DesktopApp_InstallFolder,  Size: 98248
+File: System.Text.Json.dll,  Directory: DesktopApp_InstallFolder,  Size: 788936
+File: System.Threading.Channels.dll,  Directory: DesktopApp_InstallFolder,  Size: 101320
+File: System.Threading.Tasks.Dataflow.dll,  Directory: DesktopApp_InstallFolder,  Size: 191808
+File: System.Threading.Tasks.Extensions.dll,  Directory: DesktopApp_InstallFolder,  Size: 38384
+File: System.ValueTuple.dll,  Directory: DesktopApp_InstallFolder,  Size: 35640
+File: WixToolset.Dtf.WindowsInstaller.dll,  Directory: DesktopApp_InstallFolder,  Size: 208848
+File: Analytics.NET.dll,  Directory: DesktopService_InstallFolder,  Size: 37536
+File: Articulate.Configuration.dll,  Directory: DesktopService_InstallFolder,  Size: 175264
+File: Articulate.Desktop.InstalledPackages.dll,  Directory: DesktopService_InstallFolder,  Size: 52896
+File: Articulate.dll,  Directory: DesktopService_InstallFolder,  Size: 2215584
+File: Articulate.Doubles.dll,  Directory: DesktopService_InstallFolder,  Size: 42144
+File: Articulate.Drawing.dll,  Directory: DesktopService_InstallFolder,  Size: 459424
+File: Articulate.IntelPrimitives.dll,  Directory: DesktopService_InstallFolder,  Size: 3489952
+File: Articulate.Resources.dll,  Directory: DesktopService_InstallFolder,  Size: 7608480
+File: Autofac.dll,  Directory: DesktopService_InstallFolder,  Size: 385184
+File: Autofac.Extensions.DependencyInjection.dll,  Directory: DesktopService_InstallFolder,  Size: 39584
+File: Ben.Demystifier.dll,  Directory: DesktopService_InstallFolder,  Size: 83104
+File: BouncyCastle.Cryptography.dll,  Directory: DesktopService_InstallFolder,  Size: 6966744
+File: Castle.Core.dll,  Directory: DesktopService_InstallFolder,  Size: 434336
+File: Articulate.ContentLibrary.Resources.resources.dll,  Directory: DESKTOPSERVICE_DE,  Size: 36000
+File: Articulate.resources.dll,  Directory: DESKTOPSERVICE_DE,  Size: 44704
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPSERVICE_DE,  Size: 133792
+File: Articulate.ContentLibrary.Resources.resources.dll,  Directory: DESKTOPSERVICE_ES,  Size: 36000
+File: Articulate.resources.dll,  Directory: DESKTOPSERVICE_ES,  Size: 45216
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPSERVICE_ES,  Size: 136864
+File: Articulate.ContentLibrary.Resources.resources.dll,  Directory: DESKTOPSERVICE_FR,  Size: 36512
+File: Articulate.resources.dll,  Directory: DESKTOPSERVICE_FR,  Size: 45728
+File: Articulate.Resources.resources.dll,  Directory: DESKTOPSERVICE_FR,  Size: 136352
+File: ICSharpCode.SharpZipLib.dll,  Directory: DesktopService_InstallFolder,  Size: 264352
+File: IdentityModel.dll,  Directory: DesktopService_InstallFolder,  Size: 163920
+File: LaunchDarkly.ClientSdk.dll,  Directory: DesktopService_InstallFolder,  Size: 140816
+File: LaunchDarkly.CommonSdk.dll,  Directory: DesktopService_InstallFolder,  Size: 88080
+File: LaunchDarkly.EventSource.dll,  Directory: DesktopService_InstallFolder,  Size: 58728
+File: LaunchDarkly.InternalSdk.dll,  Directory: DesktopService_InstallFolder,  Size: 83984
+File: LaunchDarkly.Logging.dll,  Directory: DesktopService_InstallFolder,  Size: 32104
+File: LaunchDarkly.Logging.Microsoft.dll,  Directory: DesktopService_InstallFolder,  Size: 27088
+File: MessagePack.Annotations.dll,  Directory: DesktopService_InstallFolder,  Size: 28832
+File: MessagePack.dll,  Directory: DesktopService_InstallFolder,  Size: 390816
+File: Microsoft.Bcl.AsyncInterfaces.dll,  Directory: DesktopService_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Configuration.Abstractions.dll,  Directory: DesktopService_InstallFolder,  Size: 41968
+File: Microsoft.Extensions.Configuration.Binder.dll,  Directory: DesktopService_InstallFolder,  Size: 59888
+File: Microsoft.Extensions.Configuration.CommandLine.dll,  Directory: DesktopService_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Configuration.dll,  Directory: DesktopService_InstallFolder,  Size: 57840
+File: Microsoft.Extensions.Configuration.FileExtensions.dll,  Directory: DesktopService_InstallFolder,  Size: 41968
+File: Microsoft.Extensions.Configuration.Json.dll,  Directory: DesktopService_InstallFolder,  Size: 41440
+File: Microsoft.Extensions.DependencyInjection.Abstractions.dll,  Directory: DesktopService_InstallFolder,  Size: 76744
+File: Microsoft.Extensions.DependencyInjection.dll,  Directory: DesktopService_InstallFolder,  Size: 108016
+File: Microsoft.Extensions.FileProviders.Abstractions.dll,  Directory: DesktopService_InstallFolder,  Size: 36320
+File: Microsoft.Extensions.FileProviders.Physical.dll,  Directory: DesktopService_InstallFolder,  Size: 61936
+File: Microsoft.Extensions.FileSystemGlobbing.dll,  Directory: DesktopService_InstallFolder,  Size: 59376
+File: Microsoft.Extensions.Hosting.Abstractions.dll,  Directory: DesktopService_InstallFolder,  Size: 46912
+File: Microsoft.Extensions.Logging.Abstractions.dll,  Directory: DesktopService_InstallFolder,  Size: 80840
+File: Microsoft.Extensions.Logging.dll,  Directory: DesktopService_InstallFolder,  Size: 65000
+File: Microsoft.Extensions.Logging.EventLog.dll,  Directory: DesktopService_InstallFolder,  Size: 40920
+File: Microsoft.Extensions.Logging.TraceSource.dll,  Directory: DesktopService_InstallFolder,  Size: 36312
+File: Microsoft.Extensions.Options.ConfigurationExtensions.dll,  Directory: DesktopService_InstallFolder,  Size: 38856
+File: Microsoft.Extensions.Options.DataAnnotations.dll,  Directory: DesktopService_InstallFolder,  Size: 37320
+File: Microsoft.Extensions.Options.dll,  Directory: DesktopService_InstallFolder,  Size: 79304
+File: Microsoft.Extensions.Primitives.dll,  Directory: DesktopService_InstallFolder,  Size: 60872
+File: Microsoft.IdentityModel.JsonWebTokens.dll,  Directory: DesktopService_InstallFolder,  Size: 76504
+File: Microsoft.IdentityModel.Logging.dll,  Directory: DesktopService_InstallFolder,  Size: 36960
+File: Microsoft.IdentityModel.Tokens.dll,  Directory: DesktopService_InstallFolder,  Size: 169168
+File: Microsoft.Maui.Essentials.dll,  Directory: DesktopService_InstallFolder,  Size: 142496
+File: Microsoft.Maui.Graphics.dll,  Directory: DesktopService_InstallFolder,  Size: 180896
+File: Microsoft.NET.StringTools.dll,  Directory: DesktopService_InstallFolder,  Size: 41928
+File: Microsoft.VisualStudio.Threading.dll,  Directory: DesktopService_InstallFolder,  Size: 624840
+File: Microsoft.VisualStudio.Validation.dll,  Directory: DesktopService_InstallFolder,  Size: 48336
+File: Microsoft.Win32.Registry.dll,  Directory: DesktopService_InstallFolder,  Size: 36928
+File: Microsoft.Xaml.Behaviors.dll,  Directory: DesktopService_InstallFolder,  Size: 156888
+File: MimeMapping.dll,  Directory: DesktopService_InstallFolder,  Size: 302752
+File: Mindscape.Raygun4Net.NetCore.Common.dll,  Directory: DesktopService_InstallFolder,  Size: 117920
+File: Mindscape.Raygun4Net.NetCore.dll,  Directory: DesktopService_InstallFolder,  Size: 20128
+File: Microsoft.Extensions.Configuration.EnvironmentVariables.dll,  Directory: DesktopService_InstallFolder,  Size: 35304
+File: Nerdbank.Streams.dll,  Directory: DesktopService_InstallFolder,  Size: 238456
+File: Newtonsoft.Json.dll,  Directory: DesktopService_InstallFolder,  Size: 722376
+File: resvg_net.dll,  Directory: DesktopService_InstallFolder,  Size: 2383008
+File: ResvgNet.dll,  Directory: DesktopService_InstallFolder,  Size: 19104
+File: Serilog.dll,  Directory: DesktopService_InstallFolder,  Size: 175264
+File: Serilog.Enrichers.Demystifier.dll,  Directory: DesktopService_InstallFolder,  Size: 16544
+File: Serilog.Enrichers.GlobalLogContext.dll,  Directory: DesktopService_InstallFolder,  Size: 21152
+File: Serilog.Enrichers.Process.dll,  Directory: DesktopService_InstallFolder,  Size: 17568
+File: Serilog.Enrichers.Thread.dll,  Directory: DesktopService_InstallFolder,  Size: 17568
+File: Serilog.Exceptions.dll,  Directory: DesktopService_InstallFolder,  Size: 55456
+File: Serilog.Extensions.Hosting.dll,  Directory: DesktopService_InstallFolder,  Size: 26784
+File: Serilog.Extensions.Logging.dll,  Directory: DesktopService_InstallFolder,  Size: 54432
+File: Serilog.Formatting.Compact.dll,  Directory: DesktopService_InstallFolder,  Size: 20640
+File: Serilog.Sinks.Async.dll,  Directory: DesktopService_InstallFolder,  Size: 27296
+File: Serilog.Sinks.File.dll,  Directory: DesktopService_InstallFolder,  Size: 49312
+File: Serilog.Sinks.Seq.dll,  Directory: DesktopService_InstallFolder,  Size: 61600
+File: SerilogTraceListener.dll,  Directory: DesktopService_InstallFolder,  Size: 19616
+File: SerilogTracing.dll,  Directory: DesktopService_InstallFolder,  Size: 58016
+File: StreamJsonRpc.dll,  Directory: DesktopService_InstallFolder,  Size: 693304
+File: Svg.dll,  Directory: DesktopService_InstallFolder,  Size: 564384
+File: System.Buffers.dll,  Directory: DesktopService_InstallFolder,  Size: 34248
+File: System.Collections.Immutable.dll,  Directory: DesktopService_InstallFolder,  Size: 263128
+File: System.Diagnostics.DiagnosticSource.dll,  Directory: DesktopService_InstallFolder,  Size: 233968
+File: System.IdentityModel.Tokens.Jwt.dll,  Directory: DesktopService_InstallFolder,  Size: 94416
+File: System.IO.Pipelines.dll,  Directory: DesktopService_InstallFolder,  Size: 96200
+File: System.Memory.dll,  Directory: DesktopService_InstallFolder,  Size: 155632
+File: System.Net.Http.Formatting.dll,  Directory: DesktopService_InstallFolder,  Size: 190104
+File: System.Numerics.Vectors.dll,  Directory: DesktopService_InstallFolder,  Size: 120776
+File: System.Reactive.dll,  Directory: DesktopService_InstallFolder,  Size: 1369352
+File: System.Reflection.Metadata.dll,  Directory: DesktopService_InstallFolder,  Size: 498120
+File: System.Runtime.CompilerServices.Unsafe.dll,  Directory: DesktopService_InstallFolder,  Size: 29680
+File: System.Text.Encoding.CodePages.dll,  Directory: DesktopService_InstallFolder,  Size: 776648
+File: System.Text.Encodings.Web.dll,  Directory: DesktopService_InstallFolder,  Size: 98248
+File: System.Text.Json.dll,  Directory: DesktopService_InstallFolder,  Size: 788936
+File: System.Threading.Channels.dll,  Directory: DesktopService_InstallFolder,  Size: 101320
+File: System.Threading.Tasks.Dataflow.dll,  Directory: DesktopService_InstallFolder,  Size: 191808
+File: System.Threading.Tasks.Extensions.dll,  Directory: DesktopService_InstallFolder,  Size: 38384
+File: System.ValueTuple.dll,  Directory: DesktopService_InstallFolder,  Size: 35640
+File: WixToolset.Dtf.WindowsInstaller.dll,  Directory: DesktopService_InstallFolder,  Size: 208848
+File: YurlDotNet.dll,  Directory: DesktopService_InstallFolder,  Size: 27808
+File: Resources.pri,  Directory: DesktopApp_InstallFolder,  Size: 2648
+File: ThreeSixtyMedium.scale-100.png,  Directory: StartMenuTileImagesFolder,  Size: 16096
+File: ThreeSixtyMedium.scale-140.png,  Directory: StartMenuTileImagesFolder,  Size: 16674
+File: ThreeSixtyMedium.scale-180.png,  Directory: StartMenuTileImagesFolder,  Size: 17445
+File: ThreeSixtyMedium.scale-80.png,  Directory: StartMenuTileImagesFolder,  Size: 15741
+File: ThreeSixtySmall.scale-100.png,  Directory: StartMenuTileImagesFolder,  Size: 15534
+File: ThreeSixtySmall.scale-140.png,  Directory: StartMenuTileImagesFolder,  Size: 15929
+File: ThreeSixtySmall.scale-180.png,  Directory: StartMenuTileImagesFolder,  Size: 16735
+File: ThreeSixtySmall.scale-80.png,  Directory: StartMenuTileImagesFolder,  Size: 15419
+Action ended 7:04:34: InstallFiles. Return value 1.
+Action 7:04:34: CreateShortcuts. Creating shortcuts
+Action start 7:04:34: CreateShortcuts.
+Shortcut: ServiceInstallFolderShortcut
+Shortcut: DesktopShortcut
+Shortcut: StartMenuShortcut
+Shortcut: InstallFolderShortcut
+Action ended 7:04:34: CreateShortcuts. Return value 1.
+Action 7:04:34: WriteRegistryValues. Writing system registry values
+Action start 7:04:34: WriteRegistryValues.
+Key: HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service, Name: Install Location, Value: C:\Program Files\Articulate\360\Desktop Service x64\
+Key: HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application, Name: Install Location, Value: C:\Program Files\Articulate\360\Desktop Application x64\
+Key: HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings, Name: Install Root, Value: 
+Key: HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run, Name: Articulate 360 Desktop Service, Value: "C:\Program Files\Articulate\360\Desktop Service x64\Articulate 360 Desktop Service.lnk"
+Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Articulate360.exe, Name: , Value: C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.lnk
+Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Articulate360.exe, Name: Path, Value: C:\Program Files\Articulate\360\Desktop Application x64\
+Key: HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run, Name: Articulate 360 Desktop Application, Value: "C:\Program Files\Articulate\360\Desktop Application x64\Articulate 360 Desktop App.lnk" hidden
+Key: HKEY_CLASSES_ROOT\Articulate, Name: , Value: Articulate 360
+Key: HKEY_CLASSES_ROOT\Articulate, Name: URL Protocol, Value: 
+Key: HKEY_CLASSES_ROOT\Articulate\shell\open\command, Name: , Value: "C:\Program Files\Articulate\360\Desktop Application x64\\Articulate 360 Desktop App.exe" "%1"
+Action ended 7:04:34: WriteRegistryValues. Return value 1.
+Action 7:04:34: RegisterUser. Registering user
+Action start 7:04:34: RegisterUser.
+1:  
+Action ended 7:04:34: RegisterUser. Return value 1.
+Action 7:04:34: RegisterProduct. Registering product
+Action start 7:04:34: RegisterProduct.
+1: {126A19EA-26BC-4253-A1C9-397733057610} 
+Action ended 7:04:34: RegisterProduct. Return value 1.
+Action 7:04:34: PublishFeatures. Publishing Product Features
+Action start 7:04:34: PublishFeatures.
+Feature: DesktopService
+Feature: DesktopApp
+Action ended 7:04:34: PublishFeatures. Return value 1.
+Action 7:04:34: PublishProduct. Publishing product information
+Action start 7:04:34: PublishProduct.
+1: {126A19EA-26BC-4253-A1C9-397733057610} 
+Action ended 7:04:34: PublishProduct. Return value 1.
+Action ended 7:04:34: InstallExecute. Return value 1.
+Action 7:04:34: RemoveExistingProducts. Removing applications
+Action start 7:04:34: RemoveExistingProducts.
+Action ended 7:04:34: RemoveExistingProducts. Return value 1.
+Action 7:04:34: CreateRegistryValuesAction.SetProperty. 
+Action start 7:04:34: CreateRegistryValuesAction.SetProperty.
+Action ended 7:04:34: CreateRegistryValuesAction.SetProperty. Return value 1.
+Action 7:04:34: CreateRegistryValuesAction. 
+Action start 7:04:34: CreateRegistryValuesAction.
+Action ended 7:04:34: CreateRegistryValuesAction. Return value 1.
+Action 7:04:34: DeleteScheduledTaskAction.SetProperty. 
+Action start 7:04:34: DeleteScheduledTaskAction.SetProperty.
+Action ended 7:04:34: DeleteScheduledTaskAction.SetProperty. Return value 1.
+Action 7:04:34: RegisterScheduledTaskAction.SetProperty. 
+Action start 7:04:34: RegisterScheduledTaskAction.SetProperty.
+Action ended 7:04:34: RegisterScheduledTaskAction.SetProperty. Return value 1.
+Action 7:04:34: RegisterScheduledTaskAction. 
+Action start 7:04:34: RegisterScheduledTaskAction.
+Action ended 7:04:34: RegisterScheduledTaskAction. Return value 1.
+Action 7:04:34: RepairRegistryKeysOnUpgrade.SetProperty. 
+Action start 7:04:34: RepairRegistryKeysOnUpgrade.SetProperty.
+Action ended 7:04:34: RepairRegistryKeysOnUpgrade.SetProperty. Return value 1.
+Action 7:04:34: InstallFinalize. 
+Action start 7:04:34: InstallFinalize.
+Action 7:04:34: CreateRegistryValuesAction. 
+Action start 7:04:34: CreateRegistryValuesAction.
+SFXCA: Extracting custom action to temporary directory: C:\users\USER\AppData\Local\Temp\msi96c4.tmp-\
+SFXCA: Binding to CLR version v4.0.30319
+Calling custom action Articulate.CustomActions!Articulate.CustomActions.CustomActions.CreateRegistryValuesAction
+CreateRegistryValuesAction(...) started.
+CustomActionProperties.Get(RegistrySettingsLocation) = HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+CustomActionProperties.Get(CurrentUICulture) = 
+CreateRegistryValuesAction(...) finished.
+Action ended 7:04:35: CreateRegistryValuesAction. Return value 1.
+Action 7:04:35: RegisterScheduledTaskAction. 
+Action start 7:04:35: RegisterScheduledTaskAction.
+SFXCA: Extracting custom action to temporary directory: C:\users\USER\AppData\Local\Temp\msi96c4.tmp-0\
+SFXCA: Binding to CLR version v4.0.30319
+Calling custom action Articulate.CustomActions!Articulate.CustomActions.CustomActions.RegisterScheduledTaskAction
+RegisterScheduledTaskAction(...) started.
+CustomActionProperties.Get(RegistrySettingsLocation) = HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+CustomActionProperties.Get(ChannelId) = 
+Setting non-admin installs supported to True
+Retrieving DisableNonAdminInstalls from HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings
+Setting disable non-admin installs to True
+Removing the scheduled task for non-admin installs.
+RegisterScheduledTaskAction(...) finished.
+Action ended 7:04:37: RegisterScheduledTaskAction. Return value 1.
+Action ended 7:04:37: InstallFinalize. Return value 1.
+Action 7:04:37: WixCheckRebootRequired. 
+Action start 7:04:37: WixCheckRebootRequired.
+Action ended 7:04:37: WixCheckRebootRequired. Return value 1.
+Action ended 7:04:37: INSTALL. Return value 1.
+1: Articulate 360 2: {126A19EA-26BC-4253-A1C9-397733057610} 3: 1 
+Property(S): UpgradeCode = {92617AD6-B1BB-49BD-A986-9939F3D5F002}
+Property(S): DesktopService_InstallFolder = C:\Program Files\Articulate\360\Desktop Service x64\
+Property(S): DesktopApp_InstallFolder = C:\Program Files\Articulate\360\Desktop Application x64\
+Property(S): DESKTOPSERVICE_DE = C:\Program Files\Articulate\360\Desktop Service x64\de-DE\
+Property(S): DESKTOPSERVICE_ES = C:\Program Files\Articulate\360\Desktop Service x64\es\
+Property(S): DESKTOPSERVICE_FR = C:\Program Files\Articulate\360\Desktop Service x64\fr-FR\
+Property(S): DESKTOPAPP_DE = C:\Program Files\Articulate\360\Desktop Application x64\de-DE\
+Property(S): DESKTOPAPP_ES = C:\Program Files\Articulate\360\Desktop Application x64\es\
+Property(S): DESKTOPAPP_FR = C:\Program Files\Articulate\360\Desktop Application x64\fr-FR\
+Property(S): StartMenuTileImagesFolder = C:\Program Files\Articulate\360\Desktop Application x64\StartMenu\
+Property(S): Licenses = C:\Program Files\Articulate\360\Desktop Application x64\Licenses\
+Property(S): REINSTALLMODE = emus
+Property(S): WixCloseApplicationsDeferred = Articulate 360 Installer Service.exe?33?5000?1?Articulate 360 Desktop App.exe?33?5000?1?Articulate 360 Desktop Service.exe?33?5000?1
+Property(S): CreateRegistryValuesAction = RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;CurrentUICulture=
+Property(S): RegisterScheduledTaskAction = InstallLocation=C:\Program Files\Articulate\360\Desktop Application x64\;FileName=Articulate 360 Installer Service.exe;RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;ScheduledTaskDescription=
+Property(S): RepairRegistryKeysOnUpgrade = DesktopAppInstallFolder=C:\Program Files\Articulate\360\Desktop Application x64\;DesktopServiceInstallFolder=C:\Program Files\Articulate\360\Desktop Service x64\;AppPathSuffix=
+Property(S): INSTALLFOLDER = C:\Program Files\Articulate\360\
+Property(S): ArticulateFolder = C:\Program Files\Articulate\
+Property(S): DEFAULT_INSTALLFOLDER = C:\Program Files\Articulate\360\
+Property(S): ProgramFiles64Folder = C:\Program Files\
+Property(S): TARGETDIR = C:\
+Property(S): DesktopFolder = C:\users\USER\Desktop\
+Property(S): ProgramMenuFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\
+Property(S): System64Folder = C:\windows\system32\
+Property(S): SourceDir = Z:\Users\USER\StorylineLab\inputs\burn-payloads\
+Property(S): ALLUSERS = 1
+Property(S): Manufacturer = Articulate Global, LLC
+Property(S): ProductCode = {126A19EA-26BC-4253-A1C9-397733057610}
+Property(S): ProductLanguage = 1033
+Property(S): ProductName = Articulate 360
+Property(S): ProductVersion = 1.125.37980.0
+Property(S): SecureCustomProperties = WIX_DOWNGRADE_DETECTED;WIX_UPGRADE_DETECTED
+Property(S): AdminUser = 1
+Property(S): Privileged = 1
+Property(S): MsiRunningElevated = 1
+Property(S): MsiTrueAdminUser = 1
+Property(S): CommonAppDataFolder = C:\ProgramData\
+Property(S): FavoritesFolder = C:\users\USER\Favorites\
+Property(S): FontsFolder = C:\windows\Fonts\
+Property(S): SendToFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\SendTo\
+Property(S): StartMenuFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\
+Property(S): StartupFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp\
+Property(S): TemplateFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Templates\
+Property(S): AdminToolsFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Administrative Tools\
+Property(S): AppDataFolder = C:\users\USER\AppData\Roaming\
+Property(S): SystemFolder = C:\windows\syswow64\
+Property(S): System16Folder = C:\windows\system32\
+Property(S): LocalAppDataFolder = C:\users\USER\AppData\Local\
+Property(S): MyPicturesFolder = C:\users\USER\Pictures\
+Property(S): PersonalFolder = C:\users\USER\Documents\
+Property(S): WindowsFolder = C:\windows\
+Property(S): PrintHoodFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Printer Shortcuts\
+Property(S): NetHoodFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Network Shortcuts\
+Property(S): RecentFolder = C:\users\USER\AppData\Roaming\Microsoft\Windows\Recent\
+Property(S): PhysicalMemory = 16383
+Property(S): WindowsVolume = C:\
+Property(S): TempFolder = C:\users\USER\AppData\Local\Temp\
+Property(S): VersionNT = 603
+Property(S): MsiNTProductType = 1
+Property(S): WindowsBuild = 9600
+Property(S): ServicePackLevel = 0
+Property(S): VersionMsi = 5.0
+Property(S): VersionDatabase = 500
+Property(S): Intel = 6
+Property(S): MsiAMD64 = 6
+Property(S): Msix64 = 6
+Property(S): VersionNT64 = 603
+Property(S): ProgramFilesFolder = C:\Program Files (x86)\
+Property(S): CommonFiles64Folder = C:\Program Files\Common Files\
+Property(S): CommonFilesFolder = C:\Program Files (x86)\Common Files\
+Property(S): ScreenX = 1440
+Property(S): ScreenY = 900
+Property(S): ColorBits = 32
+Property(S): UserSID = S-1-5-21-0-0-0-1000
+Property(S): MsiNetAssemblySupport = 4.6.1590.0
+Property(S): UserLanguageID = 1033
+Property(S): SystemLanguageID = 1033
+Property(S): ProductState = -1
+Property(S): LogonUser = USER
+Property(S): ComputerName = BRIANS-MACBOOK-
+Property(S): UILevel = 2
+Property(S): PackageCode = {9EC2A37F-CF1B-461E-BA53-E08D1E4BEF3E}
+Property(S): DATABASE = C:\windows\Installer\8883.msi
+Property(S): OriginalDatabase = Z:\Users\USER\StorylineLab\inputs\burn-payloads\Articulate.360.Package.msi
+Property(S): SOURCEDIR = Z:\Users\USER\StorylineLab\inputs\burn-payloads\
+Property(S): ACTION = INSTALL
+Property(S): EXECUTEACTION = INSTALL
+Property(S): CostingComplete = 1
+Property(S): ROOTDRIVE = C:\
+Property(S): INSTALLLEVEL = 1
+Property(S): OutOfDiskSpace = 0
+Property(S): OutOfNoRbDiskSpace = 0
+Property(S): CustomActionData = InstallLocation=C:\Program Files\Articulate\360\Desktop Application x64\;FileName=Articulate 360 Installer Service.exe;RegistrySettingsLocation=HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings;ChannelId=;ScheduledTaskDescription=
+1: 2 2: 0 
+1: 2 2: 1 
+Action ended 7:04:37: INSTALL. Return value 1.
