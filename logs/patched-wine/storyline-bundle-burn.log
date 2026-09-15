@@ -1,0 +1,144 @@
+[061C:0620][2026-09-15T09:27:37]i001: Burn x86 v6.0.2, Windows v10.0 x64 (Build 19045: Service Pack 0), path: Z:\Users\USER\StorylineLab\inputs\storyline-360-x64-bundle.exe
+[061C:0620][2026-09-15T09:27:37]i000: Initializing string variable 'ApplicationName' to value 'Articulate Storyline'
+[061C:0620][2026-09-15T09:27:37]i000: Initializing string variable 'PackageFileName' to value 'Articulate.Storyline_x64.Package.msi'
+[061C:0620][2026-09-15T09:27:37]i000: Initializing string variable 'ProcessNames' to value 'Storyline'
+[061C:0620][2026-09-15T09:27:37]i009: Command Line: ''
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleSourceProcessPath' to value 'Z:\Users\USER\StorylineLab\inputs\storyline-360-x64-bundle.exe'
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleSourceProcessFolder' to value 'Z:\Users\USER\StorylineLab\inputs\'
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleOriginalSource' to value 'Z:\Users\USER\StorylineLab\inputs\storyline-360-x64-bundle.exe'
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleOriginalSourceFolder' to value 'Z:\Users\USER\StorylineLab\inputs\'
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleLog' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737.log'
+[061C:0620][2026-09-15T09:27:37]i052: Condition 'VersionNT >= v6.0' evaluates to true.
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleInProgressName' to value ''
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleName' to value 'Articulate Storyline 360 64-bit'
+[061C:0620][2026-09-15T09:27:37]i000: Setting string variable 'WixBundleManufacturer' to value 'Articulate Global, LLC'
+[061C:063C][2026-09-15T09:27:38]i000: Running StorylineBootstrapperApplication
+[061C:0620][2026-09-15T09:27:41]i100: Detect begin, 6 packages
+[061C:0620][2026-09-15T09:27:41]i000: Unsetting variable 'DESKTOPNETCORERUNTIME10_x64'
+[061C:0620][2026-09-15T09:27:41]i000: Setting string variable 'NETFRAMEWORK45' to value '528049'
+[061C:0620][2026-09-15T09:27:41]i052: Condition 'NETFRAMEWORK45 >= 528040' evaluates to true.
+[061C:0620][2026-09-15T09:27:41]i052: Condition 'DESKTOPNETCORERUNTIME10_x64 >= v10' evaluates to false.
+[061C:063C][2026-09-15T09:27:41]i000: Desired action is Install with state: Absent.
+[061C:063C][2026-09-15T09:27:41]i000: Preparing install.
+[061C:063C][2026-09-15T09:27:41]i000: Package is not present or obsolete, continuing with installation.
+[061C:063C][2026-09-15T09:27:42]i000: Setting string variable 'CurrentUICulture' to value 'en-US'
+[061C:063C][2026-09-15T09:27:42]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Storyline 360 software. If this task is disabled or stopped, installing or updating Storyline 360 software will require admin privileges. This task uninstalls itself when Storyline 360 is uninstalled.'
+[061C:063C][2026-09-15T09:27:42]i000: Setting string variable 'InstallerServiceScheduledTaskDescription' to value 'Allows non-admin installation or updates of Storyline 360 software. If this task is disabled or stopped, installing or updating Storyline 360 software will require admin privileges. This task uninstalls itself when Storyline 360 is uninstalled.'
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: VisualCPlusPlusRedistributablex86, state: Absent, cached: No, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: VisualCPlusPlusRedistributablex64, state: Absent, cached: No, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: NetFx48Web, state: Present, cached: No, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: DesktopNetCoreRuntime1006Redist_x64, state: Absent, cached: No, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi, state: Absent, cached: No, install registration state: Absent, cache registration state: Absent
+[061C:0620][2026-09-15T09:27:42]i101: Detected package: Articulate.Storyline_x64.Package.msi, state: Absent, cached: No, install registration state: Absent, cache registration state: Absent
+[061C:0620][2026-09-15T09:27:42]i199: Detect complete, result: 0x0, registration state: None, cached: No, eligible for cleanup: No
+[061C:0620][2026-09-15T09:30:50]i200: Plan begin, 6 packages, action: Install
+[061C:0620][2026-09-15T09:30:50]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex86
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleLog_VisualCPlusPlusRedistributablex86' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_000_VisualCPlusPlusRedistributablex86.log'
+[061C:0620][2026-09-15T09:30:50]w321: Skipping dependency registration on package with no dependency providers: VisualCPlusPlusRedistributablex64
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleLog_VisualCPlusPlusRedistributablex64' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_001_VisualCPlusPlusRedistributablex64.log'
+[061C:0620][2026-09-15T09:30:50]w321: Skipping dependency registration on package with no dependency providers: NetFx48Web
+[061C:0620][2026-09-15T09:30:50]w321: Skipping dependency registration on package with no dependency providers: DesktopNetCoreRuntime1006Redist_x64
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'DesktopNetCoreRuntime1006RedistLog' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_002_DesktopNetCoreRuntime1006Redist_x64.log'
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleRollbackLog_Articulate.Storyline.ThumbnailHandler.Package.x64.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_003_Articulate.Storyline.ThumbnailHandler.Package.x64.msi_rollback.log'
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleLog_Articulate.Storyline.ThumbnailHandler.Package.x64.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_003_Articulate.Storyline.ThumbnailHandler.Package.x64.msi.log'
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleRollbackLog_Articulate.Storyline_x64.Package.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_004_Articulate.Storyline_x64.Package.msi_rollback.log'
+[061C:0620][2026-09-15T09:30:50]i000: Setting string variable 'WixBundleLog_Articulate.Storyline_x64.Package.msi' to value 'C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_004_Articulate.Storyline_x64.Package.msi.log'
+[061C:0620][2026-09-15T09:30:50]i222: Planned rollback boundary: 'WixDefaultBoundary', vital: Yes, transaction: No (default: No)
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: VisualCPlusPlusRedistributablex86, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: None, default cache strategy: Keep, ba requested strategy: Keep, cache: Vital, uncache: No, dependency: None, expected install registration state: (permanent), expected cache registration state: (permanent)
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: VisualCPlusPlusRedistributablex64, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: None, default cache strategy: Keep, ba requested strategy: Keep, cache: Vital, uncache: No, dependency: None, expected install registration state: (permanent), expected cache registration state: (permanent)
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: NetFx48Web, state: Present, default requested: Present, ba requested: Present, execute: None, rollback: None, default cache strategy: Remove, ba requested strategy: Remove, cache: No, uncache: Yes, dependency: None, expected install registration state: (permanent), expected cache registration state: (permanent)
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: DesktopNetCoreRuntime1006Redist_x64, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: None, default cache strategy: Remove, ba requested strategy: Remove, cache: Vital, uncache: Yes, dependency: None, expected install registration state: (permanent), expected cache registration state: (permanent)
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: Uninstall, default cache strategy: Keep, ba requested strategy: Keep, cache: Vital, uncache: No, dependency: Register, expected install registration state: Present, expected cache registration state: Present
+[061C:0620][2026-09-15T09:30:50]i201: Planned package: Articulate.Storyline_x64.Package.msi, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: Uninstall, default cache strategy: Keep, ba requested strategy: Keep, cache: Vital, uncache: No, dependency: Register, expected install registration state: Present, expected cache registration state: Present
+[061C:063C][2026-09-15T09:30:50]i000: Plan complete. Applying action.
+[061C:0620][2026-09-15T09:30:50]i299: Plan complete, result: 0x0
+[061C:0620][2026-09-15T09:30:50]i300: Apply begin
+[061C:0620][2026-09-15T09:30:50]i010: Launching elevated engine process.
+[061C:0620][2026-09-15T09:30:50]i011: Launched elevated engine process.
+[061C:0620][2026-09-15T09:30:51]i012: Connected to elevated engine.
+[07D4:07D8][2026-09-15T09:30:51]i358: Pausing automatic updates.
+[07D4:07D8][2026-09-15T09:30:51]i359: Paused automatic updates.
+[07D4:07D8][2026-09-15T09:30:51]i360: Creating a system restore point.
+[07D4:07D8][2026-09-15T09:30:51]i361: Created a system restore point.
+[07D4:07D8][2026-09-15T09:30:51]i370: Session begin, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{035E0C28-7F48-4826-817F-7CBE501E8394}, scope: PerMachine, options: 0x3, disable resume: No
+[07D4:07D8][2026-09-15T09:30:51]i000: Caching bundle from: 'C:\users\USER\AppData\Local\Temp\{29D3599E-D9B2-4E73-85F1-456F46CC3A41}\.be\Storyline_x64_Stable_Release_3.125.37980.0.exe' to: 'C:\ProgramData\Package Cache\{035E0C28-7F48-4826-817F-7CBE501E8394}\Storyline_x64_Stable_Release_3.125.37980.0.exe'
+[07D4:07D8][2026-09-15T09:30:51]i320: Registering bundle dependency provider: {035E0C28-7F48-4826-817F-7CBE501E8394}, version: 3.125.37980.0
+[07D4:07D8][2026-09-15T09:30:51]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{035E0C28-7F48-4826-817F-7CBE501E8394}, scope: PerMachine, resume: Active, restart initiated: No, disable resume: No
+[07D4:07F0][2026-09-15T09:30:54]i305: Verified acquired payload: VisualCPlusPlusRedistributablex86 at path: C:\ProgramData\Package Cache\.unverified\VisualCPlusPlusRedistributablex86, moving to: C:\ProgramData\Package Cache\C08D1AA7E6E6215A0CEE2793592B65668066C8C984B26675D2B8C09BC7FEE214\vc_redist.x86.exe.
+[07D4:07F0][2026-09-15T09:30:54]i305: Verified acquired payload: VisualCPlusPlusRedistributablex64 at path: C:\ProgramData\Package Cache\.unverified\VisualCPlusPlusRedistributablex64, moving to: C:\ProgramData\Package Cache\70A05BDE549E5A973397CD77FE0C6380807CAE768AA98454830F321A0DE64BD0\vc_redist.x64.exe.
+[061C:07F4][2026-09-15T09:30:54]i338: Acquiring package: DesktopNetCoreRuntime1006Redist_x64, payload: DesktopNetCoreRuntime1006Redist_x64, download from: https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.6/windowsdesktop-runtime-10.0.6-win-x64.exe
+[07D4:07F0][2026-09-15T09:31:02]i305: Verified acquired payload: DesktopNetCoreRuntime1006Redist_x64 at path: C:\ProgramData\Package Cache\.unverified\DesktopNetCoreRuntime1006Redist_x64, moving to: C:\ProgramData\Package Cache\D4DECABFB31ED54898637F01A0C38D5EF581E99926AA448F2378AC40C4362F93\redist\windowsdesktop-runtime-10.0.6-win-x64.exe.
+[07D4:07F0][2026-09-15T09:31:02]i305: Verified acquired payload: Articulate.Storyline.ThumbnailHandler.Package.x64.msi at path: C:\ProgramData\Package Cache\.unverified\Articulate.Storyline.ThumbnailHandler.Package.x64.msi, moving to: C:\ProgramData\Package Cache\{2E713944-0731-4799-8AD6-3CCB2A93F4BE}v3.125.37980.0\Articulate.Storyline.ThumbnailHandler.Package.x64.msi.
+[07D4:07F0][2026-09-15T09:31:04]i305: Verified acquired payload: Articulate.Storyline_x64.Package.msi at path: C:\ProgramData\Package Cache\.unverified\Articulate.Storyline_x64.Package.msi, moving to: C:\ProgramData\Package Cache\{2D2D9A6E-3918-4A60-B2B9-6852F6947B24}v3.125.37980.0\Articulate.Storyline_x64.Package.msi.
+[07D4:07D8][2026-09-15T09:31:04]i301: Applying execute package: VisualCPlusPlusRedistributablex86, action: Install, path: C:\ProgramData\Package Cache\C08D1AA7E6E6215A0CEE2793592B65668066C8C984B26675D2B8C09BC7FEE214\vc_redist.x86.exe, arguments: '"C:\ProgramData\Package Cache\C08D1AA7E6E6215A0CEE2793592B65668066C8C984B26675D2B8C09BC7FEE214\vc_redist.x86.exe" /quiet /norestart'
+[07D4:07D8][2026-09-15T09:31:08]i366: The process for package: VisualCPlusPlusRedistributablex86 exited with code: 0x0. The exit code has been translated to type: Success and restart: None.
+[061C:0620][2026-09-15T09:31:08]i319: Applied execute package: VisualCPlusPlusRedistributablex86, result: 0x0, restart: None
+[07D4:07D8][2026-09-15T09:31:08]i301: Applying execute package: VisualCPlusPlusRedistributablex64, action: Install, path: C:\ProgramData\Package Cache\70A05BDE549E5A973397CD77FE0C6380807CAE768AA98454830F321A0DE64BD0\vc_redist.x64.exe, arguments: '"C:\ProgramData\Package Cache\70A05BDE549E5A973397CD77FE0C6380807CAE768AA98454830F321A0DE64BD0\vc_redist.x64.exe" /quiet /norestart'
+[07D4:07D8][2026-09-15T09:31:11]i366: The process for package: VisualCPlusPlusRedistributablex64 exited with code: 0x0. The exit code has been translated to type: Success and restart: None.
+[061C:0620][2026-09-15T09:31:11]i319: Applied execute package: VisualCPlusPlusRedistributablex64, result: 0x0, restart: None
+[07D4:07D8][2026-09-15T09:31:11]i301: Applying execute package: DesktopNetCoreRuntime1006Redist_x64, action: Install, path: C:\ProgramData\Package Cache\D4DECABFB31ED54898637F01A0C38D5EF581E99926AA448F2378AC40C4362F93\redist\windowsdesktop-runtime-10.0.6-win-x64.exe, arguments: '"C:\ProgramData\Package Cache\D4DECABFB31ED54898637F01A0C38D5EF581E99926AA448F2378AC40C4362F93\redist\windowsdesktop-runtime-10.0.6-win-x64.exe" -log "C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_002_DesktopNetCoreRuntime1006Redist_x64.log" /install /quiet /log "C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_002_DesktopNetCoreRuntime1006Redist_x64.log"'
+[07D4:07D8][2026-09-15T09:31:25]i366: The process for package: DesktopNetCoreRuntime1006Redist_x64 exited with code: 0x0. The exit code has been translated to type: Success and restart: None.
+[061C:0620][2026-09-15T09:31:25]i319: Applied execute package: DesktopNetCoreRuntime1006Redist_x64, result: 0x0, restart: None
+[07D4:07D8][2026-09-15T09:31:25]i323: Registering package dependency provider: {2E713944-0731-4799-8AD6-3CCB2A93F4BE}_v3.125.37980.0, version: 3.125.37980.0, package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi
+[07D4:07D8][2026-09-15T09:31:25]i301: Applying execute package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi, action: Install, path: C:\ProgramData\Package Cache\{2E713944-0731-4799-8AD6-3CCB2A93F4BE}v3.125.37980.0\Articulate.Storyline.ThumbnailHandler.Package.x64.msi, arguments: ' INSTALLFOLDER="" ARPSYSTEMCOMPONENT="1" MSIFASTINSTALL="7" BURNMSIINSTALL=1 REINSTALLMODE="muso" REBOOT=ReallySuppress'
+[061C:0620][2026-09-15T09:31:25]i319: Applied execute package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi, result: 0x0, restart: None
+[07D4:07D8][2026-09-15T09:31:25]i325: Registering dependency: {035E0C28-7F48-4826-817F-7CBE501E8394} on package provider: {2E713944-0731-4799-8AD6-3CCB2A93F4BE}_v3.125.37980.0, package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi
+[07D4:07D8][2026-09-15T09:31:25]i323: Registering package dependency provider: {2D2D9A6E-3918-4A60-B2B9-6852F6947B24}_v3.125.37980.0, version: 3.125.37980.0, package: Articulate.Storyline_x64.Package.msi
+[07D4:07D8][2026-09-15T09:31:25]i301: Applying execute package: Articulate.Storyline_x64.Package.msi, action: Install, path: C:\ProgramData\Package Cache\{2D2D9A6E-3918-4A60-B2B9-6852F6947B24}v3.125.37980.0\Articulate.Storyline_x64.Package.msi, arguments: ' INSTALLFOLDER="" WIXFAILWHENDEFERRED="" CURRENTUICULTURE="en-US" SCHEDULEDTASKDESCRIPTION="Allows non-admin installation or updates of Storyline 360 software. If this task is disabled or stopped, installing or updating Storyline 360 software will require admin privileges. This task uninstalls itself when Storyline 360 is uninstalled." ARPSYSTEMCOMPONENT="1" MSIFASTINSTALL="7" BURNMSIINSTALL=1 REINSTALLMODE="muso" REBOOT=ReallySuppress'
+[061C:0620][2026-09-15T09:31:49]i319: Applied execute package: Articulate.Storyline_x64.Package.msi, result: 0x0, restart: None
+[07D4:07D8][2026-09-15T09:31:49]i325: Registering dependency: {035E0C28-7F48-4826-817F-7CBE501E8394} on package provider: {2D2D9A6E-3918-4A60-B2B9-6852F6947B24}_v3.125.37980.0, package: Articulate.Storyline_x64.Package.msi
+[07D4:07D8][2026-09-15T09:31:49]i351: Removing cached package: NetFx48Web, from path: C:\ProgramData\Package Cache\NetFx48Web_ABDCA79AF9DD48A0EA702AD45260B3C03093FB4B\
+[07D4:07D8][2026-09-15T09:31:49]i351: Removing cached package: DesktopNetCoreRuntime1006Redist_x64, from path: C:\ProgramData\Package Cache\D4DECABFB31ED54898637F01A0C38D5EF581E99926AA448F2378AC40C4362F93\
+[061C:0620][2026-09-15T09:31:49]i373: Calculating whether to keep registration
+[061C:0620][2026-09-15T09:31:49]i374:   package: VisualCPlusPlusRedistributablex86, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:31:49]i374:   package: VisualCPlusPlusRedistributablex64, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:31:49]i374:   package: NetFx48Web, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:31:49]i374:   package: DesktopNetCoreRuntime1006Redist_x64, install registration state: (permanent), cache registration state: (permanent)
+[061C:0620][2026-09-15T09:31:49]i374:   package: Articulate.Storyline.ThumbnailHandler.Package.x64.msi, install registration state: Present, cache registration state: Present
+[061C:0620][2026-09-15T09:31:49]i374:   package: Articulate.Storyline_x64.Package.msi, install registration state: Present, cache registration state: Present
+[061C:0620][2026-09-15T09:31:49]i372: Session end, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{035E0C28-7F48-4826-817F-7CBE501E8394}, scope: PerMachine, resume: ARP, restart: None, disable resume: No, default registration: Full, ba requested registration: Full
+[07D4:07D8][2026-09-15T09:31:49]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{035E0C28-7F48-4826-817F-7CBE501E8394}, scope: PerMachine, resume: ARP, restart initiated: No, disable resume: No
+[07D4:07D8][2026-09-15T09:31:49]i420: Resuming automatic updates.
+[07D4:07D8][2026-09-15T09:31:49]i421: Resumed automatic updates.
+[061C:063C][2026-09-15T09:31:49]i000: Apply complete, setting final result to 0.
+[061C:063C][2026-09-15T09:31:49]i000: MainViewModel finished, showing finished view.
+[061C:0620][2026-09-15T09:31:49]i399: Apply complete, result: 0x0, restart: None, ba requested restart:  No
+[061C:063C][2026-09-15T09:32:06]i000: Executing finish command, ActionTaken=Install, FinalResult=0
+[061C:063C][2026-09-15T09:32:06]i000: No launch processes, exiting
+[061C:0620][2026-09-15T09:32:06]i500: Shutting down, exit code: 0x0
+[061C:0620][2026-09-15T09:32:06]i502: Cleanup begin.
+[061C:0620][2026-09-15T09:32:06]i503: Cleanup not required due to running Apply.
+[061C:0620][2026-09-15T09:32:06]i599: Cleanup complete, result: 0x0
+[061C:0620][2026-09-15T09:32:06]i410: Variable: ApplicationName = Articulate Storyline
+[061C:0620][2026-09-15T09:32:06]i410: Variable: CurrentUICulture = en-US
+[061C:0620][2026-09-15T09:32:06]i410: Variable: DesktopNetCoreRuntime1006RedistLog = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_002_DesktopNetCoreRuntime1006Redist_x64.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: InstallerServiceScheduledTaskDescription = Allows non-admin installation or updates of Storyline 360 software. If this task is disabled or stopped, installing or updating Storyline 360 software will require admin privileges. This task uninstalls itself when Storyline 360 is uninstalled.
+[061C:0620][2026-09-15T09:32:06]i410: Variable: NETFRAMEWORK45 = 528049
+[061C:0620][2026-09-15T09:32:06]i410: Variable: PackageFileName = Articulate.Storyline_x64.Package.msi
+[061C:0620][2026-09-15T09:32:06]i410: Variable: ProcessNames = Storyline
+[061C:0620][2026-09-15T09:32:06]i410: Variable: RebootPending = 0
+[061C:0620][2026-09-15T09:32:06]i410: Variable: VersionNT = 10.0.0.0
+[061C:0620][2026-09-15T09:32:06]i410: Variable: VersionNT64 = 10.0.0.0
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleAction = 6
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleCommandLineAction = 6
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleElevated = 1
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleInProgressName = 
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleInstalled = 0
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleLog = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleLog_Articulate.Storyline.ThumbnailHandler.Package.x64.msi = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_003_Articulate.Storyline.ThumbnailHandler.Package.x64.msi.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleLog_Articulate.Storyline_x64.Package.msi = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_004_Articulate.Storyline_x64.Package.msi.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleLog_VisualCPlusPlusRedistributablex64 = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_001_VisualCPlusPlusRedistributablex64.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleLog_VisualCPlusPlusRedistributablex86 = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_000_VisualCPlusPlusRedistributablex86.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleManufacturer = Articulate Global, LLC
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleName = Articulate Storyline 360 64-bit
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleOriginalSource = Z:\Users\USER\StorylineLab\inputs\storyline-360-x64-bundle.exe
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleOriginalSourceFolder = Z:\Users\USER\StorylineLab\inputs\
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleProviderKey = {035E0C28-7F48-4826-817F-7CBE501E8394}
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleRollbackLog_Articulate.Storyline.ThumbnailHandler.Package.x64.msi = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_003_Articulate.Storyline.ThumbnailHandler.Package.x64.msi_rollback.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleRollbackLog_Articulate.Storyline_x64.Package.msi = C:\users\USER\AppData\Local\Temp\Articulate_Storyline_360_64-bit_20260915092737_004_Articulate.Storyline_x64.Package.msi_rollback.log
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleSourceProcessFolder = Z:\Users\USER\StorylineLab\inputs\
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleSourceProcessPath = Z:\Users\USER\StorylineLab\inputs\storyline-360-x64-bundle.exe
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleTag = A4CFDE9F-64ED-47DA-8166-6325A9BEEBAB
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleUILevel = 4
+[061C:0620][2026-09-15T09:32:06]i410: Variable: WixBundleVersion = 3.125.37980.0
+[061C:0620][2026-09-15T09:32:06]i007: Exit code: 0x0, restarting: No
