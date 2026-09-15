@@ -32,3 +32,9 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 cd "$B" && make -j4 dlls/dwrite/x86_64-windows/dwrite.dll > make-dwrite.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/dwrite.dll"; cp "$B/dlls/dwrite/x86_64-windows/dwrite.dll" "$M/lib/wine/x86_64-windows/dwrite.dll"
 echo "patched dwrite.dll in $M (also copy it over <prefix>/drive_c/windows/system32/dwrite.dll)"
+# --- wined3d (PE) : relaxed Vulkan feature-level gate for MoltenVK (patch 0003; enabled by WINE_D3D_FL_RELAX=1) ---
+cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0003-wined3d-vk-relax-feature-level-gate-for-moltenvk.patch" 2>/dev/null \
+  && git apply "$(dirname "$0")/../wine-patches/0003-wined3d-vk-relax-feature-level-gate-for-moltenvk.patch" || echo "wined3d patch already applied"; }
+cd "$B" && make -j4 dlls/wined3d/x86_64-windows/wined3d.dll > make-wined3d.log 2>&1
+rm -f "$M/lib/wine/x86_64-windows/wined3d.dll"; cp "$B/dlls/wined3d/x86_64-windows/wined3d.dll" "$M/lib/wine/x86_64-windows/wined3d.dll"
+echo "patched wined3d.dll in $M (also copy it over <prefix>/drive_c/windows/system32/wined3d.dll)"

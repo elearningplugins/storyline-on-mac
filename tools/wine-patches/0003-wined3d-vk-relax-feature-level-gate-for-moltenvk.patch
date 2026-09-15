@@ -1,0 +1,49 @@
+--- a/dlls/wined3d/adapter_vk.c
++++ b/dlls/wined3d/adapter_vk.c
+@@ -20,6 +20,7 @@
+ #include "wined3d_vk.h"
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(d3d);
++WINE_DECLARE_DEBUG_CHANNEL(winediag);
+ 
+ static const struct wined3d_state_entry_template misc_state_template_vk[] =
+ {
+@@ -2210,18 +2211,35 @@
+ {
+     return shader_model >= 3
+             && info->features2.features.independentBlend;
++}
++
++/* Research switch: Metal/MoltenVK has no geometry shaders, pipeline statistics
++ * queries or cull distance, which caps wined3d at feature level 9_3 on macOS and
++ * breaks Direct2D (needs a 10_x device) and ANGLE (needs 10_0+). Neither uses
++ * those features, so allow the higher levels without them when requested. */
++static bool feature_level_relaxed(void)
++{
++    static int relaxed = -1;
++    if (relaxed < 0)
++    {
++        const char *env = getenv("WINE_D3D_FL_RELAX");
++        relaxed = env && *env && *env != '0';
++        if (relaxed) ERR_(winediag)("WINE_D3D_FL_RELAX set: reporting D3D feature levels 10+ without geometry shaders, "
++                "pipeline statistics queries or cull distance.\n");
++    }
++    return relaxed;
+ }
+ 
+ static bool feature_level_10_supported(const struct wined3d_physical_device_info *info, unsigned int shader_model)
+ {
+     return shader_model >= 4
+             && info->features2.features.multiViewport
+-            && info->features2.features.geometryShader
++            && (info->features2.features.geometryShader || feature_level_relaxed())
+             && info->features2.features.depthClamp
+             && info->features2.features.depthBiasClamp
+-            && info->features2.features.pipelineStatisticsQuery
++            && (info->features2.features.pipelineStatisticsQuery || feature_level_relaxed())
+             && info->features2.features.shaderClipDistance
+-            && info->features2.features.shaderCullDistance
++            && (info->features2.features.shaderCullDistance || feature_level_relaxed())
+             && info->draw_parameters_features.shaderDrawParameters
+             && info->vertex_divisor_features.vertexAttributeInstanceRateDivisor
+             && info->vertex_divisor_features.vertexAttributeInstanceRateZeroDivisor;
