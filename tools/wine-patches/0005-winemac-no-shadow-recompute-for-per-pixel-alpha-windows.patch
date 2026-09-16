@@ -1,0 +1,50 @@
+--- a/dlls/winemac.drv/cocoa_window.m
++++ b/dlls/winemac.drv/cocoa_window.m
+@@ -430,6 +430,7 @@
+ @property (readonly, nonatomic) BOOL needsTransparency;
+ 
+ @property (nonatomic) BOOL usePerPixelAlpha;
++@property (nonatomic) BOOL wantsShadow;
+ 
+ @property (assign, nonatomic) void* himc;
+ @property (nonatomic) BOOL commandDone;
+@@ -568,7 +569,12 @@
+             // If the window may be transparent, then we have to invalidate the
+             // shadow every time we draw.  Also, if this is the first time we've
+             // drawn since changing from transparent to opaque.
+-            if (shapeImage || window.usePerPixelAlpha || window.shapeChangedSinceLastDraw)
++            /* Per-pixel-alpha (UpdateLayeredWindow) windows draw their own
++             * shadows and can update at frame rate; recomputing the macOS
++             * window shadow from the alpha channel on every draw is what makes
++             * them crawl. Their shadow is disabled instead (see
++             * macdrv_window_use_per_pixel_alpha), so only shape changes need it. */
++            if (shapeImage || window.shapeChangedSinceLastDraw)
+             {
+                 window.shapeChangedSinceLastDraw = FALSE;
+                 [window invalidateShadow];
+@@ -1057,6 +1063,7 @@
+     @synthesize drawnSinceShown;
+     @synthesize shapeChangedSinceLastDraw;
+     @synthesize usePerPixelAlpha;
++    @synthesize wantsShadow;
+     @synthesize himc, commandDone;
+     @synthesize contentViewMaskLayer;
+ 
+@@ -1277,7 +1284,8 @@
+ 
+         resizable = wf->resizable;
+         [self adjustFeaturesForState];
+-        [self setHasShadow:wf->shadow];
++        wantsShadow = wf->shadow;
++        [self setHasShadow:wf->shadow && !self.usePerPixelAlpha];
+     }
+ 
+     // Indicates if the window would be visible if the app were not hidden.
+@@ -3720,6 +3728,7 @@
+ 
+     OnMainThread(^{
+         window.usePerPixelAlpha = use_per_pixel_alpha;
++        [window setHasShadow:window.wantsShadow && !use_per_pixel_alpha];
+         [window checkTransparency];
+     });
+ }

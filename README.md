@@ -44,7 +44,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
 | Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate) | 09 |
 | Save / Player dialog / Publish | **FAIL** — managed NREs (null player), same root as Preview | 09 |
-| Text box editing | **root cause found**: wined3d FL 9_3 on this Mac (MoltenVK lacks 3 features) → patch 0003 gives FL 11_1; verifying in-app | 10 |
+| Text box editing | FL fixed (0003), D2D shaders fixed (0004); AI writer popup layered-window loop → winemac shadow fix (0005), verifying | 11 |
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
 

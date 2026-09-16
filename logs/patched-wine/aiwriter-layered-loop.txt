@@ -1,0 +1,7 @@
+# AiWriterWindow UpdateLayeredWindow loop (Run 11)
+23498.707:0bd4:trace:win:NtUserCreateWindowEx ex_style 0x80000, class_name L"HwndWrapper[Storyline;Main;59374053-df12-4372-a918-ac48093f99eb]", version <null>, window_name L"", style 0x20f0000, x 2147483648, y 2147483648, cx 2147483648, cy 2147483648, parent 0
+35094.592:066c:trace:win:NtUserUpdateLayeredWindow window 0x300ea new_rects { window (235,260)-(1035,775), client (235,260)-(1035,775), visible (235,260)-(1035,775) }
+35094.708:066c:trace:win:NtUserUpdateLayeredWindow window 0x300ea new_rects { window (235,260)-(1035,775), client (235,260)-(1035,775), visible (235,260)-(1035,775) }
+35095.132:066c:trace:win:NtUserUpdateLayeredWindow window 0x300ea new_rects { window (235,260)-(1035,775), client (235,260)-(1035,775), visible (235,260)-(1035,775) }
+...
+2700 updates in 88.4 s (30.5/s), 800x515
