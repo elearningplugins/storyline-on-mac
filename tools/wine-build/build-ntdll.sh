@@ -44,10 +44,12 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 cd "$B" && make -j4 dlls/d2d1/x86_64-windows/d2d1.dll > make-d2d1.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
 echo "patched d2d1.dll in $M (also copy it over <prefix>/drive_c/windows/system32/d2d1.dll)"
+# (patch 0007: ntdll get_random via arc4random_buf — applied with the winemac step below)
+cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" 2>/dev/null && git apply "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" || echo "rng patch already applied"; }
 # --- winemac.drv (unix) : no per-frame shadow recompute for per-pixel-alpha windows (patch 0005) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" || echo "winemac patch already applied"; }
-cd "$B" && make -j4 dlls/winemac.drv/winemac.so > make-winemac.log 2>&1
+cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
 # --- win32u (PE) : UpdateLayeredWindow copy fast path (patch 0006) ---

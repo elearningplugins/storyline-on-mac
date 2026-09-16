@@ -50,7 +50,7 @@
  }
 --- a/dlls/winemac.drv/surface.c
 +++ b/dlls/winemac.drv/surface.c
-@@ -87,7 +87,10 @@
+@@ -87,11 +87,13 @@
      CGImageRef image;
      struct macdrv_win_data *data;
  
@@ -58,7 +58,52 @@
 +    /* Tag the surface with the device colour space: with sRGB, CoreGraphics
 +     * unpremultiplies, converts and re-premultiplies every flushed frame on a
 +     * P3 display, which dominates the cost of frame-rate layered windows. */
-+    colorspace = CGColorSpaceCreateDeviceRGB();
++    colorspace = macdrv_get_display_colorspace();
      image = CGImageCreate(color_info->bmiHeader.biWidth, abs(color_info->bmiHeader.biHeight), 8, 32,
                            color_info->bmiHeader.biSizeImage / abs(color_info->bmiHeader.biHeight), colorspace,
                            alpha_info | kCGBitmapByteOrder32Little, surface->provider, NULL, retina_on, kCGRenderingIntentDefault);
+-    CGColorSpaceRelease(colorspace);
+ 
+     macdrv_window_set_color_image(surface->window, image, cgrect_from_rect(*rect), cgrect_from_rect(*dirty));
+     CGImageRelease(image);
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -2741,4 +2741,28 @@
+     });
+ 
+     return ret;
++}
++
++
++/***********************************************************************
++ *              macdrv_get_display_colorspace
++ *
++ * Colour space of the main display, so surface images flush without a
++ * per-frame colour conversion. Cached; the caller must not release it.
++ */
++CGColorSpaceRef macdrv_get_display_colorspace(void)
++{
++    static CGColorSpaceRef colorspace;
++    if (!colorspace)
++    {
++        CGColorSpaceRef cs = NULL;
++        @autoreleasepool
++        {
++            NSScreen *screen = [NSScreen mainScreen];
++            if (screen) cs = CGColorSpaceRetain([[screen colorSpace] CGColorSpace]);
++        }
++        if (!cs) cs = CGColorSpaceCreateDeviceRGB();
++        colorspace = cs;
++    }
++    return colorspace;
+ }
+--- a/dlls/winemac.drv/macdrv_cocoa.h
++++ b/dlls/winemac.drv/macdrv_cocoa.h
+@@ -508,6 +508,7 @@
+ extern void macdrv_set_cocoa_window_frame(macdrv_window w, const CGRect* new_frame);
+ extern void macdrv_get_cocoa_window_frame(macdrv_window w, CGRect* out_frame);
+ extern void macdrv_set_cocoa_parent_window(macdrv_window w, macdrv_window parent);
++extern CGColorSpaceRef macdrv_get_display_colorspace(void);
+ extern void macdrv_window_set_color_image(macdrv_window w, CGImageRef image, CGRect rect, CGRect dirty);
+ extern void macdrv_window_set_shape_image(macdrv_window w, CGImageRef image);
+ extern void macdrv_set_window_shape(macdrv_window w, const CGRect *rects, int count);

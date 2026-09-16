@@ -1,0 +1,16 @@
+--- a/dlls/ntdll/unix/system.c
++++ b/dlls/ntdll/unix/system.c
+@@ -1716,6 +1716,13 @@
+ 
+ static void get_random( void *buf, ULONG len )
+ {
++#ifdef __APPLE__
++    /* .NET asks for random bytes constantly (hash seeds, GUIDs); opening
++     * /dev/urandom for each request dominates those calls. arc4random_buf
++     * is the kernel-seeded CSPRNG and never fails. */
++    arc4random_buf( buf, len );
++    return;
++#endif
+ #ifdef HAVE_GETRANDOM
+     int ret;
+     do
