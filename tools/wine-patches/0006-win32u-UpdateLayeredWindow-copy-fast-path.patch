@@ -1,0 +1,53 @@
+--- a/dlls/win32u/window.c
++++ b/dlls/win32u/window.c
+@@ -2668,6 +2668,20 @@
+ /*****************************************************************************
+  *           UpdateLayeredWindow (win32u.@)
+  */
++/* UpdateLayeredWindow with a per-pixel-alpha 32bpp source and no constant alpha
++ * or colour key produces exactly the source pixels, so copying beats blending. */
++static BOOL blend_is_copy( HDC hdc_src, const BLENDFUNCTION *blend )
++{
++    BITMAP bm;
++    HBITMAP bitmap;
++
++    if (!blend || blend->BlendOp != AC_SRC_OVER || blend->SourceConstantAlpha != 0xff ||
++        !(blend->AlphaFormat & AC_SRC_ALPHA)) return FALSE;
++    if (!(bitmap = NtGdiGetDCObject( hdc_src, NTGDI_OBJ_SURF ))) return FALSE;
++    if (!NtGdiExtGetObjectW( bitmap, sizeof(bm), &bm )) return FALSE;
++    return bm.bmBitsPixel == 32;
++}
++
+ BOOL WINAPI NtUserUpdateLayeredWindow( HWND hwnd, HDC hdc_dst, const POINT *pts_dst, const SIZE *size,
+                                        HDC hdc_src, const POINT *pts_src, COLORREF key,
+                                        const BLENDFUNCTION *blend, DWORD flags, const RECT *dirty )
+@@ -2747,15 +2761,24 @@
+         NtGdiSelectBitmap( hdc, surface->color_bitmap );
+ 
+         if (dirty) intersect_rect( &rect, &rect, dirty );
+-        NtGdiPatBlt( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, BLACKNESS );
+-
+         src_rect = rect;
+         if (pts_src) OffsetRect( &src_rect, pts_src->x, pts_src->y );
+         NtGdiTransformPoints( hdc_src, (POINT *)&src_rect, (POINT *)&src_rect, 2, NtGdiDPtoLP );
+ 
+-        ret = NtGdiAlphaBlend( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+-                               hdc_src, src_rect.left, src_rect.top, src_rect.right - src_rect.left, src_rect.bottom - src_rect.top,
+-                               *(DWORD *)&src_blend, 0 );
++        if (blend_is_copy( hdc_src, blend ))
++        {
++            /* Premultiplied 32bpp source over a cleared surface is a plain copy. */
++            ret = NtGdiBitBlt( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
++                               hdc_src, src_rect.left, src_rect.top, SRCCOPY, 0, 0 );
++        }
++        else
++        {
++            NtGdiPatBlt( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, BLACKNESS );
++
++            ret = NtGdiAlphaBlend( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
++                                   hdc_src, src_rect.left, src_rect.top, src_rect.right - src_rect.left, src_rect.bottom - src_rect.top,
++                                   *(DWORD *)&src_blend, 0 );
++        }
+         if (ret) add_bounds_rect( &surface->bounds, &rect );
+ 
+         NtGdiDeleteObjectApp( hdc );

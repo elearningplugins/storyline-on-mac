@@ -50,3 +50,9 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so > make-winemac.log 2>&1
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
+# --- win32u (PE) : UpdateLayeredWindow copy fast path (patch 0006) ---
+cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
+  && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
+cd "$B" && make -j4 dlls/win32u/x86_64-windows/win32u.dll > make-win32u.log 2>&1
+rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
+echo "patched win32u.dll in $M (also copy it over <prefix>/drive_c/windows/system32/win32u.dll)"

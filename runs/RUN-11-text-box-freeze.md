@@ -23,3 +23,13 @@ Per-pixel-alpha (UpdateLayeredWindow) windows get `hasShadow = NO` (they draw th
 ## Reported to Articulate (private gist)
 https://gist.github.com/elearningplugins/5c2369a8b47aced28af54141bedfa9e1 — the 30 Hz repaint loop is platform-independent
 and wasteful even on Windows; Storyline Options has no switch to disable the AI writer popup for this account.
+
+## Measurements after patch 0005 (shadow)
+Popup open, user idle: process CPU **182% → 63%**. Remaining cost (sample): `blend_rects_8888` (win32u AlphaBlend of the whole
+frame over a cleared surface), memmove, and CoreGraphics colour conversion (`vUnpremultiplyData_RGBA8888`,
+`vLookupTable_Planar8toPlanar16`, `vMatrixMultiply_Planar16S`) because the surface image is tagged sRGB on a P3 display.
+
+## Patches 0005 (extended) and 0006
+- winemac.drv surface.c: tag surface images with the device colour space instead of sRGB → no per-frame conversion.
+- win32u window.c: `NtUserUpdateLayeredWindow` uses a 32bpp `BitBlt` instead of PatBlt+AlphaBlend when the blend is a plain
+  per-pixel-alpha SRC_OVER at 255 (result is identical: source over black is the source). Built and installed; measuring next.

@@ -48,3 +48,17 @@
          [window checkTransparency];
      });
  }
+--- a/dlls/winemac.drv/surface.c
++++ b/dlls/winemac.drv/surface.c
+@@ -87,7 +87,10 @@
+     CGImageRef image;
+     struct macdrv_win_data *data;
+ 
+-    colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
++    /* Tag the surface with the device colour space: with sRGB, CoreGraphics
++     * unpremultiplies, converts and re-premultiplies every flushed frame on a
++     * P3 display, which dominates the cost of frame-rate layered windows. */
++    colorspace = CGColorSpaceCreateDeviceRGB();
+     image = CGImageCreate(color_info->bmiHeader.biWidth, abs(color_info->bmiHeader.biHeight), 8, 32,
+                           color_info->bmiHeader.biSizeImage / abs(color_info->bmiHeader.biHeight), colorspace,
+                           alpha_info | kCGBitmapByteOrder32Little, surface->provider, NULL, retina_on, kCGRenderingIntentDefault);
