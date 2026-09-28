@@ -42,6 +42,9 @@ echo "patched wined3d.dll in $M (also copy it over <prefix>/drive_c/windows/syst
 # --- d2d1 (PE) : pass the stroke transform across the VS/PS interface as float4 (patch 0004; SPIR-V backend rejects the float2x2 packing) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0004-d2d1-pass-stroke-transform-as-float4-for-spirv.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0004-d2d1-pass-stroke-transform-as-float4-for-spirv.patch" || echo "d2d1 patch already applied"; }
+# (patch 0008: DrawImage honours D2D1_COMPOSITE_MODE_MASK_INVERT, which Storyline uses to draw the text caret)
+cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0008-d2d1-implement-mask-invert-composite-mode.patch" 2>/dev/null \
+  && git apply "$(dirname "$0")/../wine-patches/0008-d2d1-implement-mask-invert-composite-mode.patch" || echo "d2d1 mask-invert patch already applied"; }
 cd "$B" && make -j4 dlls/d2d1/x86_64-windows/d2d1.dll > make-d2d1.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
 echo "patched d2d1.dll in $M (also copy it over <prefix>/drive_c/windows/system32/d2d1.dll)"

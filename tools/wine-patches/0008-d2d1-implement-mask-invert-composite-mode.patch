@@ -1,0 +1,74 @@
+--- a/dlls/d2d1/d2d1_private.h
++++ b/dlls/d2d1/d2d1_private.h
+@@ -206,6 +206,7 @@
+     ID3D11Buffer *vb;
+     ID3D11RasterizerState *rs;
+     ID3D11BlendState *bs;
++    ID3D11BlendState *bs_mask_invert;
+     ID3D11SamplerState *sampler_states
+             [D2D_SAMPLER_INTERPOLATION_MODE_COUNT]
+             [D2D_SAMPLER_EXTEND_MODE_COUNT]
+--- a/dlls/d2d1/device.c
++++ b/dlls/d2d1/device.c
+@@ -2554,6 +2554,9 @@
+     if (context->bs)
+         ID3D11BlendState_Release(context->bs);
+     context->bs = NULL;
++    if (context->bs_mask_invert)
++        ID3D11BlendState_Release(context->bs_mask_invert);
++    context->bs_mask_invert = NULL;
+ }
+ 
+ static void STDMETHODCALLTYPE d2d_device_context_SetTarget(ID2D1DeviceContext6 *iface, ID2D1Image *target)
+@@ -2606,6 +2609,13 @@
+         blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+         if (FAILED(hr = ID3D11Device1_CreateBlendState(context->d3d_device, &blend_desc, &context->bs)))
+             WARN("Failed to create blend state, hr %#lx.\n", hr);
++
++        /* MASK_INVERT: Oc = Sc * (1 - Dc) + Dc * (1 - Sa), Oa = Da. */
++        blend_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_INV_DEST_COLOR;
++        blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
++        blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
++        if (FAILED(hr = ID3D11Device1_CreateBlendState(context->d3d_device, &blend_desc, &context->bs_mask_invert)))
++            WARN("Failed to create mask-invert blend state, hr %#lx.\n", hr);
+     }
+     else if (SUCCEEDED(ID2D1Image_QueryInterface(target, &IID_ID2D1CommandList, (void **)&command_list)))
+     {
+@@ -2718,6 +2728,7 @@
+         D2D1_COMPOSITE_MODE composite_mode)
+ {
+     struct d2d_device_context *context = impl_from_ID2D1DeviceContext(iface);
++    ID3D11BlendState *prev_bs = NULL;
+     ID2D1Bitmap *bitmap;
+ 
+     TRACE("iface %p, image %p, target_offset %s, image_rect %s, interpolation_mode %#x, composite_mode %#x.\n",
+@@ -2740,16 +2751,28 @@
+         return;
+     }
+ 
+-    if (composite_mode != D2D1_COMPOSITE_MODE_SOURCE_OVER)
++    if (composite_mode == D2D1_COMPOSITE_MODE_MASK_INVERT && context->bs_mask_invert)
++    {
++        prev_bs = context->bs;
++        context->bs = context->bs_mask_invert;
++    }
++    else if (composite_mode != D2D1_COMPOSITE_MODE_SOURCE_OVER)
++    {
+         FIXME("Unhandled composite mode %#x.\n", composite_mode);
++    }
+ 
+     if (SUCCEEDED(ID2D1Image_QueryInterface(image, &IID_ID2D1Bitmap, (void **)&bitmap)))
+     {
+         d2d_device_context_draw_bitmap(context, bitmap, NULL, 1.0f, interpolation_mode, image_rect, target_offset, NULL);
+ 
+         ID2D1Bitmap_Release(bitmap);
++        if (prev_bs)
++            context->bs = prev_bs;
+         return;
+     }
++
++    if (prev_bs)
++        context->bs = prev_bs;
+ 
+     FIXME("Unhandled image %p.\n", image);
+ }
