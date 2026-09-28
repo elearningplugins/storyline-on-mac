@@ -2,6 +2,10 @@
 
 Can the current Articulate 360 / Storyline 360 Windows apps run on an Intel Mac through upstream Wine — no VM, no Boot Camp, no CrossOver, no remote Windows, no licensing/auth bypass?
 
+**Where it stands:** the Articulate 360 Desktop App signs in, and Storyline 360 installs, launches and opens projects on a patched Wine 11.16. Preview, Save and Publish still fail. This is a research log, not something to install for day-to-day work.
+
+**Scope:** Intel Macs only. Apple Silicon (Rosetta 2 / Game Porting Toolkit) was not tested and is not supported here. You need your own Articulate 360 subscription and installers; none are included.
+
 Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Every experiment is recorded under [runs/](runs/) with sanitized logs under [logs/](logs/). Licensed binaries, Wine prefixes, and snapshots are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
 
 ## Environment
@@ -34,17 +38,14 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline install from the app | **BLOCKED** — app forces a Desktop App self-update first; update runs Burn → CLR hosting fails | 04e |
 | Root cause of CLR hosting failure | **FOUND** — Wine gives 32-bit processes `0x7fff0000-0x7fffffff` (wow64 `default_zero_bits`) | 05 |
 | Patched `ntdll.so` research build | **WORKS** — core MSI custom actions run; original EXE installs end-to-end under real .NET 4.8 | 06 |
-| Restart persistence, HiDPI, Dock launcher | **OK** (`~/Applications/Articulate 360.app`) | 04e |
-| Storyline install from the app | **BLOCKED** — app forces a Desktop App self-update first; update runs Burn → CLR hosting fails | 04e |
-| Root cause of CLR hosting failure | **FOUND** — Wine gives 32-bit processes `0x7fff0000-0x7fffffff` (wow64 `default_zero_bits`) | 05 |
-| Patched `ntdll.so` research build | **WORKS** — core MSI custom actions run; original EXE installs end-to-end under real .NET 4.8 | 06 |
 | Storyline install (official bundle, direct) | **INSTALLED** — all 5 packages 0x0 incl. .NET Desktop Runtime 10 | 07 |
 | Install via Desktop App → Installer Service | **FAIL** — "Directory has unexpected ACL" (Wine security-descriptor round-trip) | 07 |
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
-| Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate) | 09 |
-| Save / Player dialog / Publish | **FAIL** — managed NREs (null player), same root as Preview | 09 |
-| Text box editing | FL fixed (0003), D2D shaders fixed (0004); AI writer popup layered-window loop → winemac shadow fix (0005), verifying | 11 |
+| Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate); not re-tested since the graphics patches | 09 |
+| Save / Player dialog / Publish | **FAIL** — managed NREs (null player), same root as Preview; not re-tested since the graphics patches | 09 |
+| Graphics feature level | **FIXED** by patch 0003 — Direct3D feature level 9_3 → 11_1 on MoltenVK | 10 |
+| Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005/0006 | 11 |
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
 | New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
@@ -52,10 +53,11 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 
 ## Current setup (what actually runs)
 
-- **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with two files replaced —
-  `x86_64-unix/ntdll.so` (patch 0001) and `x86_64-windows/dwrite.dll` (patch 0002) — plus a copy of the loader and a `share`
-  symlink. Built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. The prefix's `system32/dwrite.dll`
-  is also replaced with the patched copy.
+- **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
+  replaced — `ntdll.so` (0001, 0007), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004), `winemac.so` (0005) and
+  `win32u.dll` (0006) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all seven are
+  built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
+  (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
   `DisableNonAdminInstalls=true`, Articulate 360 core laid out via `msiexec /a` + registry import, Storyline installed by the
   official bundle, .NET Desktop Runtime 10 x64 from that bundle. Mac driver: `LeftCommandIsCtrl`/`RightCommandIsCtrl=y`;
@@ -75,7 +77,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 
 ## What didn't
 
-- Native CLR hosting under real .NET 4.8 in Wine: both WiX Burn's `mbahost` and DTF `SFXCA` fail with 0x8007000E creating an AppDomain, while managed EXEs run normally. This blocks the Burn UI and every DTF custom action in Articulate's MSIs. Open item — will matter for Storyline's MSI.
+- Native CLR hosting under real .NET 4.8 on stock Wine: both WiX Burn's `mbahost` and DTF `SFXCA` fail with 0x8007000E creating an AppDomain, while managed EXEs run normally. Root cause is Wine's wow64 address range for 32-bit processes (Run 05); fixed by patch 0001 (Run 06).
 
 - Xcode CLT as found on the machine: `clang++` could not find `<initializer_list>`. Any C++ source build fails until `rm -rf /Library/Developer/CommandLineTools && xcode-select --install`.
 - MacPorts `port -s` (force source build) is not needed and would be slow on this hardware; skip it unless patching Wine.
@@ -100,3 +102,11 @@ tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/ar
 ## Rules kept
 
 No Gatekeeper/SIP changes, no quarantine stripping, no `--no-sandbox`, no TLS/licensing/code-signing bypass, no patched Articulate binaries. The only change to Articulate's behavior is a registry value its own deployment guide documents.
+
+## License
+
+Scripts and documentation are MIT ([LICENSE](LICENSE)). The Wine patches in `tools/wine-patches/` are LGPL-2.1-or-later, the same terms as Wine. `tools/winetricks-20260125` is an unmodified, pinned copy of [winetricks](https://github.com/Winetricks/winetricks) kept for reference, under its own LGPL-2.1-or-later license.
+
+## Disclaimer
+
+Not affiliated with, endorsed by, or supported by Articulate Global, LLC. Articulate 360 and Storyline 360 are trademarks of Articulate; the launcher icons in `tools/launcher/` are drawn from scratch by the `makeicon*.swift` scripts to identify the apps in the Dock and are not Articulate artwork. Running Articulate software this way is unsupported by Articulate and requires your own licensed copy.

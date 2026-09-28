@@ -20,9 +20,9 @@ Per-pixel-alpha (UpdateLayeredWindow) windows get `hasShadow = NO` (they draw th
 `updateLayer` no longer invalidates the shadow for them; shape-changed windows keep the old behaviour. Built as `winemac.so`
 (unix side only) into the mirror. Result: pending user test.
 
-## Reported to Articulate (private gist)
-https://gist.github.com/elearningplugins/5c2369a8b47aced28af54141bedfa9e1 — the 30 Hz repaint loop is platform-independent
-and wasteful even on Windows; Storyline Options has no switch to disable the AI writer popup for this account.
+## Reported to Articulate
+The 30 Hz repaint loop is platform-independent and wasteful even on Windows; Storyline Options has no switch to disable the
+AI writer popup for this account.
 
 ## Measurements after patch 0005 (shadow)
 Popup open, user idle: process CPU **182% → 63%**. Remaining cost (sample): `blend_rects_8888` (win32u AlphaBlend of the whole
