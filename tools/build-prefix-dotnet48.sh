@@ -9,6 +9,8 @@ echo "# start $(date -u +%FT%TZ)"; wineboot -u
 "$LAB/tools/winetricks" -q --unattended dotnet48 corefonts
 "$LAB/tools/winetricks" -q win10
 wine reg add 'HKLM\Software\Articulate\Common\Settings' /v DisableNonAdminInstalls /t REG_SZ /d true /f
+# WPF software rendering: through wined3d on MoltenVK the Desktop App draws clipped labels and stray lines; OpenGL draws nothing.
+wine reg add 'HKCU\Software\Microsoft\Avalon.Graphics' /v DisableHWAcceleration /t REG_DWORD /d 1 /f
 wineserver -w
 echo "# winver:"; wine reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion' /v CurrentBuildNumber | grep REG
 echo "# net48 release:"; wine reg query 'HKLM\Software\Microsoft\NET Framework Setup\NDP\v4\Full' /v Release | grep REG

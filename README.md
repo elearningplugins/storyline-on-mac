@@ -49,6 +49,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
 | New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
+| Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patches 0005/0006 ruled out) | — |
 
 
 ## Current setup (what actually runs)
@@ -61,7 +62,9 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
   `DisableNonAdminInstalls=true`, Articulate 360 core laid out via `msiexec /a` + registry import, Storyline installed by the
   official bundle, .NET Desktop Runtime 10 x64 from that bundle. Mac driver: `LeftCommandIsCtrl`/`RightCommandIsCtrl=y`;
-  `RetinaMode` currently `n` (WPF dialogs went blank with it on); `Direct3D\renderer` unset (default GL) as of Run 09.
+  `RetinaMode` currently `n` (WPF dialogs went blank with it on); `Direct3D\renderer=vulkan` since Run 10; WPF hardware
+  acceleration off (`HKCU\Software\Microsoft\Avalon.Graphics\DisableHWAcceleration=1`) because the Desktop App drew clipped
+  labels and stray lines through wined3d on Vulkan and nothing at all on OpenGL.
 - **Launchers**: `~/Applications/Articulate 360.app` and `~/Applications/Storyline 360.app` (tools/launcher/) run the genuine
   EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks.
 
