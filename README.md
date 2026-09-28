@@ -93,12 +93,26 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 # prerequisites (privileged): MacPorts 2.12.6, then
 sudo port install wine-devel cabextract
 
-# build prefix with real .NET 4.8 + the registry value
+# 1. prefix: real .NET 4.8, Windows 10, DisableNonAdminInstalls, and every prefix setting listed under "Current setup"
 tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
 
-# run the installer with focused Wine logging
+# 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
+tools/install-core-admin.sh wine-dotnet48-noadmintask
+
+# 3. patched Wine mirror (all seven patches), then its PE modules copied into the prefix's system32
+tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
+
+# 4. Dock launchers and the articulate:// bridge in ~/Applications
+tools/launcher/install-launchers.sh
+
+# 5. Storyline: sign in with the Articulate 360 app, then run the official bundle it downloads under the patched Wine (Run 07)
+WINEPREFIX=~/StorylineLab/prefixes/wine-dotnet48-noadmintask ~/StorylineLab/wine-patched/bin/wine ~/StorylineLab/inputs/storyline-360-x64-bundle.exe
+
+# any step with focused Wine logging
 tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/articulate-360.exe
 ```
+
+`tools/install-core-admin.sh` takes `burn-payloads/` from the Burn package cache of an earlier install attempt (Run 04b); with the patched Wine, running the original `articulate-360.exe` also installs the core end to end (Run 06).
 
 `tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
 

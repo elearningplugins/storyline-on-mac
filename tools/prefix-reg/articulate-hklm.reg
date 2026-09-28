@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\Software\Articulate]
+
+[HKEY_LOCAL_MACHINE\Software\Articulate\360]
+
+[HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Application]
+"Install Location"="C:\\Program Files\\Articulate\\360\\Desktop Application x64\\"
+
+[HKEY_LOCAL_MACHINE\Software\Articulate\360\Desktop Service]
+"Install Location"="C:\\Program Files\\Articulate\\360\\Desktop Service x64\\"
+
+[HKEY_LOCAL_MACHINE\Software\Articulate\Common]
+
+[HKEY_LOCAL_MACHINE\Software\Articulate\Common\Settings]
+"CurrentUICulture"="en-US"
+"DisableNonAdminInstalls"="true"
+"Install Root"=""
+

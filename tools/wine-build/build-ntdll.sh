@@ -2,6 +2,7 @@
 # Rebuild only ntdll.so from the pinned wine-11.16 source with the wow64 clamp patch, matching MacPorts' build settings.
 # Prereqs (MacPorts): wine-devel 11.16, mingw-w64, bison, flex. Nothing here touches /opt/local.
 set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"
 LAB="$HOME/StorylineLab"; SRC="$LAB/wine-src"; B="$SRC/build"
 [ -f "$SRC/wine-11.16.tar.gz" ] || curl -sL -o "$SRC/wine-11.16.tar.gz" https://github.com/wine-mirror/wine/archive/refs/tags/wine-11.16.tar.gz
 echo "2b6d5cff784cb774f7f17b9a640b123ca8361d89c4280c0021b70bb6f3cd1b1c  $SRC/wine-11.16.tar.gz" | shasum -a 256 -c
@@ -58,3 +59,5 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 cd "$B" && make -j4 dlls/win32u/x86_64-windows/win32u.dll > make-win32u.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
 echo "patched win32u.dll in $M (also copy it over <prefix>/drive_c/windows/system32/win32u.dll)"
+# Optional prefix name: also install the patched PE modules into that prefix's system32.
+if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
