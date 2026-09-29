@@ -4,6 +4,7 @@ import csv
 import glob
 import json
 import os
+import re
 import statistics
 import sys
 from collections import defaultdict
@@ -50,7 +51,7 @@ def read_perf(d):
             t_us = int(round(float(parts[1]) * 1e6))
         except ValueError:
             continue
-        ev = {"t": t_us, "pid": parts[2], "mod": parts[4], "name": parts[5], "args": parts[6:]}
+        ev = {"t": t_us, "pid": parts[2], "tid": parts[3], "mod": parts[4], "name": parts[5], "args": parts[6:]}
         for a in parts[6:]:
             if "=" in a:
                 k, v = a.split("=", 1)
@@ -69,7 +70,8 @@ def caret_section(events, out, sync, start):
     if frames_pid is None:
         out.append("  no events")
         return
-    ev = sorted(by_pid[frames_pid], key=lambda e: e["t"])
+    # input can be logged by the process that injected it (tools/uiauto), so take input from every process
+    ev = sorted(by_pid[frames_pid] + [e for e in events if e["name"] == "input" and e["pid"] != frames_pid], key=lambda e: e["t"])
     frames = [e for e in ev if e["name"] == "dcrt_frame"]
     clicks = [e for e in ev if e["name"] == "input" and e["args"] and e["args"][0] == "mouse_down"]
     keys = [e for e in ev if e["name"] == "input" and e["args"] and e["args"][0] == "key_down"]
@@ -202,6 +204,45 @@ def storyline_section(d, out, info):
     out.append(f"  CEF logs: {len(cef)} file(s), {gpu} GPU-related lines")
 
 
+def short_path(p):
+    p = re.sub(r"%([0-9A-F]{2})", lambda m: chr(int(m.group(1), 16)), p)
+    p = re.sub(r"^.*/prefixes/[^/]+/(drive_c|dosdevices/c:)", "C:", p)
+    return p.replace(os.path.expanduser("~"), "~")
+
+
+def fs_section(events, out):
+    fs = [e for e in events if e["mod"] == "ntdll" and e["name"] == "fs"]
+    focus = [e for e in events if e["name"] == "focus"]
+    if not fs or not focus:
+        out.append("  no file lookup events (needs patch 0011) or no focus events")
+        return
+    pid = max(set(e["pid"] for e in focus), key=lambda p: sum(1 for e in focus if e["pid"] == p))
+    ui = max(set(e["tid"] for e in focus if e["pid"] == pid), key=lambda t: sum(1 for e in focus if e["tid"] == t))
+    mine = [e for e in fs if e["pid"] == pid]
+    clicks = [e for e in events if e["name"] == "input" and e["args"] and e["args"][0] == "mouse_down"]
+    # each line totals the second before it was written, so a click's window is the 3 s after it plus one flush
+    in_click = [e for e in mine if e["tid"] == ui and any(c["t"] <= e["t"] <= c["t"] + 4_000_000 for c in clicks)]
+    span = (max(e["t"] for e in mine) - min(e["t"] for e in mine)) / 1e6 if mine else 0
+    for label, rows in (("all threads", mine), (f"UI thread {ui}", [e for e in mine if e["tid"] == ui]),
+                        (f"UI thread within 3 s after a click ({len(clicks)} clicks)", in_click)):
+        tot = defaultdict(lambda: [0, 0, 0])
+        for e in rows:
+            t = tot[e["kind"]]
+            t[0] += int(e["n"]); t[1] += int(e["fails"]); t[2] += int(e["us"])
+        out.append(f"  {label}: " + (", ".join(f"{k} {v[0]} calls ({v[1]} failed) {v[2] / 1000:.0f} ms" for k, v in sorted(tot.items())) or "none"))
+    out.append(f"  (lines cover {span:.0f} s; only the top 8 folders per kind per second are logged)")
+    for label, rows in (("UI thread, whole session", [e for e in mine if e["tid"] == ui]), ("UI thread after clicks", in_click)):
+        by = defaultdict(lambda: [0, 0, 0, ""])
+        for e in rows:
+            b = by[(e["kind"], e.get("dir", "?"))]
+            b[0] += int(e["n"]); b[1] += int(e["fails"]); b[2] += int(e["us"]); b[3] = e.get("ex", "")
+        if not by:
+            continue
+        out.append(f"  top folders, {label} (ms, calls, failed, kind, folder, last file):")
+        for (kind, folder), (n, fails, us, ex) in sorted(by.items(), key=lambda kv: -kv[1][2])[:12]:
+            out.append(f"    {us / 1000:7.1f} {n:6d} {fails:5d}  {kind:<4} {short_path(folder)}   {short_path(ex)}")
+
+
 def marks_section(d, out, info):
     path = os.path.join(d, "marks.tsv")
     if not os.path.exists(path):
@@ -226,6 +267,8 @@ def main():
     dcrt_section(events, out)
     out.append("\nUpdateLayeredWindow (AI writer popup and other layered windows)")
     ulw_section(events, out)
+    out.append("\nFile lookups in Storyline's main process (Wine patch 0011)")
+    fs_section(events, out)
     out.append("\nCPU by process class (100% = one core)")
     cpu_section(d, out, info)
     out.append("\nStoryline's own log")

@@ -52,6 +52,9 @@ rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d
 echo "patched d2d1.dll in $M (also copy it over <prefix>/drive_c/windows/system32/d2d1.dll)"
 # (patch 0007: ntdll get_random via arc4random_buf — applied with the winemac step below)
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" 2>/dev/null && git apply "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" || echo "rng patch already applied"; }
+# (patch 0011: WINE_PERF_LOG per-second file lookup totals by thread and folder — also built with the winemac step)
+P11="$HERE/../wine-patches/0011-ntdll-perf-log-file-lookups.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P11" 2>/dev/null; then git apply "$P11"; elif git apply --check -R "$P11" 2>/dev/null; then echo "file-lookup logging patch already applied"; else echo "patch 0011 does not apply"; exit 1; fi
 # --- winemac.drv (unix) : no per-frame shadow recompute for per-pixel-alpha windows (patch 0005) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" || echo "winemac patch already applied"; }
