@@ -11,4 +11,5 @@ export WINE_MAC_APP_NAMES="Articulate 360 Desktop App.exe=Articulate 360;Storyli
 mkdir -p "$LAB/logs/launcher"
 cd "$WINEPREFIX/drive_c/Program Files/Articulate/360/Storyline 64-bit"
 # --disable-gpu: CEF's ANGLE/D3D11 GPU process cannot initialise under Wine and otherwise restarts in a loop.
-exec "$HERE/wine" "Storyline.exe" --disable-gpu "$@" >> "$LAB/logs/launcher/storyline.log" 2>&1
+# --in-process-gpu: winemac can't show another process's drawing in a child window, so CEF's compositor must run inside Storyline or Preview and web panels stay blank.
+exec "$HERE/wine" "Storyline.exe" --disable-gpu --in-process-gpu "$@" >> "$LAB/logs/launcher/storyline.log" 2>&1
