@@ -61,6 +61,9 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 # (patch 0010: menu bar and Dock name from WINE_MAC_APP_NAMES instead of "wine")
 P10="$HERE/../wine-patches/0010-winemac-name-app-after-windows-exe.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git apply "$P10"; elif git apply --check -R "$P10" 2>/dev/null; then echo "winemac app-name patch already applied"; else echo "patch 0010 does not apply"; exit 1; fi
+# (patch 0016: the Windows wait and app-starting cursors show AppKit's busy cursor instead of the Windows hourglass)
+P16="$HERE/../wine-patches/0016-winemac-show-the-AppKit-busy-cursor-for-the-wait-cursors.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git apply "$P16"; elif git apply --check -R "$P16" 2>/dev/null; then echo "winemac busy-cursor patch already applied"; else echo "patch 0016 does not apply"; exit 1; fi
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"

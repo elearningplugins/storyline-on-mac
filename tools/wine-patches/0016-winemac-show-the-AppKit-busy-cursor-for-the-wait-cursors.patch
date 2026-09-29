@@ -1,0 +1,57 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 7741a23..006dd79 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -2512,6 +2512,13 @@ int macdrv_set_display_mode(CGDirectDisplayID displayID, CGDisplayModeRef displa
+     return ret;
+ }
+ 
++/* whether NSCursor has a class method with this name */
++int macdrv_cursor_name_available(CFStringRef name)
++{
++    SEL sel = NSSelectorFromString((NSString*)name);
++    return sel && [NSCursor respondsToSelector:sel];
++}
++
+ /***********************************************************************
+  *              macdrv_set_cursor
+  *
+diff --git a/dlls/winemac.drv/macdrv_cocoa.h b/dlls/winemac.drv/macdrv_cocoa.h
+index c771d0d..cbccbbe 100644
+--- a/dlls/winemac.drv/macdrv_cocoa.h
++++ b/dlls/winemac.drv/macdrv_cocoa.h
+@@ -212,6 +212,7 @@ extern void macdrv_set_cocoa_retina_mode(bool new_mode);
+ 
+ /* cursor */
+ extern void macdrv_set_cursor(CFStringRef name, CFArrayRef frames);
++extern int macdrv_cursor_name_available(CFStringRef name);
+ extern int macdrv_get_cursor_position(CGPoint *pos);
+ extern int macdrv_set_cursor_position(CGPoint pos);
+ extern int macdrv_clip_cursor(CGRect rect);
+diff --git a/dlls/winemac.drv/mouse.c b/dlls/winemac.drv/mouse.c
+index 51ae29a..5e2e862 100644
+--- a/dlls/winemac.drv/mouse.c
++++ b/dlls/winemac.drv/mouse.c
+@@ -52,6 +52,8 @@ static const struct system_cursors user32_cursors[] =
+     { OCR_SIZENS,      CFSTR("resizeUpDownCursor") },
+     { OCR_NO,          CFSTR("operationNotAllowedCursor") },
+     { OCR_HAND,        CFSTR("pointingHandCursor") },
++    { OCR_WAIT,        CFSTR("busyButClickableCursor") },
++    { OCR_APPSTARTING, CFSTR("busyButClickableCursor") },
+     { 0 }
+ };
+ 
+@@ -224,6 +226,13 @@ CFStringRef copy_system_cursor_name(ICONINFOEXW *info)
+             break;
+         }
+ 
++    /* busyButClickableCursor is private AppKit API; without it, draw the Windows cursor */
++    if (cursor_name && !macdrv_cursor_name_available(cursor_name))
++    {
++        CFRelease(cursor_name);
++        cursor_name = NULL;
++    }
++
+ done:
+     if (cursor_name)
+         TRACE("%s -> %s\n", debugstr_w(name), debugstr_cf(cursor_name));
