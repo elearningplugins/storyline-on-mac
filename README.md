@@ -55,13 +55,14 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
 | Story View scene-card shadows | **FIXED** by patch 0013 — Wine's gdiplus ignored preset blends on path gradient brushes, so the rounded shadow corners painted solid white | 17 |
 | Pill buttons (Save / Don't Save / Cancel…) | **FIXED** by patch 0014 — Wine's `GdipClosePathFigures` never closed a path's last figure, so the antialiased outline skipped the bottom edge and left nubs at both ends | 17 |
+| Start screen right panel (Articulate's web content) | **FIXED** by patch 0015 — the panel is an IE `WebBrowser` (Wine's mshtml + Gecko), kept hidden until `ProgressChanged` reports a finished load; Wine never fired that event, so the panel stayed blank | 18 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010),
-  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012) and `gdiplus.dll` (0013, 0014) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012), `gdiplus.dll` (0013, 0014) and `ieframe.dll` (0015) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
