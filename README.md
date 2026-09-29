@@ -50,13 +50,14 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
 | Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patches 0005/0006 ruled out) | — |
+| Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004), `winemac.so` (0005) and
-  `win32u.dll` (0006) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all seven are
+  replaced — `ntdll.so` (0001, 0007), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008), `winemac.so` (0005) and
+  `win32u.dll` (0006) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all eight are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
@@ -99,7 +100,7 @@ tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
 # 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
 tools/install-core-admin.sh wine-dotnet48-noadmintask
 
-# 3. patched Wine mirror (all seven patches), then its PE modules copied into the prefix's system32
+# 3. patched Wine mirror (all eight patches), then its PE modules copied into the prefix's system32
 tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
 
 # 4. Dock launchers and the articulate:// bridge in ~/Applications
