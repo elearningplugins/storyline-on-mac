@@ -52,6 +52,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patch 0005 ruled out; 0006 was not deployed then) | — |
 | Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
+| CEF start-up | `--enable-features=NetworkServiceInProcess2` in the launcher runs Chromium's network service as a thread instead of another `Storyline.exe` (.NET boot); `Cef.Initialize` 2.3 s → **1.9 s** mean of 3 traced cold launches | 20 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
 
 
