@@ -90,9 +90,14 @@ P12="$HERE/../wine-patches/0012-kernelbase-answer-LOCALE_SNAME-for-unknown-well-
 if git apply --check "$P12" 2>/dev/null; then git apply "$P12"
 elif git apply --reverse --check "$P12" 2>/dev/null; then echo "locale name patch already applied"
 else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
+# CreateProcess appends the WINE_APPEND_ARGS switches (patch 0018), so Storyline started by the Desktop App gets the launcher's CEF flags.
+P18="$HERE/../wine-patches/0018-kernelbase-append-configured-arguments-to-new-processes.patch"
+if git apply --check "$P18" 2>/dev/null; then git apply "$P18"
+elif git apply --reverse --check "$P18" 2>/dev/null; then echo "append-arguments patch already applied"
+else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
-echo "patched kernelbase.dll (64- and 32-bit) in $M"
+echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
 # --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners) and CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) ---
 cd "$SRC/wine-wine-11.16"
 for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch"; do
