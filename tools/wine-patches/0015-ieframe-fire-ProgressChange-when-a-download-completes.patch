@@ -1,0 +1,58 @@
+diff --git a/dlls/ieframe/dochost.c b/dlls/ieframe/dochost.c
+index b603d24..aa38983 100644
+--- a/dlls/ieframe/dochost.c
++++ b/dlls/ieframe/dochost.c
+@@ -140,6 +140,27 @@ void on_commandstate_change(DocHost *doc_host, LONG command, BOOL enable)
+     doc_host->container_vtbl->on_command_state_change(doc_host, command, enable);
+ }
+ 
++void on_progress_change(DocHost *doc_host, LONG progress, LONG progress_max)
++{
++    DISPPARAMS dispparams;
++    VARIANTARG params[2];
++
++    TRACE("progress=%ld max=%ld\n", progress, progress_max);
++
++    dispparams.cArgs = 2;
++    dispparams.cNamedArgs = 0;
++    dispparams.rgdispidNamedArgs = NULL;
++    dispparams.rgvarg = params;
++
++    V_VT(params) = VT_I4;
++    V_I4(params) = progress_max;
++
++    V_VT(params+1) = VT_I4;
++    V_I4(params+1) = progress;
++
++    call_sink(doc_host->cps.wbe2, DISPID_PROGRESSCHANGE, &dispparams);
++}
++
+ void update_navigation_commands(DocHost *dochost)
+ {
+     unsigned pos = dochost->travellog.loading_pos == -1 ? dochost->travellog.position : dochost->travellog.loading_pos;
+diff --git a/dlls/ieframe/ieframe.h b/dlls/ieframe/ieframe.h
+index 602bb1c..7b6d4b4 100644
+--- a/dlls/ieframe/ieframe.h
++++ b/dlls/ieframe/ieframe.h
+@@ -288,6 +288,7 @@ void activate_document(DocHost*);
+ void deactivate_document(DocHost*);
+ void create_doc_view_hwnd(DocHost*);
+ void on_commandstate_change(DocHost*,LONG,BOOL);
++void on_progress_change(DocHost*,LONG,LONG);
+ void notify_download_state(DocHost*,BOOL);
+ void update_navigation_commands(DocHost *dochost);
+ 
+diff --git a/dlls/ieframe/navigate.c b/dlls/ieframe/navigate.c
+index 3d2681c..8043923 100644
+--- a/dlls/ieframe/navigate.c
++++ b/dlls/ieframe/navigate.c
+@@ -149,6 +149,9 @@ void notify_download_state(DocHost *dochost, BOOL is_downloading)
+     DISPPARAMS dwl_dp = {NULL};
+     TRACE("(%x)\n", is_downloading);
+     dochost->busy = is_downloading ? VARIANT_TRUE : VARIANT_FALSE;
++    /* IE reports a finished download, a Refresh included, as progress equal to its maximum (hosts wait for it), but not for about: pages */
++    if(!is_downloading && (!dochost->url || wcsnicmp(dochost->url, L"about:", 6)))
++        on_progress_change(dochost, 10000, 10000);
+     call_sink(dochost->cps.wbe2, is_downloading ? DISPID_DOWNLOADBEGIN : DISPID_DOWNLOADCOMPLETE, &dwl_dp);
+ }
+ 

@@ -1,0 +1,52 @@
+diff --git a/dlls/gdiplus/graphics.c b/dlls/gdiplus/graphics.c
+index 2c95122..3cabb7d 100644
+--- a/dlls/gdiplus/graphics.c
++++ b/dlls/gdiplus/graphics.c
+@@ -819,6 +819,23 @@ static ARGB blend_line_gradient(GpLineGradient* brush, REAL position)
+     }
+ }
+ 
++/* position 0 is the path boundary and 1 the center point, as for GdipSetPathGradientPresetBlend */
++static ARGB blend_path_gradient_preset(const GpPathGradient *brush, REAL position)
++{
++    int i = 1;
++    REAL range;
++
++    if (position <= brush->pblendpos[0]) return brush->pblendcolor[0];
++    if (position >= brush->pblendpos[brush->pblendcount-1]) return brush->pblendcolor[brush->pblendcount-1];
++
++    while (i < brush->pblendcount - 1 && position > brush->pblendpos[i])
++        i++;
++
++    range = brush->pblendpos[i] - brush->pblendpos[i-1];
++    if (range <= 0.0f) return brush->pblendcolor[i];
++    return blend_colors(brush->pblendcolor[i-1], brush->pblendcolor[i], (position - brush->pblendpos[i-1]) / range);
++}
++
+ static BOOL round_color_matrix(const ColorMatrix *matrix, int values[5][5])
+ {
+     /* Convert floating point color matrix to int[5][5], return TRUE if it's an identity */
+@@ -1573,13 +1590,6 @@ static GpStatus brush_fill_pixels(GpGraphics *graphics, GpBrush *brush,
+                 FIXME("path gradient blend not implemented\n");
+         }
+ 
+-        if (fill->pblendcount)
+-        {
+-            static int once;
+-            if (!once++)
+-                FIXME("path gradient preset blend not implemented\n");
+-        }
+-
+         if (!transform_fixme_once)
+         {
+             BOOL is_identity=TRUE;
+@@ -1750,7 +1760,8 @@ static GpStatus brush_fill_pixels(GpGraphics *graphics, GpBrush *brush,
+ 
+                     distance = distance / center_distance;
+ 
+-                    argb_pixels[(x-fill_area->X) + (y-fill_area->Y)*cdwStride] =
++                    argb_pixels[(x-fill_area->X) + (y-fill_area->Y)*cdwStride] = fill->pblendcount ?
++                        blend_path_gradient_preset(fill, distance) :
+                         blend_colors(outer_color, fill->centercolor, distance);
+                 }
+             }

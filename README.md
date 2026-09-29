@@ -54,14 +54,20 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
 | CEF start-up | `--enable-features=NetworkServiceInProcess2` in the launcher runs Chromium's network service as a thread instead of another `Storyline.exe` (.NET boot); `Cef.Initialize` 2.3 s → **1.9 s** mean of 3 traced cold launches | 20 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
+| Story View scene-card shadows | **FIXED** by patch 0013 — Wine's gdiplus ignored preset blends on path gradient brushes, so the rounded shadow corners painted solid white | 17 |
+| Pill buttons (Save / Don't Save / Cancel…) | **FIXED** by patch 0014 — Wine's `GdipClosePathFigures` never closed a path's last figure, so the antialiased outline skipped the bottom edge and left nubs at both ends | 17 |
+| Start screen right panel (Articulate's web content) | **FIXED** by patch 0015 — the panel is an IE `WebBrowser` (Wine's mshtml + Gecko), kept hidden until `ProgressChanged` reports a finished load; Wine never fired that event, so the panel stayed blank | 18 |
+| Busy cursor (e.g. after New Project) | **FIXED** by patch 0016 — winemac had no Mac equivalent for the Windows wait and app-starting cursors, so it drew the Windows hourglass; it now shows AppKit's busy cursor | 19 |
+| Image decoding (icons, WIC) | **FIXED** by patch 0017 — windowscodecs re-read the codec lists from the registry on every decode (~97 wineserver round trips per image); small icons 1.9 ms → **0.26 ms** each | 21 |
+| Desktop Service wait at launch | **IMPROVED** — the Dock launcher starts the service before Storyline asks for it; cold launch waits 12–13 s instead of 18–21 s for the service. About 4 s left is the service retrying a missing Review backups file (inside Articulate; not fixable here). Warm relaunches (service still running) wait 0.4 s | 22 |
 | Storyline opened from the Desktop App | **FIXED** by patch 0018 — the Desktop App started `Storyline.exe` with none of the launcher's CEF switches (so no in-process GPU, which Preview needs, Run 16); `WINE_APPEND_ARGS` (set by both Dock launchers from `tools/launcher/storyline-args.sh`) makes Wine's `CreateProcess` add them | 23 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010),
-  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch) and `kernelbase.dll` (0012) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
+  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014), `ieframe.dll` (0015) and `windowscodecs.dll` (0017) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,

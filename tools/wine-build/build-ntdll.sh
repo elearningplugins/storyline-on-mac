@@ -61,6 +61,9 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 # (patch 0010: menu bar and Dock name from WINE_MAC_APP_NAMES instead of "wine")
 P10="$HERE/../wine-patches/0010-winemac-name-app-after-windows-exe.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git apply "$P10"; elif git apply --check -R "$P10" 2>/dev/null; then echo "winemac app-name patch already applied"; else echo "patch 0010 does not apply"; exit 1; fi
+# (patch 0016: the Windows wait and app-starting cursors show AppKit's busy cursor instead of the Windows hourglass)
+P16="$HERE/../wine-patches/0016-winemac-show-the-AppKit-busy-cursor-for-the-wait-cursors.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git apply "$P16"; elif git apply --check -R "$P16" 2>/dev/null; then echo "winemac busy-cursor patch already applied"; else echo "patch 0016 does not apply"; exit 1; fi
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
@@ -95,5 +98,31 @@ else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners) and CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) ---
+cd "$SRC/wine-wine-11.16"
+for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch"; do
+  if git apply --check "$P" 2>/dev/null; then git apply "$P"
+  elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
+  else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
+done
+cd "$B" && make -j4 dlls/gdiplus/x86_64-windows/gdiplus.dll dlls/gdiplus/i386-windows/gdiplus.dll > make-gdiplus.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/gdiplus.dll"; cp "$B/dlls/gdiplus/$a-windows/gdiplus.dll" "$M/lib/wine/$a-windows/gdiplus.dll"; done
+echo "patched gdiplus.dll (64- and 32-bit) in $M"
+# --- ieframe (PE) : WebBrowser fires ProgressChange when a download completes (patch 0015); Storyline's start page stays hidden until it does ---
+P15="$HERE/../wine-patches/0015-ieframe-fire-ProgressChange-when-a-download-completes.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P15" 2>/dev/null; then git apply "$P15"
+elif git apply --reverse --check "$P15" 2>/dev/null; then echo "$(basename "$P15") already applied"
+else echo "$(basename "$P15") neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/ieframe/x86_64-windows/ieframe.dll dlls/ieframe/i386-windows/ieframe.dll > make-ieframe.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/ieframe.dll"; cp "$B/dlls/ieframe/$a-windows/ieframe.dll" "$M/lib/wine/$a-windows/ieframe.dll"; done
+echo "patched ieframe.dll (64- and 32-bit) in $M"
+# --- windowscodecs (PE) : cache WIC component lists and GUID values (patch 0017); stock re-reads the registry about 97 times per decoded image ---
+P17="$HERE/../wine-patches/0017-windowscodecs-cache-component-lists-and-GUID-values.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P17" 2>/dev/null; then git apply "$P17"
+elif git apply --reverse --check "$P17" 2>/dev/null; then echo "WIC cache patch already applied"
+else echo "patch 0017 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/windowscodecs/x86_64-windows/windowscodecs.dll dlls/windowscodecs/i386-windows/windowscodecs.dll > make-windowscodecs.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/windowscodecs.dll"; cp "$B/dlls/windowscodecs/$a-windows/windowscodecs.dll" "$M/lib/wine/$a-windows/windowscodecs.dll"; done
+echo "patched windowscodecs.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
