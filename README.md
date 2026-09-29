@@ -54,6 +54,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
 | CEF start-up | `--enable-features=NetworkServiceInProcess2` in the launcher runs Chromium's network service as a thread instead of another `Storyline.exe` (.NET boot); `Cef.Initialize` 2.3 s → **1.9 s** mean of 3 traced cold launches | 20 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
+| Storyline opened from the Desktop App | **FIXED** by patch 0018 — the Desktop App started `Storyline.exe` with none of the launcher's CEF switches (so no in-process GPU, which Preview needs, Run 16); `WINE_APPEND_ARGS` (set by both Dock launchers from `tools/launcher/storyline-args.sh`) makes Wine's `CreateProcess` add them | 23 |
 
 
 ## Current setup (what actually runs)
@@ -72,7 +73,8 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 - **Launchers**: `~/Applications/Articulate 360.app` and `~/Applications/Storyline 360.app` (tools/launcher/) run the genuine
   EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks. Both set
   `WINE_MAC_APP_NAMES` so the menu bar and Dock say "Articulate 360" and "Storyline 360" instead of "wine" (patch 0010 in
-  `winemac.so`, which names each process after its Windows exe).
+  `winemac.so`, which names each process after its Windows exe). Both also source `storyline-args.sh`, whose
+  `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started.
 
 ## What worked
 

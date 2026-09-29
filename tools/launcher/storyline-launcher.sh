@@ -8,9 +8,8 @@ export PATH="/opt/local/bin:$PATH"
 export WINE_D3D_FL_RELAX=1
 # Patched winemac (patch 0010): menu bar and Dock names per exe instead of "wine".
 export WINE_MAC_APP_NAMES="Articulate 360 Desktop App.exe=Articulate 360;Storyline.exe=Storyline 360"
+. "$HERE/../Resources/storyline-args.sh"
 mkdir -p "$LAB/logs/launcher"
 cd "$WINEPREFIX/drive_c/Program Files/Articulate/360/Storyline 64-bit"
-# --disable-gpu: CEF's ANGLE/D3D11 GPU process cannot initialise under Wine and otherwise restarts in a loop.
-# --in-process-gpu: winemac can't show another process's drawing in a child window, so CEF's compositor must run inside Storyline or Preview and web panels stay blank.
-# --enable-features=NetworkServiceInProcess2: each CEF helper process is another Storyline.exe that boots .NET again, so the network service runs as a thread instead.
-exec "$HERE/wine" "Storyline.exe" --disable-gpu --in-process-gpu --enable-features=NetworkServiceInProcess2 "$@" >> "$LAB/logs/launcher/storyline.log" 2>&1
+# Passed here too so a Wine build without patch 0018 still gets them; the patch skips switches already present.
+exec "$HERE/wine" "Storyline.exe" ${WINE_APPEND_ARGS#Storyline.exe=} "$@" >> "$LAB/logs/launcher/storyline.log" 2>&1

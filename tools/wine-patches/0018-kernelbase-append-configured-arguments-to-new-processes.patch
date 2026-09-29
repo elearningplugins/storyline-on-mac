@@ -1,0 +1,94 @@
+diff --git a/dlls/kernelbase/process.c b/dlls/kernelbase/process.c
+index 25b3f4f..e58888d 100644
+--- a/dlls/kernelbase/process.c
++++ b/dlls/kernelbase/process.c
+@@ -502,6 +502,67 @@ done:
+     return ret;
+ }
+ 
++/* Whether cmdline already contains arg as a whole space-delimited token. */
++static BOOL cmdline_has_arg( const WCHAR *cmdline, const WCHAR *arg, size_t len )
++{
++    const WCHAR *p;
++
++    for (p = cmdline; (p = wcsstr( p, arg )); p++)
++        if ((p == cmdline || p[-1] == ' ') && (!p[len] || p[len] == ' ')) return TRUE;
++    return FALSE;
++}
++
++/* WINE_APPEND_ARGS="app.exe=--a --b;other.exe=--c" appends each listed argument missing from a new app.exe command line; Chromium helper processes (--type=) are left alone. */
++static WCHAR *append_configured_args( const WCHAR *app_name, const WCHAR *cmdline )
++{
++    WCHAR *spec, *entry, *next, *eq, *arg, *end, *ret = NULL;
++    const WCHAR *base, *p;
++    DWORD len;
++
++    if (!(len = GetEnvironmentVariableW( L"WINE_APPEND_ARGS", NULL, 0 ))) return NULL;
++    if (wcsstr( cmdline, L"--type=" )) return NULL;
++    if (!(spec = HeapAlloc( GetProcessHeap(), 0, len * sizeof(WCHAR) ))) return NULL;
++    GetEnvironmentVariableW( L"WINE_APPEND_ARGS", spec, len );
++
++    base = app_name;
++    for (p = app_name; *p; p++) if (*p == '\\' || *p == '/') base = p + 1;
++
++    for (entry = spec; entry; entry = next)
++    {
++        if ((next = wcschr( entry, ';' ))) *next++ = 0;
++        if (!(eq = wcschr( entry, '=' ))) continue;
++        *eq = 0;
++        if (wcsicmp( entry, base )) continue;
++        if (!(ret = HeapAlloc( GetProcessHeap(), 0, (lstrlenW( cmdline ) + lstrlenW( eq + 1 ) + 2) * sizeof(WCHAR) ))) break;
++        lstrcpyW( ret, cmdline );
++        for (arg = eq + 1; *arg; arg = end)
++        {
++            WCHAR saved;
++
++            while (*arg == ' ') arg++;
++            for (end = arg; *end && *end != ' '; end++) ;
++            if (end == arg) break;
++            saved = *end;
++            *end = 0;
++            if (!cmdline_has_arg( ret, arg, end - arg ))
++            {
++                lstrcatW( ret, L" " );
++                lstrcatW( ret, arg );
++            }
++            *end = saved;
++        }
++        break;
++    }
++    HeapFree( GetProcessHeap(), 0, spec );
++    if (ret && !wcscmp( ret, cmdline ))
++    {
++        HeapFree( GetProcessHeap(), 0, ret );
++        ret = NULL;
++    }
++    if (ret) TRACE( "appended arguments: %s\n", debugstr_w(ret) );
++    return ret;
++}
++
+ /**********************************************************************
+  *           CreateProcessInternalW   (kernelbase.@)
+  */
+@@ -514,7 +575,7 @@ BOOL WINAPI DECLSPEC_HOTPATCH CreateProcessInternalW( HANDLE token, const WCHAR
+ {
+     const struct proc_thread_attr *handle_list = NULL, *job_list = NULL;
+     WCHAR name[MAX_PATH];
+-    WCHAR *p, *tidy_cmdline = cmd_line;
++    WCHAR *p, *appended, *tidy_cmdline = cmd_line;
+     RTL_USER_PROCESS_PARAMETERS *params = NULL;
+     RTL_USER_PROCESS_INFORMATION rtl_info = { 0 };
+     HANDLE parent = 0, debug = 0;
+@@ -543,6 +604,12 @@ BOOL WINAPI DECLSPEC_HOTPATCH CreateProcessInternalW( HANDLE token, const WCHAR
+         app_name = name;
+     }
+ 
++    if ((appended = append_configured_args( app_name, tidy_cmdline )))
++    {
++        if (tidy_cmdline != cmd_line) HeapFree( GetProcessHeap(), 0, tidy_cmdline );
++        tidy_cmdline = appended;
++    }
++
+     /* Warn if unsupported features are used */
+ 
+     if (flags & (IDLE_PRIORITY_CLASS | HIGH_PRIORITY_CLASS | REALTIME_PRIORITY_CLASS |
