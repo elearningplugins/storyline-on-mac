@@ -111,5 +111,13 @@ else echo "$(basename "$P15") neither applies nor is already applied" >&2; exit 
 cd "$B" && make -j4 dlls/ieframe/x86_64-windows/ieframe.dll dlls/ieframe/i386-windows/ieframe.dll > make-ieframe.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/ieframe.dll"; cp "$B/dlls/ieframe/$a-windows/ieframe.dll" "$M/lib/wine/$a-windows/ieframe.dll"; done
 echo "patched ieframe.dll (64- and 32-bit) in $M"
+# --- windowscodecs (PE) : cache WIC component lists and GUID values (patch 0017); stock re-reads the registry about 97 times per decoded image ---
+P17="$HERE/../wine-patches/0017-windowscodecs-cache-component-lists-and-GUID-values.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P17" 2>/dev/null; then git apply "$P17"
+elif git apply --reverse --check "$P17" 2>/dev/null; then echo "WIC cache patch already applied"
+else echo "patch 0017 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/windowscodecs/x86_64-windows/windowscodecs.dll dlls/windowscodecs/i386-windows/windowscodecs.dll > make-windowscodecs.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/windowscodecs.dll"; cp "$B/dlls/windowscodecs/$a-windows/windowscodecs.dll" "$M/lib/wine/$a-windows/windowscodecs.dll"; done
+echo "patched windowscodecs.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
