@@ -10,7 +10,16 @@
              [D2D_SAMPLER_EXTEND_MODE_COUNT]
 --- a/dlls/d2d1/device.c
 +++ b/dlls/d2d1/device.c
-@@ -2554,6 +2554,9 @@
+@@ -276,6 +276,8 @@
+             IDWriteRenderingParams_Release(context->text_rendering_params);
+         if (context->bs)
+             ID3D11BlendState_Release(context->bs);
++        if (context->bs_mask_invert)
++            ID3D11BlendState_Release(context->bs_mask_invert);
+         ID3D11RasterizerState_Release(context->rs);
+         ID3D11Buffer_Release(context->vb);
+         ID3D11Buffer_Release(context->ib);
+@@ -2554,6 +2556,9 @@
      if (context->bs)
          ID3D11BlendState_Release(context->bs);
      context->bs = NULL;
@@ -20,7 +29,7 @@
  }
  
  static void STDMETHODCALLTYPE d2d_device_context_SetTarget(ID2D1DeviceContext6 *iface, ID2D1Image *target)
-@@ -2606,6 +2609,13 @@
+@@ -2606,6 +2611,13 @@
          blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
          if (FAILED(hr = ID3D11Device1_CreateBlendState(context->d3d_device, &blend_desc, &context->bs)))
              WARN("Failed to create blend state, hr %#lx.\n", hr);
@@ -34,15 +43,16 @@
      }
      else if (SUCCEEDED(ID2D1Image_QueryInterface(target, &IID_ID2D1CommandList, (void **)&command_list)))
      {
-@@ -2718,6 +2728,7 @@
+@@ -2718,6 +2730,8 @@
          D2D1_COMPOSITE_MODE composite_mode)
  {
      struct d2d_device_context *context = impl_from_ID2D1DeviceContext(iface);
 +    ID3D11BlendState *prev_bs = NULL;
++    BOOL swapped_bs = FALSE;
      ID2D1Bitmap *bitmap;
  
      TRACE("iface %p, image %p, target_offset %s, image_rect %s, interpolation_mode %#x, composite_mode %#x.\n",
-@@ -2740,16 +2751,28 @@
+@@ -2740,16 +2754,29 @@
          return;
      }
  
@@ -51,6 +61,7 @@
 +    {
 +        prev_bs = context->bs;
 +        context->bs = context->bs_mask_invert;
++        swapped_bs = TRUE;
 +    }
 +    else if (composite_mode != D2D1_COMPOSITE_MODE_SOURCE_OVER)
 +    {
@@ -62,12 +73,12 @@
          d2d_device_context_draw_bitmap(context, bitmap, NULL, 1.0f, interpolation_mode, image_rect, target_offset, NULL);
  
          ID2D1Bitmap_Release(bitmap);
-+        if (prev_bs)
++        if (swapped_bs)
 +            context->bs = prev_bs;
          return;
      }
 +
-+    if (prev_bs)
++    if (swapped_bs)
 +        context->bs = prev_bs;
  
      FIXME("Unhandled image %p.\n", image);
