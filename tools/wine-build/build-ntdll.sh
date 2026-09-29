@@ -90,5 +90,13 @@ else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (64- and 32-bit) in $M"
+# --- gdiplus (PE) : path gradient brushes honour preset blends (patch 0013); without it Story View's rounded scene-card shadow corners paint solid white ---
+P13="$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P13" 2>/dev/null; then git apply "$P13"
+elif git apply --reverse --check "$P13" 2>/dev/null; then echo "path gradient preset blend patch already applied"
+else echo "patch 0013 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/gdiplus/x86_64-windows/gdiplus.dll dlls/gdiplus/i386-windows/gdiplus.dll > make-gdiplus.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/gdiplus.dll"; cp "$B/dlls/gdiplus/$a-windows/gdiplus.dll" "$M/lib/wine/$a-windows/gdiplus.dll"; done
+echo "patched gdiplus.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
