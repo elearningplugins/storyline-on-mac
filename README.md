@@ -66,7 +66,9 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
   acceleration off (`HKCU\Software\Microsoft\Avalon.Graphics\DisableHWAcceleration=1`) because the Desktop App drew clipped
   labels and stray lines through wined3d on Vulkan and nothing at all on OpenGL.
 - **Launchers**: `~/Applications/Articulate 360.app` and `~/Applications/Storyline 360.app` (tools/launcher/) run the genuine
-  EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks.
+  EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks. Both set
+  `WINE_MAC_APP_NAMES` so the menu bar and Dock say "Articulate 360" and "Storyline 360" instead of "wine" (patch 0010 in
+  `winemac.so`, which names each process after its Windows exe).
 
 ## What worked
 
