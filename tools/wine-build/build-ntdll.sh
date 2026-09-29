@@ -90,5 +90,13 @@ else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (64- and 32-bit) in $M"
+# --- windowscodecs (PE) : cache WIC component lists and GUID values (patch 0017); stock re-reads the registry about 97 times per decoded image ---
+P17="$HERE/../wine-patches/0017-windowscodecs-cache-component-lists-and-GUID-values.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P17" 2>/dev/null; then git apply "$P17"
+elif git apply --reverse --check "$P17" 2>/dev/null; then echo "WIC cache patch already applied"
+else echo "patch 0017 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/windowscodecs/x86_64-windows/windowscodecs.dll dlls/windowscodecs/i386-windows/windowscodecs.dll > make-windowscodecs.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/windowscodecs.dll"; cp "$B/dlls/windowscodecs/$a-windows/windowscodecs.dll" "$M/lib/wine/$a-windows/windowscodecs.dll"; done
+echo "patched windowscodecs.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi

@@ -1,0 +1,257 @@
+diff --git a/dlls/windowscodecs/info.c b/dlls/windowscodecs/info.c
+--- a/dlls/windowscodecs/info.c
++++ b/dlls/windowscodecs/info.c
+@@ -34,12 +34,17 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(wincodecs);
+ 
++/* GUID values read once per component; decoders and metadata readers are matched on these for every image */
++static const WCHAR *const cached_guid_names[] = { L"ContainerFormat", L"MetadataFormat", L"Vendor" };
++
+ typedef struct {
+     IWICComponentInfo IWICComponentInfo_iface;
+     LONG ref;
+     CLSID clsid;
+     HKEY classkey;
+     struct wine_rb_entry entry;
++    GUID cached_guids[ARRAY_SIZE(cached_guid_names)];
++    LONG cached_guid_valid[ARRAY_SIZE(cached_guid_names)];
+ } ComponentInfo;
+ 
+ static void component_info_init(ComponentInfo *object, HKEY classkey,
+@@ -49,6 +54,7 @@
+     object->ref = 1;
+     object->classkey = classkey;
+     object->clsid = *clsid;
++    memset(object->cached_guid_valid, 0, sizeof(object->cached_guid_valid));
+ }
+ 
+ static void component_info_cleanup(ComponentInfo *info)
+@@ -93,10 +99,19 @@
+     WCHAR guid_string[39];
+     DWORD cbdata = sizeof(guid_string);
+     HRESULT hr;
++    int slot;
+ 
+     if (!result)
+         return E_INVALIDARG;
+ 
++    for (slot = 0; slot < ARRAY_SIZE(cached_guid_names); slot++)
++        if (!wcscmp(value, cached_guid_names[slot])) break;
++    if (slot < ARRAY_SIZE(cached_guid_names) && ReadAcquire(&info->cached_guid_valid[slot]))
++    {
++        *result = info->cached_guids[slot];
++        return S_OK;
++    }
++
+     ret = RegGetValueW(info->classkey, NULL, value, RRF_RT_REG_SZ|RRF_NOEXPAND, NULL,
+         guid_string, &cbdata);
+ 
+@@ -111,6 +126,12 @@
+ 
+     hr = CLSIDFromString(guid_string, result);
+ 
++    if (SUCCEEDED(hr) && slot < ARRAY_SIZE(cached_guid_names))
++    {
++        info->cached_guids[slot] = *result;
++        WriteRelease(&info->cached_guid_valid[slot], 1);
++    }
++
+     return hr;
+ }
+ 
+@@ -2237,7 +2258,111 @@
+     {WICMetadataWriter, &CATID_WICMetadataWriter, MetadataWriterInfo_Constructor},
+     {0}
+ };
++
++/* per-category component CLSIDs, re-read only after the category's Instance key reports a change */
++struct category_cache {
++    HKEY key;
++    HANDLE changed;
++    CLSID *clsids;
++    UINT count;
++};
++
++static struct category_cache category_caches[ARRAY_SIZE(categories) - 1];
++
++static CRITICAL_SECTION category_cache_cs;
++static CRITICAL_SECTION_DEBUG category_cache_cs_dbg =
++{
++    0, 0, &category_cache_cs,
++    { &category_cache_cs_dbg.ProcessLocksList, &category_cache_cs_dbg.ProcessLocksList },
++      0, 0, { (DWORD_PTR)(__FILE__ ": category_cache") }
++};
++static CRITICAL_SECTION category_cache_cs = { &category_cache_cs_dbg, -1, 0, 0, 0, 0 };
++
++static LONG read_category_clsids(struct category_cache *cache)
++{
++    WCHAR guidstring[39];
++    CLSID *clsids = NULL, *grown, clsid;
++    UINT count = 0, capacity = 0;
++    DWORD i, size;
++    LONG res;
+ 
++    for (i = 0;; i++)
++    {
++        size = ARRAY_SIZE(guidstring);
++        res = RegEnumKeyExW(cache->key, i, guidstring, &size, NULL, NULL, NULL, NULL);
++        if (res == ERROR_NO_MORE_ITEMS) break;
++        if (res != ERROR_SUCCESS) { free(clsids); return res; }
++        if (FAILED(CLSIDFromString(guidstring, &clsid))) continue;
++        if (count == capacity)
++        {
++            capacity = capacity ? capacity * 2 : 16;
++            if (!(grown = realloc(clsids, capacity * sizeof(*clsids)))) { free(clsids); return ERROR_OUTOFMEMORY; }
++            clsids = grown;
++        }
++        clsids[count++] = clsid;
++    }
++
++    free(cache->clsids);
++    cache->clsids = clsids;
++    cache->count = count;
++    return ERROR_SUCCESS;
++}
++
++static HRESULT get_category_clsids(const struct category *category, CLSID **clsids, UINT *count)
++{
++    struct category_cache *cache = &category_caches[category - categories];
++    WCHAR guidstring[39], path[64];
++    BOOL cached;
++    LONG res = ERROR_SUCCESS;
++
++    EnterCriticalSection(&category_cache_cs);
++
++    cached = cache->changed && WaitForSingleObject(cache->changed, 0) == WAIT_TIMEOUT;
++    if (!cached)
++    {
++        if (!cache->key)
++        {
++            StringFromGUID2(category->catid, guidstring, ARRAY_SIZE(guidstring));
++            swprintf(path, ARRAY_SIZE(path), L"CLSID\\%s\\Instance", guidstring);
++            res = RegOpenKeyExW(HKEY_CLASSES_ROOT, path, 0, KEY_READ | KEY_NOTIFY, &cache->key);
++            if (res != ERROR_SUCCESS) cache->key = NULL;
++        }
++        if (cache->key)
++        {
++            if (!cache->changed) cache->changed = CreateEventW(NULL, TRUE, FALSE, NULL);
++            else ResetEvent(cache->changed);
++            /* register before reading so a change made while reading still invalidates the list */
++            if (cache->changed && RegNotifyChangeKeyValue(cache->key, FALSE, REG_NOTIFY_CHANGE_NAME,
++                    cache->changed, TRUE) != ERROR_SUCCESS)
++            {
++                CloseHandle(cache->changed);
++                cache->changed = NULL;
++            }
++            res = read_category_clsids(cache);
++            if (res != ERROR_SUCCESS && cache->changed)
++            {
++                CloseHandle(cache->changed);
++                cache->changed = NULL;
++            }
++        }
++    }
++
++    *clsids = NULL;
++    *count = 0;
++    if (res == ERROR_SUCCESS && cache->count)
++    {
++        if ((*clsids = malloc(cache->count * sizeof(**clsids))))
++        {
++            memcpy(*clsids, cache->clsids, cache->count * sizeof(**clsids));
++            *count = cache->count;
++        }
++        else res = ERROR_OUTOFMEMORY;
++    }
++
++    LeaveCriticalSection(&category_cache_cs);
++    return HRESULT_FROM_WIN32(res);
++}
++
+ static int ComponentInfo_Compare(const void *key, const struct wine_rb_entry *entry)
+ {
+     ComponentInfo *info = WINE_RB_ENTRY_VALUE(entry, ComponentInfo, entry);
+@@ -2569,25 +2694,15 @@
+     ComponentEnum *This;
+     ComponentEnumItem *item;
+     const struct category *category;
+-    HKEY clsidkey, catidkey, instancekey;
+-    WCHAR guidstring[39];
+-    LONG res;
+-    int i;
++    CLSID *clsids;
++    UINT count, i;
+     HRESULT hr=S_OK;
+-    CLSID clsid;
+ 
+     if (options) FIXME("ignoring flags %lx\n", options);
+ 
+-    res = RegOpenKeyExW(HKEY_CLASSES_ROOT, L"CLSID", 0, KEY_READ, &clsidkey);
+-    if (res != ERROR_SUCCESS)
+-        return HRESULT_FROM_WIN32(res);
+-
+     This = malloc(sizeof(ComponentEnum));
+     if (!This)
+-    {
+-        RegCloseKey(clsidkey);
+         return E_OUTOFMEMORY;
+-    }
+ 
+     This->IEnumUnknown_iface.lpVtbl = &ComponentEnumVtbl;
+     This->ref = 1;
+@@ -2598,45 +2713,19 @@
+     for (category=categories; category->type && hr == S_OK; category++)
+     {
+         if ((category->type & componentTypes) == 0) continue;
+-        StringFromGUID2(category->catid, guidstring, 39);
+-        res = RegOpenKeyExW(clsidkey, guidstring, 0, KEY_READ, &catidkey);
+-        if (res == ERROR_SUCCESS)
++        hr = get_category_clsids(category, &clsids, &count);
++        for (i = 0; SUCCEEDED(hr) && i < count; i++)
+         {
+-            res = RegOpenKeyExW(catidkey, L"Instance", 0, KEY_READ, &instancekey);
+-            if (res == ERROR_SUCCESS)
+-            {
+-                i=0;
+-                for (;;i++)
+-                {
+-                    DWORD guidstring_size = 39;
+-                    res = RegEnumKeyExW(instancekey, i, guidstring, &guidstring_size, NULL, NULL, NULL, NULL);
+-                    if (res != ERROR_SUCCESS) break;
++            item = malloc(sizeof(ComponentEnumItem));
++            if (!item) { hr = E_OUTOFMEMORY; break; }
+ 
+-                    item = malloc(sizeof(ComponentEnumItem));
+-                    if (!item) { hr = E_OUTOFMEMORY; break; }
+-
+-                    hr = CLSIDFromString(guidstring, &clsid);
+-                    if (SUCCEEDED(hr))
+-                    {
+-                        hr = CreateComponentInfo(&clsid, (IWICComponentInfo**)&item->unk);
+-                        if (SUCCEEDED(hr))
+-                            list_add_tail(&This->objects, &item->entry);
+-                    }
+-
+-                    if (FAILED(hr))
+-                    {
+-                        free(item);
+-                        hr = S_OK;
+-                    }
+-                }
+-                RegCloseKey(instancekey);
+-            }
+-            RegCloseKey(catidkey);
++            if (SUCCEEDED(CreateComponentInfo(&clsids[i], (IWICComponentInfo**)&item->unk)))
++                list_add_tail(&This->objects, &item->entry);
++            else
++                free(item);
+         }
+-        if (res != ERROR_SUCCESS && res != ERROR_NO_MORE_ITEMS)
+-            hr = HRESULT_FROM_WIN32(res);
++        free(clsids);
+     }
+-    RegCloseKey(clsidkey);
+ 
+     if (SUCCEEDED(hr))
+     {
