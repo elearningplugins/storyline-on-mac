@@ -93,5 +93,23 @@ else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (64- and 32-bit) in $M"
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners) and CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) ---
+cd "$SRC/wine-wine-11.16"
+for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch"; do
+  if git apply --check "$P" 2>/dev/null; then git apply "$P"
+  elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
+  else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
+done
+cd "$B" && make -j4 dlls/gdiplus/x86_64-windows/gdiplus.dll dlls/gdiplus/i386-windows/gdiplus.dll > make-gdiplus.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/gdiplus.dll"; cp "$B/dlls/gdiplus/$a-windows/gdiplus.dll" "$M/lib/wine/$a-windows/gdiplus.dll"; done
+echo "patched gdiplus.dll (64- and 32-bit) in $M"
+# --- ieframe (PE) : WebBrowser fires ProgressChange when a download completes (patch 0015); Storyline's start page stays hidden until it does ---
+P15="$HERE/../wine-patches/0015-ieframe-fire-ProgressChange-when-a-download-completes.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P15" 2>/dev/null; then git apply "$P15"
+elif git apply --reverse --check "$P15" 2>/dev/null; then echo "$(basename "$P15") already applied"
+else echo "$(basename "$P15") neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/ieframe/x86_64-windows/ieframe.dll dlls/ieframe/i386-windows/ieframe.dll > make-ieframe.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/ieframe.dll"; cp "$B/dlls/ieframe/$a-windows/ieframe.dll" "$M/lib/wine/$a-windows/ieframe.dll"; done
+echo "patched ieframe.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
