@@ -1,0 +1,13 @@
+diff --git a/dlls/user32/text.c b/dlls/user32/text.c
+--- a/dlls/user32/text.c
++++ b/dlls/user32/text.c
+@@ -995,7 +995,8 @@
+ 	    else if (flags & DT_BOTTOM) y = rect->bottom - size.cy;
+         }
+ 
+-	if (!(flags & DT_CALCRECT))
++	/* Draw nothing into an inverted rectangle, even with DT_NOCLIP; Storyline's collapsed ribbon labels depend on it. */
++	if (!(flags & DT_CALCRECT) && rect->right >= rect->left)
+ 	{
+             const WCHAR *str = line;
+             int xseg = x;
