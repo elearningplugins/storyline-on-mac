@@ -9,6 +9,8 @@ echo "waiting for a click in Storyline (pid $PID)…"
 tail -n 0 -F "$LOG" 2>/dev/null | LC_ALL=C grep -a -m1 'win32u input mouse_down' >/dev/null || true
 OUT="$S/sample-$(date +%H%M%S).txt"
 echo "click seen; sampling for $SECS s"
+echo "$(python3 -c 'import time; print(f"{time.time():.3f}")')	sample started: $(basename "$OUT")" >> "$S/marks.tsv"
 sample "$PID" "$SECS" 1 -mayDie -file "$OUT" >/dev/null 2>&1 || true
-echo "$(python3 -c 'import time; print(f"{time.time():.3f}")')	sample written: $(basename "$OUT")" >> "$S/marks.tsv"
-echo "wrote $OUT"
+# the memory map names the Windows modules that `sample` shows as "???"; take it while the process is still up
+vmmap -wide "$PID" > "${OUT%.txt}-vmmap.txt" 2>/dev/null || true
+python3 "$(dirname "$0")/perf-sample-report.py" "$OUT" "${OUT%.txt}-vmmap.txt" | tee "${OUT%.txt}-report.txt"
