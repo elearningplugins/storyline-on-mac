@@ -53,12 +53,13 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
+| Busy cursor (e.g. after New Project) | **FIXED** by patch 0016 — winemac had no Mac equivalent for the Windows wait and app-starting cursors, so it drew the Windows hourglass; it now shows AppKit's busy cursor | 19 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010),
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
   `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch) and `kernelbase.dll` (0012) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
