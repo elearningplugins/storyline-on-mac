@@ -1,0 +1,15 @@
+diff --git a/dlls/gdiplus/graphicspath.c b/dlls/gdiplus/graphicspath.c
+index 2475913..05f3552 100644
+--- a/dlls/gdiplus/graphicspath.c
++++ b/dlls/gdiplus/graphicspath.c
+@@ -1307,6 +1307,10 @@ GpStatus WINGDIPAPI GdipClosePathFigures(GpPath* path)
+             path->pathdata.Types[i-1] |= PathPointTypeCloseSubpath;
+     }
+ 
++    /* the last figure has no following start point but is closed too */
++    if(path->pathdata.Count > 0)
++        path->pathdata.Types[path->pathdata.Count - 1] |= PathPointTypeCloseSubpath;
++
+     path->newfigure = TRUE;
+ 
+     return Ok;
