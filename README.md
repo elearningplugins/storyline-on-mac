@@ -118,7 +118,7 @@ tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/ar
 
 `tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
 
-To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh <label> [VAR=value ...]`. It launches Storyline with `WINE_PERF_LOG=1`, samples CPU once a second, and writes `summary.txt` to `~/StorylineLab/perf/<time>-<label>/` when you quit. `tools/perf/perf-mark.sh "text"` adds a timestamped note during a session. See Run 14.
+To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh <label> [VAR=value ...]`. It launches Storyline with `WINE_PERF_LOG=1`, samples CPU once a second, and writes `summary.txt` to `~/StorylineLab/perf/<time>-<label>/` when you quit. Add `--sample-clicks N` after the label to take a stack sample of Storyline after each of your first N clicks once a project has loaded. `tools/perf/perf-mark.sh "text"` adds a timestamped note during a session. See Run 14.
 
 ## Rules kept
 

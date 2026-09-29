@@ -23,6 +23,7 @@ Patch 0009 (`tools/wine-patches/0009-perf-log-instrumentation.patch`) adds `perf
 - CPU mean / p95 / max and peak RSS per process class (plus `cpu-timeline.csv`)
 - Storyline's project-load time (`AbandonProjectJobs` → `ProjectReadyForBackgroundProcessing`), log levels, CEF GPU lines
 - notes added with `tools/perf/perf-mark.sh`
+- with `--sample-clicks N`: after the project loads, a macOS `sample` plus `vmmap` of Storyline for 8 s after each of the next N clicks, with the busiest thread's time attributed to named Windows modules or anonymous (JIT) memory
 
 Session data stays in `~/StorylineLab/perf/`. It includes Storyline's logs, which carry account IDs, so it is not committed.
 

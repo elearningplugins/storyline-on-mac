@@ -231,6 +231,9 @@ def main():
     out.append("\nStoryline's own log")
     storyline_section(d, out, info)
     marks_section(d, out, info)
+    for report in sorted(glob.glob(os.path.join(d, "sample-*-report.txt"))):
+        out.append(f"\nStack sample after a click ({os.path.basename(report)})")
+        out.extend("  " + line for line in open(report).read().rstrip().split("\n"))
     print("\n".join(out))
 
 

@@ -1,9 +1,11 @@
 #!/bin/bash
 # Records one timed Storyline session under ~/StorylineLab/perf/<time>-<label>/ and writes summary.txt when Storyline quits.
-# Usage: tools/perf/perf-session.sh <label> [VAR=value ...]   e.g. perf-session.sh caret, perf-session.sh ulw-off WINE_ULW_NOCOPY=1
+# Usage: tools/perf/perf-session.sh <label> [--sample-clicks N] [VAR=value ...]   e.g. perf-session.sh caret --sample-clicks 3
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-LAB="$HOME/StorylineLab"; LABEL="${1:?usage: perf-session.sh <label> [VAR=value ...]}"; shift
+LAB="$HOME/StorylineLab"; LABEL="${1:?usage: perf-session.sh <label> [--sample-clicks N] [VAR=value ...]}"; shift
+SAMPLE_CLICKS=0
+if [ "${1:-}" = "--sample-clicks" ]; then SAMPLE_CLICKS="${2:?--sample-clicks needs a number}"; shift 2; fi
 APP="$HOME/Applications/Storyline 360.app/Contents/MacOS/Storyline 360"
 WINELOG="$LAB/logs/launcher/storyline.log"
 SLLOGS="$LAB/prefixes/wine-dotnet48-noadmintask/drive_c/users/$USER/AppData/Local/Articulate/360/Logs"
@@ -31,11 +33,30 @@ mkdir -p "$(dirname "$WINELOG")"; touch "$WINELOG"; offset=$(stat -f %z "$WINELO
     sleep 1
   done ) > "$S/cpu.csv" &
 SAMPLER=$!
-trap 'kill "$SAMPLER" 2>/dev/null || true' EXIT
+WATCHER=""
+cleanup() {
+  kill "$SAMPLER" 2>/dev/null || true
+  if [ -n "$WATCHER" ]; then kill "$WATCHER" 2>/dev/null || true; pkill -f "tail -n 0 -F $WINELOG" 2>/dev/null || true; fi
+}
+trap cleanup EXIT
 
-echo "session $S — use Storyline normally, add notes with tools/perf/perf-mark.sh \"text\", quit Storyline to finish"
+# --sample-clicks: once a project has finished loading, sample Storyline after each of the next N clicks
+if [ "$SAMPLE_CLICKS" -gt 0 ]; then
+  ready_count() { cat "$SLLOGS"/Storyline_STABLE*.log 2>/dev/null | LC_ALL=C grep -a -c 'ProjectReadyForBackgroundProcessing' || true; }
+  base=$(ready_count)
+  ( until [ "$(ready_count)" -gt "$base" ]; do sleep 2; done
+    for i in $(seq 1 "$SAMPLE_CLICKS"); do
+      echo ">>> click into a text box now (sample $i of $SAMPLE_CLICKS); keep Storyline open until the report prints"
+      "$HERE/perf-sample-click.sh" 8 || break
+    done
+    echo ">>> sampling done; quit Storyline when you are finished" ) &
+  WATCHER=$!
+fi
+
+echo "session $S — open a project and use Storyline normally; quit Storyline to finish"
+[ "$SAMPLE_CLICKS" -gt 0 ] && echo "sampling starts automatically once the project has loaded"
 env WINE_PERF_LOG=1 "$@" "$APP" || true
-sleep 2; kill "$SAMPLER" 2>/dev/null || true
+sleep 2; cleanup
 echo "end_epoch=$(date +%s)" >> "$S/session.txt"
 
 tail -c +"$((offset + 1))" "$WINELOG" | LC_ALL=C grep -a '^perf ' > "$S/wine-perf.log" || true
