@@ -58,11 +58,23 @@ cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patche
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
-# --- win32u (PE) : UpdateLayeredWindow copy fast path (patch 0006) ---
+# --- win32u (unix) : UpdateLayeredWindow copy fast path (patch 0006); the code lives in win32u.so, not win32u.dll ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
-cd "$B" && make -j4 dlls/win32u/x86_64-windows/win32u.dll > make-win32u.log 2>&1
+# MacPorts' one wine-devel patch (win32u Vulkan portability enumeration); a win32u.so built without it cannot see MoltenVK
+PU="$HERE/../wine-patches/upstream/macports-0001-win32u-Enable-host-Vulkan-portability-enumeration.diff"; cd "$SRC/wine-wine-11.16"
+if patch -p1 -N -s --dry-run < "$PU" >/dev/null 2>&1; then patch -p1 -N -s < "$PU"
+elif patch -p1 -R -s --dry-run < "$PU" >/dev/null 2>&1; then echo "MacPorts Vulkan portability patch already applied"
+else echo "MacPorts Vulkan portability patch neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0009: WINE_PERF_LOG=1 timing lines from d2d1 and win32u for tools/perf/; silent otherwise)
+P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
+if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
+elif git apply --reverse --check "$P9" 2>/dev/null; then echo "perf instrumentation patch already applied"
+else echo "patch 0009 neither applies nor is already applied; it needs 0004, 0006 and 0008 first" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/win32u/win32u.so dlls/win32u/x86_64-windows/win32u.dll dlls/d2d1/x86_64-windows/d2d1.dll > make-win32u.log 2>&1
+rm -f "$M/lib/wine/x86_64-unix/win32u.so"; cp "$B/dlls/win32u/win32u.so" "$M/lib/wine/x86_64-unix/win32u.so"
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
-echo "patched win32u.dll in $M (also copy it over <prefix>/drive_c/windows/system32/win32u.dll)"
+rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
+echo "patched win32u.so, win32u.dll and d2d1.dll (with 0009) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
