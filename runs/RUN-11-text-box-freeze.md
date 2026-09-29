@@ -33,6 +33,7 @@ frame over a cleared surface), memmove, and CoreGraphics colour conversion (`vUn
 - winemac.drv surface.c: tag surface images with the device colour space instead of sRGB → no per-frame conversion.
 - win32u window.c: `NtUserUpdateLayeredWindow` uses a 32bpp `BitBlt` instead of PatBlt+AlphaBlend when the blend is a plain
   per-pixel-alpha SRC_OVER at 255 (result is identical: source over black is the source). Built and installed; measuring next.
+- Correction (Run 14): this code is in `win32u.so`, but only `win32u.dll` was copied into the mirror, so 0006 was not active in any measurement above.
 
 ## Cursor: hourglass → native
 No patch needed. `HKCU\Software\Wine\Mac Driver\Cursors` maps Win32 cursor resources to NSCursor selectors:
