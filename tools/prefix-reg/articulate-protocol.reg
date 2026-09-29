@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\Software\Classes\Articulate]
+@="Articulate 360"
+"URL Protocol"=""
+
+[HKEY_LOCAL_MACHINE\Software\Classes\Articulate\shell]
+
+[HKEY_LOCAL_MACHINE\Software\Classes\Articulate\shell\open]
+
+[HKEY_LOCAL_MACHINE\Software\Classes\Articulate\shell\open\command]
+@="\"C:\\Program Files\\Articulate\\360\\Desktop Application x64\\\\Articulate 360 Desktop App.exe\" \"%1\""
+

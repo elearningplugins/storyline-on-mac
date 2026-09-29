@@ -11,6 +11,15 @@ echo "# start $(date -u +%FT%TZ)"; wineboot -u
 wine reg add 'HKLM\Software\Articulate\Common\Settings' /v DisableNonAdminInstalls /t REG_SZ /d true /f
 # WPF software rendering: through wined3d on MoltenVK the Desktop App draws clipped labels and stray lines; OpenGL draws nothing.
 wine reg add 'HKCU\Software\Microsoft\Avalon.Graphics' /v DisableHWAcceleration /t REG_DWORD /d 1 /f
+# Vulkan renderer: GL stops at feature level 9_3; the patched wined3d reaches 11_1 on MoltenVK (Run 10).
+wine reg add 'HKCU\Software\Wine\Direct3D' /v renderer /t REG_SZ /d vulkan /f
+# Mac driver: Command keys act as Ctrl; RetinaMode off because WPF dialogs went blank with it on (Run 04e).
+wine reg add 'HKCU\Software\Wine\Mac Driver' /v LeftCommandIsCtrl /t REG_SZ /d y /f
+wine reg add 'HKCU\Software\Wine\Mac Driver' /v RightCommandIsCtrl /t REG_SZ /d y /f
+wine reg add 'HKCU\Software\Wine\Mac Driver' /v RetinaMode /t REG_SZ /d n /f
+# Busy and app-starting cursors map to the native arrow; macOS has no app busy cursor (Run 11).
+wine reg add 'HKCU\Software\Wine\Mac Driver\Cursors' /v 'user32.dll,32514' /t REG_SZ /d arrowCursor /f
+wine reg add 'HKCU\Software\Wine\Mac Driver\Cursors' /v 'user32.dll,32650' /t REG_SZ /d arrowCursor /f
 wineserver -w
 echo "# winver:"; wine reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion' /v CurrentBuildNumber | grep REG
 echo "# net48 release:"; wine reg query 'HKLM\Software\Microsoft\NET Framework Setup\NDP\v4\Full' /v Release | grep REG
