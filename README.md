@@ -58,7 +58,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005),
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010),
   `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch) and `kernelbase.dll` (0012) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
