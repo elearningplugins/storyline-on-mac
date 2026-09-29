@@ -8,7 +8,7 @@ mkdir -p "$DEST"
 make_launcher() { # $1 app name, $2 launcher script, $3 Info.plist, $4 icns
   local A="$DEST/$1.app/Contents"
   rm -rf "$DEST/$1.app"; mkdir -p "$A/MacOS" "$A/Resources"
-  cp "$HERE/$3" "$A/Info.plist"; cp "$HERE/$4" "$A/Resources/"
+  cp "$HERE/$3" "$A/Info.plist"; cp "$HERE/$4" "$HERE/storyline-args.sh" "$A/Resources/"
   cp "$HERE/$2" "$A/MacOS/$1"; chmod +x "$A/MacOS/$1"
   # the loader finds ntdll.so through ../lib relative to itself, so the bundle carries a copy plus a lib link to the patched mirror
   cp "$W/bin/wine" "$A/MacOS/wine"; ln -s "$W/lib" "$A/lib"
