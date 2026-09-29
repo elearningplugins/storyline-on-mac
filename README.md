@@ -53,6 +53,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
+| Desktop Service wait at launch | **IMPROVED** — the Dock launcher starts the service before Storyline asks for it; cold launch waits 12–13 s instead of 18–21 s for the service. About 4 s left is the service retrying a missing Review backups file (inside Articulate; not fixable here). Warm relaunches (service still running) wait 0.4 s | 22 |
 
 
 ## Current setup (what actually runs)
