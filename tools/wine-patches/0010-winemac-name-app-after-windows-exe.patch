@@ -1,0 +1,67 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 59cfb32..7741a23 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -40,6 +40,42 @@
+ static NSString* const WineActivatingAppPrefixKey = @"ActivatingAppPrefix";
+ static NSString* const WineActivatingAppConfigDirKey = @"ActivatingAppConfigDir";
+ 
++/** WINE_MAC_APP_NAMES="app.exe=Name;other.exe=Other" names this process in the menu bar and Dock after its Windows exe. */
++static NSString* app_name_from_env(void)
++{
++    NSString* names = [[[NSProcessInfo processInfo] environment] objectForKey:@"WINE_MAC_APP_NAMES"];
++    NSString* exe = [NSString stringWithUTF8String:getprogname()];
++
++    for (NSString* entry in [names componentsSeparatedByString:@";"])
++    {
++        NSRange eq = [entry rangeOfString:@"="];
++        if (eq.location == NSNotFound) continue;
++        if ([[entry substringToIndex:eq.location] caseInsensitiveCompare:exe] != NSOrderedSame) continue;
++        NSString* name = [entry substringFromIndex:NSMaxRange(eq)];
++        return [name length] ? name : nil;
++    }
++    return nil;
++}
++
++// LaunchServices has no public API to rename a running app; these private symbols are the ones Chromium uses for the same job.
++static void set_app_display_name(NSString* name)
++{
++    typedef CFTypeRef (*get_asn_fn)(void);
++    typedef OSStatus (*set_item_fn)(int, CFTypeRef, CFStringRef, CFTypeRef, CFDictionaryRef*);
++    CFBundleRef ls = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.LaunchServices"));
++    get_asn_fn get_asn;
++    set_item_fn set_item;
++    CFStringRef* key;
++    CFTypeRef asn;
++
++    if (!ls) return;
++    get_asn = (get_asn_fn)CFBundleGetFunctionPointerForName(ls, CFSTR("_LSGetCurrentApplicationASN"));
++    set_item = (set_item_fn)CFBundleGetFunctionPointerForName(ls, CFSTR("_LSSetApplicationInformationItem"));
++    key = (CFStringRef*)CFBundleGetDataPointerForName(ls, CFSTR("_kLSDisplayNameKey"));
++    if (!get_asn || !set_item || !key || !*key || !(asn = get_asn())) return;
++    set_item(-2 /* kLSDefaultSessionID */, asn, *key, (CFStringRef)name, NULL);
++}
++
+ 
+ bool macdrv_err_on;
+ 
+@@ -230,8 +266,10 @@ - (void) transformProcessToForeground:(BOOL)activateIfTransformed
+             NSString* bundleName;
+             NSString* title;
+             NSMenuItem* item;
++            NSString* appName = app_name_from_env();
+ 
+             [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
++            if (appName) set_app_display_name(appName);
+ 
+             if (activateIfTransformed)
+                 [self tryToActivateIgnoringOtherApps:YES];
+@@ -246,7 +284,7 @@ - (void) transformProcessToForeground:(BOOL)activateIfTransformed
+ 
+             // Application menu
+             submenu = [[[NSMenu alloc] initWithTitle:WineLocalizedString(STRING_MENU_WINE)] autorelease];
+-            bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey];
++            bundleName = appName ? appName : [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey];
+ 
+             if ([bundleName length])
+                 title = [NSString stringWithFormat:WineLocalizedString(STRING_MENU_ITEM_HIDE_APPNAME), bundleName];

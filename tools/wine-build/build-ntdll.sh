@@ -58,6 +58,9 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P11" 2>/dev/null; then git a
 # --- winemac.drv (unix) : no per-frame shadow recompute for per-pixel-alpha windows (patch 0005) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" || echo "winemac patch already applied"; }
+# (patch 0010: menu bar and Dock name from WINE_MAC_APP_NAMES instead of "wine")
+P10="$HERE/../wine-patches/0010-winemac-name-app-after-windows-exe.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git apply "$P10"; elif git apply --check -R "$P10" 2>/dev/null; then echo "winemac app-name patch already applied"; else echo "patch 0010 does not apply"; exit 1; fi
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
