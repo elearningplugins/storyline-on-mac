@@ -22,6 +22,7 @@ AppKit has no public busy cursor. The spinning beach ball is drawn by the window
   - Patched, app-starting cursor: the same, with `USER32.dll,32650`.
 - The patch applies to the pre-patch sources and gives byte-identical files to those built. It reverse-applies, and `winemac.so` builds with no new warnings.
 
+- Storyline, restarted on the patched build with `WINEDEBUG=trace+cursor`, clicking New Project: `L"user32.dll,32514" -> "busyButClickableCursor"`, and `setting cursor with cursor_name "busyButClickableCursor"` twice. No cursor was set from bitmap frames during that time, so the hourglass never appeared. The same click also showed `pointingHandCursor` (32649) and `arrowCursor`, unchanged.
+
 ## Not verified
-- Storyline itself: it had an unsaved project open, so it wasn't restarted on the new `winemac.so`. That Storyline's busy pointer is `IDC_WAIT` rather than a cursor of its own is inferred from WinForms `Cursors.WaitCursor`, not traced.
 - Whether the disc spins. Screen captures here exclude the pointer, and the trace can't show animation. `NSCursor.image` gives one frame.
