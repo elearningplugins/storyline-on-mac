@@ -42,11 +42,19 @@ echo "patched wined3d.dll in $M (also copy it over <prefix>/drive_c/windows/syst
 # --- d2d1 (PE) : pass the stroke transform across the VS/PS interface as float4 (patch 0004; SPIR-V backend rejects the float2x2 packing) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0004-d2d1-pass-stroke-transform-as-float4-for-spirv.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0004-d2d1-pass-stroke-transform-as-float4-for-spirv.patch" || echo "d2d1 patch already applied"; }
+# (patch 0008: DrawImage honours D2D1_COMPOSITE_MODE_MASK_INVERT, which Storyline uses to draw the text caret)
+P8="$HERE/../wine-patches/0008-d2d1-implement-mask-invert-composite-mode.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P8" 2>/dev/null; then git apply "$P8"
+elif git apply --reverse --check "$P8" 2>/dev/null; then echo "d2d1 mask-invert patch already applied"
+else echo "patch 0008 neither applies nor is already applied; source tree is not pinned wine-11.16 + 0004" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/d2d1/x86_64-windows/d2d1.dll > make-d2d1.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
 echo "patched d2d1.dll in $M (also copy it over <prefix>/drive_c/windows/system32/d2d1.dll)"
 # (patch 0007: ntdll get_random via arc4random_buf — applied with the winemac step below)
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" 2>/dev/null && git apply "$(dirname "$0")/../wine-patches/0007-ntdll-macos-arc4random-for-get_random.patch" || echo "rng patch already applied"; }
+# (patch 0011: WINE_PERF_LOG per-second file lookup totals by thread and folder — also built with the winemac step)
+P11="$HERE/../wine-patches/0011-ntdll-perf-log-file-lookups.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P11" 2>/dev/null; then git apply "$P11"; elif git apply --check -R "$P11" 2>/dev/null; then echo "file-lookup logging patch already applied"; else echo "patch 0011 does not apply"; exit 1; fi
 # --- winemac.drv (unix) : no per-frame shadow recompute for per-pixel-alpha windows (patch 0005) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0005-winemac-no-shadow-recompute-for-per-pixel-alpha-windows.patch" || echo "winemac patch already applied"; }
@@ -56,11 +64,31 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git a
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"
-# --- win32u (PE) : UpdateLayeredWindow copy fast path (patch 0006) ---
+# --- win32u (unix) : UpdateLayeredWindow copy fast path (patch 0006); the code lives in win32u.so, not win32u.dll ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
-cd "$B" && make -j4 dlls/win32u/x86_64-windows/win32u.dll > make-win32u.log 2>&1
+# MacPorts' one wine-devel patch (win32u Vulkan portability enumeration); a win32u.so built without it cannot see MoltenVK
+PU="$HERE/../wine-patches/upstream/macports-0001-win32u-Enable-host-Vulkan-portability-enumeration.diff"; cd "$SRC/wine-wine-11.16"
+if patch -p1 -N -s --dry-run < "$PU" >/dev/null 2>&1; then patch -p1 -N -s < "$PU"
+elif patch -p1 -R -s --dry-run < "$PU" >/dev/null 2>&1; then echo "MacPorts Vulkan portability patch already applied"
+else echo "MacPorts Vulkan portability patch neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0009: WINE_PERF_LOG=1 timing lines from d2d1 and win32u for tools/perf/; silent otherwise)
+P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
+if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
+elif git apply --reverse --check "$P9" 2>/dev/null; then echo "perf instrumentation patch already applied"
+else echo "patch 0009 neither applies nor is already applied; it needs 0004, 0006 and 0008 first" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/win32u/win32u.so dlls/win32u/x86_64-windows/win32u.dll dlls/d2d1/x86_64-windows/d2d1.dll > make-win32u.log 2>&1
+rm -f "$M/lib/wine/x86_64-unix/win32u.so"; cp "$B/dlls/win32u/win32u.so" "$M/lib/wine/x86_64-unix/win32u.so"
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
-echo "patched win32u.dll in $M (also copy it over <prefix>/drive_c/windows/system32/win32u.dll)"
+rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
+echo "patched win32u.so, win32u.dll and d2d1.dll (with 0009) in $M"
+# --- kernelbase (PE) : GetLocaleInfoEx answers LOCALE_SNAME for unknown well-formed names like Windows 10 (patch 0012); without it Storyline reloads its player on every click ---
+P12="$HERE/../wine-patches/0012-kernelbase-answer-LOCALE_SNAME-for-unknown-well-formed-locale-names.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P12" 2>/dev/null; then git apply "$P12"
+elif git apply --reverse --check "$P12" 2>/dev/null; then echo "locale name patch already applied"
+else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
+echo "patched kernelbase.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi

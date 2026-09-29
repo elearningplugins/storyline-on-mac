@@ -1,0 +1,275 @@
+--- a/dlls/d2d1/d2d1_private.h
++++ b/dlls/d2d1/d2d1_private.h
+@@ -266,7 +266,32 @@
+     HDC hdc;
+ 
+     D2D1_RENDER_TARGET_PROPERTIES desc;
++
++    ULONGLONG perf_upload_us, perf_present_us;
++    LONG perf_mask_invert_start;
+ };
++
++/* WINE_PERF_LOG=1: one "perf <seconds> <pid> <tid> d2d1 ..." line per event on stderr, for the timing research in runs/. */
++extern LONG d2d_perf_mask_invert_draws;
++static inline BOOL d2d_perf_enabled(void)
++{
++    static int enabled = -1;
++    char value[8];
++
++    if (enabled < 0)
++        enabled = GetEnvironmentVariableA("WINE_PERF_LOG", value, sizeof(value)) && value[0] != '0';
++    return enabled;
++}
++static inline ULONGLONG d2d_perf_now_us(void)
++{
++    LARGE_INTEGER counter, freq;
++
++    QueryPerformanceCounter(&counter);
++    QueryPerformanceFrequency(&freq);
++    return counter.QuadPart / (freq.QuadPart / 1000000);
++}
++#define D2D_PERF_LOG(t, fmt, ...) MESSAGE("perf %u.%06u %04lx %04lx d2d1 " fmt "\n", (unsigned int)((t) / 1000000), \
++        (unsigned int)((t) % 1000000), GetCurrentProcessId(), GetCurrentThreadId(), __VA_ARGS__)
+ 
+ HRESULT d2d_dc_render_target_init(struct d2d_dc_render_target *render_target, ID2D1Factory1 *factory,
+         ID3D10Device1 *d3d_device, const D2D1_RENDER_TARGET_PROPERTIES *desc);
+--- a/dlls/d2d1/dc_render_target.c
++++ b/dlls/d2d1/dc_render_target.c
+@@ -30,6 +30,7 @@
+ {
+     struct d2d_dc_render_target *render_target = impl_from_IUnknown(outer_unknown);
+     const RECT *dst_rect = &render_target->dst_rect;
++    ULONGLONG start = d2d_perf_enabled() ? d2d_perf_now_us() : 0;
+     RECT empty_rect;
+     HDC src_hdc;
+     HRESULT hr;
+@@ -49,6 +50,8 @@
+     SetRectEmpty(&empty_rect);
+     IDXGISurface1_ReleaseDC(render_target->dxgi_surface, &empty_rect);
+ 
++    if (start)
++        render_target->perf_present_us = d2d_perf_now_us() - start;
+     return S_OK;
+ }
+ 
+@@ -587,10 +590,13 @@
+ {
+     struct d2d_dc_render_target *render_target = impl_from_ID2D1DCRenderTarget(iface);
+     const RECT *dst_rect = &render_target->dst_rect;
++    ULONGLONG start = d2d_perf_enabled() ? d2d_perf_now_us() : 0;
+     HDC hdc;
+ 
+     TRACE("iface %p.\n", iface);
+ 
++    render_target->perf_present_us = 0;
++    render_target->perf_mask_invert_start = d2d_perf_mask_invert_draws;
+     if (render_target->dxgi_surface)
+     {
+         if (SUCCEEDED(IDXGISurface1_GetDC(render_target->dxgi_surface, TRUE, &hdc)))
+@@ -601,6 +607,8 @@
+         }
+     }
+ 
++    if (start)
++        render_target->perf_upload_us = d2d_perf_now_us() - start;
+     ID2D1RenderTarget_BeginDraw(render_target->dxgi_target);
+ }
+ 
+@@ -608,10 +616,23 @@
+         D2D1_TAG *tag1, D2D1_TAG *tag2)
+ {
+     struct d2d_dc_render_target *render_target = impl_from_ID2D1DCRenderTarget(iface);
++    const RECT *r = &render_target->dst_rect;
++    ULONGLONG start, end;
++    HRESULT hr;
+ 
+     TRACE("iface %p, tag1 %p, tag2 %p.\n", iface, tag1, tag2);
+ 
+-    return ID2D1RenderTarget_EndDraw(render_target->dxgi_target, tag1, tag2);
++    if (!d2d_perf_enabled())
++        return ID2D1RenderTarget_EndDraw(render_target->dxgi_target, tag1, tag2);
++
++    start = d2d_perf_now_us();
++    hr = ID2D1RenderTarget_EndDraw(render_target->dxgi_target, tag1, tag2);
++    end = d2d_perf_now_us();
++    D2D_PERF_LOG(end, "dcrt_frame rt=%p w=%ld h=%ld upload_us=%u enddraw_us=%u present_us=%u caret=%ld",
++            render_target, r->right - r->left, r->bottom - r->top, (unsigned int)render_target->perf_upload_us,
++            (unsigned int)(end - start), (unsigned int)render_target->perf_present_us,
++            d2d_perf_mask_invert_draws - render_target->perf_mask_invert_start);
++    return hr;
+ }
+ 
+ static D2D1_PIXEL_FORMAT * STDMETHODCALLTYPE d2d_dc_render_target_GetPixelFormat(ID2D1DCRenderTarget *iface,
+--- a/dlls/d2d1/device.c
++++ b/dlls/d2d1/device.c
+@@ -21,6 +21,8 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(d2d);
+ 
++LONG d2d_perf_mask_invert_draws;
++
+ #define INITIAL_CLIP_STACK_SIZE 4
+ 
+ static const D2D1_MATRIX_3X2_F identity =
+@@ -2759,6 +2761,7 @@
+         prev_bs = context->bs;
+         context->bs = context->bs_mask_invert;
+         swapped_bs = TRUE;
++        InterlockedIncrement(&d2d_perf_mask_invert_draws);
+     }
+     else if (composite_mode != D2D1_COMPOSITE_MODE_SOURCE_OVER)
+     {
+--- a/dlls/win32u/input.c
++++ b/dlls/win32u/input.c
+@@ -2063,6 +2063,14 @@
+     SERVER_END_REQ;
+     if (!ret) return 0;
+     if (previous == hwnd) return previous;
++    if (perf_log_enabled())
++    {
++        char prev_class[64];
++
++        snprintf( prev_class, sizeof(prev_class), "%s", previous ? perf_class_name( previous ) : "-" );
++        PERF_LOG( perf_now_us(), "focus hwnd=%p class=%s prev=%p prev_class=%s", hwnd,
++                  hwnd ? perf_class_name( hwnd ) : "-", previous, prev_class );
++    }
+ 
+     if (previous)
+     {
+--- a/dlls/win32u/message.c
++++ b/dlls/win32u/message.c
+@@ -3925,6 +3925,14 @@
+     if (input->type == INPUT_MOUSE && (input->mi.dwFlags & (MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_RIGHTDOWN)))
+         clip_fullscreen_window( hwnd, FALSE );
+ 
++    if (perf_log_enabled())
++    {
++        if (input->type == INPUT_MOUSE && (input->mi.dwFlags & (MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP)))
++            PERF_LOG( perf_now_us(), "input %s", input->mi.dwFlags & MOUSEEVENTF_LEFTDOWN ? "mouse_down" : "mouse_up" );
++        else if (input->type == INPUT_KEYBOARD && !(input->ki.dwFlags & KEYEVENTF_KEYUP))
++            PERF_LOG( perf_now_us(), "input %s", "key_down" );
++    }
++
+     SERVER_START_REQ( send_hardware_message )
+     {
+         req->win        = wine_server_user_handle( hwnd );
+--- a/dlls/win32u/win32u_private.h
++++ b/dlls/win32u/win32u_private.h
+@@ -22,7 +22,9 @@
+ #define __WINE_WIN32U_PRIVATE
+ 
+ #include <stdarg.h>
++#include <stdio.h>
+ #include <stdlib.h>
++#include <sys/time.h>
+ #include "windef.h"
+ #include "winbase.h"
+ #include "ntgdi.h"
+@@ -467,6 +469,56 @@
+ static inline const char *debugstr_ratio( struct ratio q )
+ {
+     return wine_dbg_sprintf( "%d:%d", q.num, q.den );
++}
++
++/* WINE_PERF_LOG=1: one "perf <seconds> <pid> <tid> win32u ..." line per event on stderr, for the timing research in runs/. */
++static inline BOOL perf_log_enabled(void)
++{
++    static int enabled = -1;
++    const char *value;
++
++    if (enabled < 0 && (enabled = (value = getenv( "WINE_PERF_LOG" )) && *value && *value != '0'))
++    {
++        LARGE_INTEGER counter, freq;
++        struct timeval tv;
++
++        gettimeofday( &tv, NULL );
++        NtQueryPerformanceCounter( &counter, &freq );
++        fprintf( stderr, "perf %u.%06u %04x %04x win32u sync epoch_us=%llu\n",
++                 (unsigned int)(counter.QuadPart / freq.QuadPart), (unsigned int)(counter.QuadPart % freq.QuadPart / (freq.QuadPart / 1000000)),
++                 (unsigned int)GetCurrentProcessId(), (unsigned int)GetCurrentThreadId(),
++                 (unsigned long long)tv.tv_sec * 1000000 + tv.tv_usec );
++    }
++    return enabled;
++}
++/* WINE_ULW_NOCOPY=1 turns off patch 0006's copy fast path so its effect can be measured A/B. */
++static inline BOOL perf_ulw_nocopy(void)
++{
++    static int disabled = -1;
++    const char *value;
++
++    if (disabled < 0) disabled = (value = getenv( "WINE_ULW_NOCOPY" )) && *value && *value != '0';
++    return disabled;
++}
++static inline ULONGLONG perf_now_us(void)
++{
++    LARGE_INTEGER counter, freq;
++
++    NtQueryPerformanceCounter( &counter, &freq );
++    return counter.QuadPart / (freq.QuadPart / 1000000);
++}
++#define PERF_LOG(t, fmt, ...) fprintf( stderr, "perf %u.%06u %04x %04x win32u " fmt "\n", (unsigned int)((t) / 1000000), \
++        (unsigned int)((t) % 1000000), (unsigned int)GetCurrentProcessId(), (unsigned int)GetCurrentThreadId(), __VA_ARGS__ )
++static inline const char *perf_class_name( HWND hwnd )
++{
++    static __thread char name[64];
++    WCHAR buffer[64];
++    UNICODE_STRING str = { 0, sizeof(buffer), buffer };
++    int i, len = NtUserGetClassName( hwnd, FALSE, &str );
++
++    for (i = 0; i < len && i < (int)sizeof(name) - 1; i++) name[i] = buffer[i] < 0x80 && buffer[i] > ' ' ? buffer[i] : '_';
++    name[i] = 0;
++    return name;
+ }
+ 
+ #endif /* __WINE_WIN32U_PRIVATE */
+--- a/dlls/win32u/window.c
++++ b/dlls/win32u/window.c
+@@ -2693,6 +2693,8 @@
+     RECT surface_rect;
+     SIZE offset;
+     BOOL ret = FALSE;
++    ULONGLONG perf_start = perf_log_enabled() ? perf_now_us() : 0;
++    int perf_path = 0;
+ 
+     if (flags & ~(ULW_COLORKEY | ULW_ALPHA | ULW_OPAQUE | ULW_EX_NORESIZE) ||
+         !(get_window_long( hwnd, GWL_EXSTYLE ) & WS_EX_LAYERED) ||
+@@ -2765,8 +2767,10 @@
+         if (pts_src) OffsetRect( &src_rect, pts_src->x, pts_src->y );
+         NtGdiTransformPoints( hdc_src, (POINT *)&src_rect, (POINT *)&src_rect, 2, NtGdiDPtoLP );
+ 
+-        if (blend_is_copy( hdc_src, blend ))
++        perf_path = 2;
++        if (blend_is_copy( hdc_src, blend ) && !perf_ulw_nocopy())
+         {
++            perf_path = 1;
+             /* Premultiplied 32bpp source over a cleared surface is a plain copy. */
+             ret = NtGdiBitBlt( hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+                                hdc_src, src_rect.left, src_rect.top, SRCCOPY, 0, 0 );
+@@ -2793,6 +2797,27 @@
+ 
+ done:
+     window_surface_release( surface );
++    if (perf_start)
++    {
++        static ULONGLONG window_start, total_us, max_us;
++        static unsigned int count, copies, blends, rect_w, rect_h;
++        static HWND last_hwnd;
++        ULONGLONG now = perf_now_us(), spent = now - perf_start;
++
++        if (!window_start) window_start = now;
++        count++; total_us += spent; if (spent > max_us) max_us = spent;
++        if (perf_path == 1) copies++; else if (perf_path == 2) blends++;
++        last_hwnd = hwnd;
++        rect_w = new_rects.window.right - new_rects.window.left;
++        rect_h = new_rects.window.bottom - new_rects.window.top;
++        if (now - window_start >= 1000000)
++        {
++            PERF_LOG( now, "ulw_window span_us=%u n=%u total_us=%u max_us=%u copy=%u blend=%u hwnd=%p w=%u h=%u",
++                      (unsigned int)(now - window_start), count, (unsigned int)total_us, (unsigned int)max_us,
++                      copies, blends, last_hwnd, rect_w, rect_h );
++            window_start = now; count = copies = blends = 0; total_us = max_us = 0;
++        }
++    }
+     return ret;
+ }
+ 

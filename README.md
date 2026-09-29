@@ -45,18 +45,21 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Preview | **FAIL** — managed NRE in `Project.PreparePreview` (no Wine call fails; origin inside Articulate); not re-tested since the graphics patches | 09 |
 | Save / Player dialog / Publish | **FAIL** — managed NREs (null player), same root as Preview; not re-tested since the graphics patches | 09 |
 | Graphics feature level | **FIXED** by patch 0003 — Direct3D feature level 9_3 → 11_1 on MoltenVK | 10 |
-| Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005/0006 | 11 |
+| Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005 (0006 was not actually deployed until Run 14) | 11 |
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
 | New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries | 09 |
-| Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patches 0005/0006 ruled out) | — |
+| Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patch 0005 ruled out; 0006 was not deployed then) | — |
+| Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
+| Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
+| Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004), `winemac.so` (0005) and
-  `win32u.dll` (0006) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all seven are
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005),
+  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch) and `kernelbase.dll` (0012) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
@@ -101,7 +104,7 @@ tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
 # 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
 tools/install-core-admin.sh wine-dotnet48-noadmintask
 
-# 3. patched Wine mirror (all seven patches), then its PE modules copied into the prefix's system32
+# 3. patched Wine mirror (all nine patches), then its PE modules copied into the prefix's system32
 tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
 
 # 4. Dock launchers and the articulate:// bridge in ~/Applications
@@ -117,6 +120,8 @@ tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/ar
 `tools/install-core-admin.sh` takes `burn-payloads/` from the Burn package cache of an earlier install attempt (Run 04b); with the patched Wine, running the original `articulate-360.exe` also installs the core end to end (Run 06).
 
 `tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
+
+To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh <label> [VAR=value ...]`. It launches Storyline with `WINE_PERF_LOG=1`, samples CPU once a second, and writes `summary.txt` to `~/StorylineLab/perf/<time>-<label>/` when you quit. Add `--sample-clicks N` after the label to take a stack sample of Storyline after each of your first N clicks once a project has loaded. `tools/perf/perf-mark.sh "text"` adds a timestamped note during a session. See Run 14. `tools/perf/auto-caret.sh <label> [clicks]` runs a whole caret session hands-off (new project, two text boxes, repeated clicks); see Run 15.
 
 ## Rules kept
 

@@ -1,0 +1,47 @@
+diff --git a/dlls/kernelbase/locale.c b/dlls/kernelbase/locale.c
+index 071f37f..5ae57c2 100644
+--- a/dlls/kernelbase/locale.c
++++ b/dlls/kernelbase/locale.c
+@@ -6115,6 +6115,22 @@ INT WINAPI DECLSPEC_HOTPATCH GetLocaleInfoW( LCID lcid, LCTYPE lctype, WCHAR *bu
+ /******************************************************************************
+  *	GetLocaleInfoEx   (kernelbase.@)
+  */
++static BOOL is_wellformed_locale_name( const WCHAR *name )
++{
++    const WCHAR *p = name;
++    int n = 0;
++
++    if (!name || name == LOCALE_NAME_USER_DEFAULT) return FALSE;
++    while (iswalpha( *p ) && *p < 0x80) { p++; n++; }
++    if (n < 2 || n > 3) return FALSE;
++    while (*p == '-')
++    {
++        for (p++, n = 0; (iswalnum( *p ) && *p < 0x80); p++) n++;
++        if (n < 2 || n > 8) return FALSE;
++    }
++    return !*p && p - name < LOCALE_NAME_MAX_LENGTH;
++}
++
+ INT WINAPI DECLSPEC_HOTPATCH GetLocaleInfoEx( const WCHAR *name, LCTYPE info, WCHAR *buffer, INT len )
+ {
+     LCID lcid;
+@@ -6124,6 +6140,19 @@ INT WINAPI DECLSPEC_HOTPATCH GetLocaleInfoEx( const WCHAR *name, LCTYPE info, WC
+ 
+     if (!locale)
+     {
++        /* Windows 10 answers LOCALE_SNAME for any well-formed tag it has no data for (a custom unspecified locale) */
++        if ((info & ~LOCALE_NOUSEROVERRIDE) == LOCALE_SNAME && is_wellformed_locale_name( name ))
++        {
++            INT ret = wcslen( name ) + 1;
++            if (!buffer) return ret;
++            if (len < ret)
++            {
++                SetLastError( ERROR_INSUFFICIENT_BUFFER );
++                return 0;
++            }
++            memcpy( buffer, name, ret * sizeof(WCHAR) );
++            return ret;
++        }
+         SetLastError( ERROR_INVALID_PARAMETER );
+         return 0;
+     }
