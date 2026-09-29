@@ -79,5 +79,13 @@ rm -f "$M/lib/wine/x86_64-unix/win32u.so"; cp "$B/dlls/win32u/win32u.so" "$M/lib
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
 echo "patched win32u.so, win32u.dll and d2d1.dll (with 0009) in $M"
+# --- kernelbase (PE) : GetLocaleInfoEx answers LOCALE_SNAME for unknown well-formed names like Windows 10 (patch 0012); without it Storyline reloads its player on every click ---
+P12="$HERE/../wine-patches/0012-kernelbase-answer-LOCALE_SNAME-for-unknown-well-formed-locale-names.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P12" 2>/dev/null; then git apply "$P12"
+elif git apply --reverse --check "$P12" 2>/dev/null; then echo "locale name patch already applied"
+else echo "patch 0012 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
+echo "patched kernelbase.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
