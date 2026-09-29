@@ -42,9 +42,19 @@ trap cleanup EXIT
 
 # --sample-clicks: once a project has finished loading, sample Storyline after each of the next N clicks
 if [ "$SAMPLE_CLICKS" -gt 0 ]; then
-  ready_count() { cat "$SLLOGS"/Storyline_STABLE*.log 2>/dev/null | LC_ALL=C grep -a -c 'ProjectReadyForBackgroundProcessing' || true; }
-  base=$(ready_count)
-  ( until [ "$(ready_count)" -gt "$base" ]; do sleep 2; done
+  # Storyline deletes its oldest log when it starts a new one, so compare marker timestamps with the session start rather than counting
+  project_ready() {
+    cat "$SLLOGS"/Storyline_STABLE*.log 2>/dev/null | LC_ALL=C grep -a 'ProjectReadyForBackgroundProcessing' | python3 -c '
+import json, sys
+from datetime import datetime
+start = float(sys.argv[1])
+for line in sys.stdin:
+    try:
+        if datetime.fromisoformat(json.loads(line)["@t"][:26].rstrip("Z") + "+00:00").timestamp() > start: sys.exit(0)
+    except (ValueError, KeyError): pass
+sys.exit(1)' "$(sed -n 's/^start_epoch=//p' "$S/session.txt")"
+  }
+  ( until project_ready; do sleep 2; done
     for i in $(seq 1 "$SAMPLE_CLICKS"); do
       echo ">>> click into a text box now (sample $i of $SAMPLE_CLICKS); keep Storyline open until the report prints"
       "$HERE/perf-sample-click.sh" 8 || break
