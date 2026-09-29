@@ -1,0 +1,17 @@
+#!/bin/bash
+# Runs slauto.exe in the Storyline prefix; its perf lines (injected clicks and keys) go to the launcher log that perf-session reads.
+# Usage: tools/uiauto/sl <slauto command ...>   e.g. sl list · sl clickw "Storyline" 400 300 · sl drag 400 300 700 360
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"; LAB="$HOME/StorylineLab"
+EXE="$LAB/tools/uiauto/slauto.exe"
+if [ ! -x "$EXE" ] || [ "$HERE/slauto.c" -nt "$EXE" ]; then
+  mkdir -p "$(dirname "$EXE")"; /opt/local/bin/x86_64-w64-mingw32-gcc -O1 -o "$EXE" "$HERE/slauto.c" -luser32
+fi
+# Injected input only lands while Storyline is the frontmost Mac app.
+case "${1:-}" in
+  click|clickw|dclick|dclickw|drag|keys|clicktext)
+    PID=$(pgrep -f 'Storyline\.exe' | while read -r p; do ps -o args= -p "$p" | grep -q -- '--type=' || echo "$p"; done | head -1)
+    [ -z "$PID" ] || osascript -e "tell application \"System Events\" to set frontmost of (first process whose unix id is $PID) to true" >/dev/null 2>&1 || true ;;
+esac
+export WINEARCH=win64 WINEPREFIX="$LAB/prefixes/wine-dotnet48-noadmintask" WINEDEBUG=-all WINE_PERF_LOG=1 PATH="/opt/local/bin:$PATH"
+exec "$LAB/wine-patched/bin/wine" "$EXE" "$@" 2>> "$LAB/logs/launcher/storyline.log"

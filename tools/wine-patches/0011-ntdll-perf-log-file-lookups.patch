@@ -1,0 +1,201 @@
+diff --git a/dlls/ntdll/unix/file.c b/dlls/ntdll/unix/file.c
+index 7b15004..56c257d 100644
+--- a/dlls/ntdll/unix/file.c
++++ b/dlls/ntdll/unix/file.c
+@@ -126,6 +126,125 @@
+ #include "unix_private.h"
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(file);
++
++/** WINE_PERF_LOG=1: per-second totals of file lookups by thread and folder, at most FSPERF_TOP lines per kind per second. */
++#define FSPERF_SLOTS 256
++#define FSPERF_TOP 8
++struct fsperf_slot { char kind; unsigned int tid, n, fails; ULONGLONG us; char dir[200]; char example[64]; };
++static struct fsperf_slot fsperf_tab[FSPERF_SLOTS];
++static unsigned int fsperf_used;
++static ULONGLONG fsperf_window;
++static pthread_mutex_t fsperf_mutex = PTHREAD_MUTEX_INITIALIZER;
++
++static BOOL fsperf_enabled(void)
++{
++    static int enabled = -1;
++    const char *value;
++    if (enabled < 0) enabled = (value = getenv( "WINE_PERF_LOG" )) && *value && *value != '0';
++    return enabled;
++}
++
++static ULONGLONG fsperf_now(void)
++{
++    LARGE_INTEGER counter, freq;
++    NtQueryPerformanceCounter( &counter, &freq );
++    return counter.QuadPart / (freq.QuadPart / 1000000);
++}
++
++static void fsperf_print_path( char *out, size_t size, const char *in )
++{
++    size_t i = 0;
++    for (; *in && i + 4 < size; in++)
++    {
++        if (*in == ' ' || *in == '%') i += snprintf( out + i, size - i, "%%%02X", (unsigned char)*in );
++        else out[i++] = *in;
++    }
++    out[i] = 0;
++}
++
++static int fsperf_cmp( const void *a, const void *b )
++{
++    const struct fsperf_slot *x = a, *y = b;
++    if (x->kind != y->kind) return x->kind - y->kind;
++    return x->us < y->us ? 1 : x->us > y->us ? -1 : 0;
++}
++
++static void fsperf_flush( ULONGLONG now )
++{
++    char dir[400], example[160];
++    unsigned int i, shown = 0, pid = HandleToULong( NtCurrentTeb()->ClientId.UniqueProcess );
++    char kind = 0;
++
++    qsort( fsperf_tab, fsperf_used, sizeof(fsperf_tab[0]), fsperf_cmp );
++    for (i = 0; i < fsperf_used; i++)
++    {
++        struct fsperf_slot *s = &fsperf_tab[i];
++        if (s->kind != kind) { kind = s->kind; shown = 0; }
++        if (shown++ >= FSPERF_TOP) continue;
++        fsperf_print_path( dir, sizeof(dir), s->dir );
++        fsperf_print_path( example, sizeof(example), s->example );
++        fprintf( stderr, "perf %u.%06u %04x %04x ntdll fs kind=%s tid=%04x n=%u fails=%u us=%llu ex=%s dir=%s\n",
++                 (unsigned int)(now / 1000000), (unsigned int)(now % 1000000), pid, s->tid,
++                 s->kind == 'd' ? "list" : s->kind == 'a' ? "attr" : "open", s->tid, s->n, s->fails,
++                 (unsigned long long)s->us, example, dir );
++    }
++    fsperf_used = 0;
++    fsperf_window = now;
++}
++
++/* kind: 'd' directory listing (path is the directory), 'a' attribute query, 'o' open (path is the file) */
++static void fsperf_record( char kind, const char *path, ULONGLONG start, BOOL failed )
++{
++    ULONGLONG now = fsperf_now();
++    unsigned int i, tid = HandleToULong( NtCurrentTeb()->ClientId.UniqueThread );
++    char dir[200];
++    const char *base = path, *slash;
++
++    if (kind != 'd' && (slash = strrchr( path, '/' )))
++    {
++        snprintf( dir, sizeof(dir), "%.*s", (int)(slash - path), path );
++        base = slash + 1;
++    }
++    else
++    {
++        snprintf( dir, sizeof(dir), "%s", path );
++        base = "-";
++    }
++
++    mutex_lock( &fsperf_mutex );
++    if (!fsperf_window) fsperf_window = now;
++    for (i = 0; i < fsperf_used; i++)
++        if (fsperf_tab[i].kind == kind && fsperf_tab[i].tid == tid && !strcmp( fsperf_tab[i].dir, dir )) break;
++    if (i == fsperf_used && fsperf_used < FSPERF_SLOTS)
++    {
++        memset( &fsperf_tab[i], 0, sizeof(fsperf_tab[i]) );
++        fsperf_tab[i].kind = kind;
++        fsperf_tab[i].tid = tid;
++        snprintf( fsperf_tab[i].dir, sizeof(fsperf_tab[i].dir), "%s", dir );
++        fsperf_used++;
++    }
++    if (i < fsperf_used)
++    {
++        fsperf_tab[i].n++;
++        fsperf_tab[i].us += now - start;
++        if (failed) fsperf_tab[i].fails++;
++        snprintf( fsperf_tab[i].example, sizeof(fsperf_tab[i].example), "%s", base );
++    }
++    if (now - fsperf_window >= 1000000) fsperf_flush( now );
++    mutex_unlock( &fsperf_mutex );
++}
++
++static void fsperf_record_nt( char kind, const UNICODE_STRING *name, const char *unix_name, ULONGLONG start, BOOL failed )
++{
++    char buf[400];
++    unsigned int i, len;
++
++    if (unix_name) { fsperf_record( kind, unix_name, start, failed ); return; }
++    len = name ? min( name->Length / sizeof(WCHAR), sizeof(buf) - 1 ) : 0;
++    for (i = 0; i < len; i++) buf[i] = name->Buffer[i] == '\\' ? '/' : name->Buffer[i] < 0x80 ? name->Buffer[i] : '?';
++    buf[len] = 0;
++    fsperf_record( kind, buf, start, failed );
++}
+ WINE_DECLARE_DEBUG_CHANNEL(winediag);
+ 
+ #define MAX_DOS_DRIVES 26
+@@ -2905,6 +3024,7 @@ NTSTATUS WINAPI NtQueryDirectoryFile( HANDLE handle, HANDLE event, PIO_APC_ROUTI
+     enum server_fd_type type;
+     struct dir_data *data;
+     unsigned int status;
++    ULONGLONG fsperf_start = fsperf_enabled() ? fsperf_now() : 0;
+ 
+     TRACE("(%p %p %p %p %p %p 0x%08x 0x%08x 0x%08x %s 0x%08x\n",
+           handle, event, apc_routine, apc_context, io, buffer,
+@@ -2981,6 +3101,14 @@ NTSTATUS WINAPI NtQueryDirectoryFile( HANDLE handle, HANDLE event, PIO_APC_ROUTI
+ 
+     mutex_unlock( &dir_mutex );
+ 
++    if (fsperf_start)
++    {
++        char path[PATH_MAX] = "?";
++#ifdef F_GETPATH
++        if (fcntl( fd, F_GETPATH, path ) == -1) strcpy( path, "?" );
++#endif
++        fsperf_record( 'd', path, fsperf_start, status && status != STATUS_NO_MORE_FILES );
++    }
+     if (needs_close) close( fd );
+     if (cwd != -1) close( cwd );
+     TRACE( "=> %x (%ld)\n", status, io->Information );
+@@ -4668,6 +4796,7 @@ NTSTATUS WINAPI NtCreateFile( HANDLE *handle, ACCESS_MASK access, OBJECT_ATTRIBU
+     BOOL name_hidden = FALSE;
+     BOOL created = FALSE;
+     unsigned int status;
++    ULONGLONG fsperf_start = fsperf_enabled() ? fsperf_now() : 0;
+ 
+     TRACE( "handle=%p access=%08x name=%s objattr=%08x root=%p sec=%p io=%p alloc_size=%p "
+            "attr=%08x sharing=%08x disp=%d options=%08x ea=%p.0x%08x\n",
+@@ -4753,6 +4882,7 @@ NTSTATUS WINAPI NtCreateFile( HANDLE *handle, ACCESS_MASK access, OBJECT_ATTRIBU
+     }
+ 
+  done:
++    if (fsperf_start) fsperf_record_nt( 'o', attr->ObjectName, unix_name, fsperf_start, status != STATUS_SUCCESS );
+     free( unix_name );
+     free( nt_name.Buffer );
+     return io->Status = status;
+@@ -4891,6 +5021,7 @@ NTSTATUS WINAPI NtQueryFullAttributesFile( const OBJECT_ATTRIBUTES *attr,
+     unsigned int status;
+     UNICODE_STRING nt_name;
+     OBJECT_ATTRIBUTES new_attr = *attr;
++    ULONGLONG fsperf_start = fsperf_enabled() ? fsperf_now() : 0;
+ 
+     if (!(status = get_nt_and_unix_names( &new_attr, &nt_name, &unix_name, FILE_OPEN, TRUE )))
+     {
+@@ -4905,6 +5036,7 @@ NTSTATUS WINAPI NtQueryFullAttributesFile( const OBJECT_ATTRIBUTES *attr,
+             fill_file_info( &st, attributes, info, FileNetworkOpenInformation );
+     }
+     else WARN( "%s not found (%x)\n", debugstr_us(attr->ObjectName), status );
++    if (fsperf_start) fsperf_record_nt( 'a', attr->ObjectName, status ? NULL : unix_name, fsperf_start, status != STATUS_SUCCESS );
+     free( unix_name );
+     free( nt_name.Buffer );
+     return status;
+@@ -4920,6 +5052,7 @@ NTSTATUS WINAPI NtQueryAttributesFile( const OBJECT_ATTRIBUTES *attr, FILE_BASIC
+     unsigned int status;
+     UNICODE_STRING nt_name;
+     OBJECT_ATTRIBUTES new_attr = *attr;
++    ULONGLONG fsperf_start = fsperf_enabled() ? fsperf_now() : 0;
+ 
+     if (!(status = get_nt_and_unix_names( &new_attr, &nt_name, &unix_name, FILE_OPEN, TRUE )))
+     {
+@@ -4934,6 +5067,7 @@ NTSTATUS WINAPI NtQueryAttributesFile( const OBJECT_ATTRIBUTES *attr, FILE_BASIC
+             status = fill_file_info( &st, attributes, info, FileBasicInformation );
+     }
+     else WARN( "%s not found (%x)\n", debugstr_us(attr->ObjectName), status );
++    if (fsperf_start) fsperf_record_nt( 'a', attr->ObjectName, status ? NULL : unix_name, fsperf_start, status != STATUS_SUCCESS );
+     free( unix_name );
+     free( nt_name.Buffer );
+     return status;
