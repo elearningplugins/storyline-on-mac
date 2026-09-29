@@ -59,6 +59,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Start screen right panel (Articulate's web content) | **FIXED** by patch 0015 — the panel is an IE `WebBrowser` (Wine's mshtml + Gecko), kept hidden until `ProgressChanged` reports a finished load; Wine never fired that event, so the panel stayed blank | 18 |
 | Busy cursor (e.g. after New Project) | **FIXED** by patch 0016 — winemac had no Mac equivalent for the Windows wait and app-starting cursors, so it drew the Windows hourglass; it now shows AppKit's busy cursor | 19 |
 | Image decoding (icons, WIC) | **FIXED** by patch 0017 — windowscodecs re-read the codec lists from the registry on every decode (~97 wineserver round trips per image); small icons 1.9 ms → **0.26 ms** each | 21 |
+| Desktop Service wait at launch | **IMPROVED** — the Dock launcher starts the service before Storyline asks for it; cold launch waits 12–13 s instead of 18–21 s for the service. About 4 s left is the service retrying a missing Review backups file (inside Articulate; not fixable here). Warm relaunches (service still running) wait 0.4 s | 22 |
 
 
 ## Current setup (what actually runs)
