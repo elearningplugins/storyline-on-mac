@@ -16,4 +16,6 @@ mkdir -p "$LAB/logs/launcher"
 (cd "$WINEPREFIX/drive_c/Program Files/Articulate/360/Desktop Service x64" && "$HERE/wine" "Articulate 360 Desktop Service.exe" >> "$LAB/logs/launcher/desktop-service.log" 2>&1 &)
 cd "$WINEPREFIX/drive_c/Program Files/Articulate/360/Storyline 64-bit"
 # Passed here too so a Wine build without patch 0018 still gets them; the patch skips switches already present.
-exec "$HERE/wine" "Storyline.exe" ${WINE_APPEND_ARGS#Storyline.exe=} "$@" >> "$LAB/logs/launcher/storyline.log" 2>&1
+# Storyline opens only its first argument as a file, so a project goes before the switches, with a Mac path mapped to Wine's Z: drive.
+ARGS=(); for a in "$@"; do if [ -e "$a" ] && [[ "$a" == /* ]]; then a="Z:${a//\//\\}"; fi; ARGS+=("$a"); done
+exec "$HERE/wine" "Storyline.exe" ${ARGS[@]+"${ARGS[@]}"} ${WINE_APPEND_ARGS#Storyline.exe=} >> "$LAB/logs/launcher/storyline.log" 2>&1

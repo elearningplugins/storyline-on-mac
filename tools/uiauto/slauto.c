@@ -10,6 +10,7 @@
  *   slauto tree  <title-substr>      - list that window's visible child windows (screen rects)
  *   slauto drag  <x1> <y1> <x2> <y2> - press at the first point, move, release at the second
  *   slauto close <title-substr>      - post WM_CLOSE to the window
+ *   slauto redraw <title-substr>     - invalidate and repaint the window and its children
  */
 #include <windows.h>
 #include <stdio.h>
@@ -176,6 +177,11 @@ int main(int argc, char **argv)
         GetWindowRect(h, &r); printf("%ld %ld\n", (r.left + r.right) / 2, (r.top + r.bottom) / 2);
         if (!strcmp(argv[1], "clicktext")) click_at((r.left + r.right) / 2, (r.top + r.bottom) / 2);
         return 0;
+    }
+    if (!strcmp(argv[1], "redraw") && argc >= 3)
+    {
+        HWND h = find(argv[2]); if (!h) { puts("not found"); return 1; }
+        RedrawWindow(h, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN | RDW_UPDATENOW); return 0;
     }
     if (!strcmp(argv[1], "drag") && argc >= 6) { drag(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5])); return 0; }
     if (!strcmp(argv[1], "close") && argc >= 3)

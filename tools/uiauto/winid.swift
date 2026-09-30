@@ -5,7 +5,8 @@ import Foundation
 let pid = Int32(CommandLine.arguments[1])!
 let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
 var rows: [(Int, CGRect)] = []
-for w in list where (w[kCGWindowOwnerPID as String] as? Int32) == pid && (w[kCGWindowLayer as String] as? Int) == 0 {
+let allLayers = ProcessInfo.processInfo.environment["WINID_ALL_LAYERS"] != nil
+for w in list where (w[kCGWindowOwnerPID as String] as? Int32) == pid && (allLayers || (w[kCGWindowLayer as String] as? Int) == 0) {
     guard let id = w[kCGWindowNumber as String] as? Int, let b = w[kCGWindowBounds as String] as? [String: CGFloat] else { continue }
     rows.append((id, CGRect(x: b["X"] ?? 0, y: b["Y"] ?? 0, width: b["Width"] ?? 0, height: b["Height"] ?? 0)))
 }
