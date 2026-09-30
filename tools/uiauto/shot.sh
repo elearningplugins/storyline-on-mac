@@ -8,6 +8,8 @@ PID="${2:-$(pgrep -f 'Storyline\.exe' | while read -r p; do ps -o args= -p "$p" 
 mkdir -p "$B" "$Q"
 [ -x "$B/winid" ] && [ "$B/winid" -nt "$HERE/winid.swift" ] || swiftc -O -o "$B/winid" "$HERE/winid.swift"
 read -r WID X Y W H < <("$B/winid" "$PID" | head -1) || { echo "no on-screen window for pid $PID" >&2; exit 1; }
+# SHOT_WID picks a specific window id from winid's list, e.g. a dialog smaller than the main window.
+[ -z "${SHOT_WID:-}" ] || read -r WID X Y W H < <("$B/winid" "$PID" | awk -v w="$SHOT_WID" '$1 == w')
 if ! { [ -f "$Q/daemon.pid" ] && kill -0 "$(cat "$Q/daemon.pid")" 2>/dev/null; }; then
   printf '#!/bin/bash\nexec "%s"\n' "$HERE/shotd.sh" > "$B/shotd.command"; chmod +x "$B/shotd.command" "$HERE/shotd.sh"
   open -g -a Terminal "$B/shotd.command"

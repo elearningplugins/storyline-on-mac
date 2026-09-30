@@ -1,0 +1,15 @@
+diff --git a/dlls/win32u/window.c b/dlls/win32u/window.c
+--- a/dlls/win32u/window.c
++++ b/dlls/win32u/window.c
+@@ -6122,9 +6122,10 @@ HWND WINAPI NtUserCreateWindowEx( DWORD ex_style, UNICODE_STRING *class_name,
+         goto failed;
+     }
+ 
+-    /* create default IME window */
++    /* create default IME window, except for message-only windows and their descendants */
+ 
+     if (!is_desktop_window( hwnd ) && parent != get_hwnd_message_parent() &&
++        (!(cs.style & WS_CHILD) || NtUserGetAncestor( NtUserGetAncestor( parent, GA_ROOT ), GA_PARENT ) != get_hwnd_message_parent()) &&
+         register_imm_window( hwnd ))
+     {
+         TRACE( "register IME window for %p\n", hwnd );

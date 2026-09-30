@@ -1,0 +1,196 @@
+diff --git a/dlls/gdiplus/metafile.c b/dlls/gdiplus/metafile.c
+--- a/dlls/gdiplus/metafile.c
++++ b/dlls/gdiplus/metafile.c
+@@ -920,6 +920,48 @@ static void METAFILE_AdjustFrame(GpMetafile* metafile, const GpPointF *points,
+     }
+ }
+ 
++static void METAFILE_AdjustFrameWorldPoints(GpMetafile *metafile, GpPointF *points, int num_points)
++{
++    if (!metafile->auto_frame || !metafile->record_graphics)
++        return;
++
++    GdipTransformPoints(metafile->record_graphics, CoordinateSpaceDevice,
++        CoordinateSpaceWorld, points, num_points);
++    METAFILE_AdjustFrame(metafile, points, num_points);
++}
++
++static void METAFILE_AdjustFrameRect(GpMetafile *metafile, const GpRectF *rect, REAL inflate)
++{
++    GpPointF corners[4];
++
++    corners[0].X = rect->X - inflate;
++    corners[0].Y = rect->Y - inflate;
++    corners[1].X = rect->X + rect->Width + inflate;
++    corners[1].Y = corners[0].Y;
++    corners[2].X = corners[0].X;
++    corners[2].Y = rect->Y + rect->Height + inflate;
++    corners[3].X = corners[1].X;
++    corners[3].Y = corners[2].Y;
++
++    METAFILE_AdjustFrameWorldPoints(metafile, corners, 4);
++}
++
++static REAL METAFILE_PenInflate(const GpPen *pen)
++{
++    return pen ? max(pen->width, 1.0f) / 2.0f + 1.0f : 0.0f;
++}
++
++static void METAFILE_AdjustFramePath(GpMetafile *metafile, GpPath *path, GpPen *pen)
++{
++    GpRectF rect;
++
++    if (!metafile->auto_frame || !metafile->record_graphics)
++        return;
++
++    if (GdipGetPathWorldBounds(path, &rect, NULL, NULL) == Ok)
++        METAFILE_AdjustFrameRect(metafile, &rect, METAFILE_PenInflate(pen));
++}
++
+ GpStatus METAFILE_GetGraphicsContext(GpMetafile* metafile, GpGraphics **result)
+ {
+     GpStatus stat;
+@@ -1854,8 +1896,9 @@ static GpStatus METAFILE_PlaybackUpdateWorldTransform(GpMetafile *metafile)
+         if (stat == Ok)
+             stat = GdipMultiplyMatrix(real_transform, metafile->world_transform, MatrixOrderPrepend);
+ 
++        /* playback_points are in device space, so bypass the container-relative GdipSetWorldTransform. */
+         if (stat == Ok)
+-            stat = GdipSetWorldTransform(metafile->playback_graphics, real_transform);
++            metafile->playback_graphics->worldtrans = *real_transform;
+ 
+         GdipDeleteMatrix(real_transform);
+     }
+@@ -2639,7 +2682,8 @@ static GpStatus METAFILE_PlaybackObject(GpMetafile *metafile, UINT flags, UINT d
+ 
+         if (pendata->PenDataFlags & PenDataNonCenter)
+         {
+-            FIXME("PenDataNonCenter is not supported.\n");
++            if ((status = GdipSetPenMode(pen, *(DWORD *)((BYTE *)pendata + offset))) != Ok)
++                goto penfailed;
+             offset += sizeof(DWORD);
+         }
+ 
+@@ -2895,6 +2939,13 @@ GpStatus WINGDIPAPI GdipPlayMetafileRecord(GDIPCONST GpMetafile *metafile,
+ 
+             return stat;
+         }
++        case EmfPlusRecordTypeResetClip:
++        {
++            stat = GdipSetInfinite(real_metafile->clip);
++            if (stat == Ok)
++                stat = METAFILE_PlaybackUpdateClip(real_metafile);
++            return stat;
++        }
+         case EmfPlusRecordTypeSetClipRect:
+         {
+             EmfPlusSetClipRect *record = (EmfPlusSetClipRect*)header;
+@@ -3884,8 +3935,9 @@ GpStatus WINGDIPAPI GdipEnumerateMetafileSrcRectDestPoints(GpGraphics *graphics,
+         if (stat == Ok)
+             stat = GdipSetPageUnit(graphics, UnitPixel);
+ 
++        /* Playback works in device space, so use identity rather than the container-relative GdipResetWorldTransform. */
+         if (stat == Ok)
+-            stat = GdipResetWorldTransform(graphics);
++            stat = GdipSetMatrixElements(&graphics->worldtrans, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+ 
+         if (stat == Ok)
+             stat = GdipCreateRegion(&real_metafile->base_clip);
+@@ -4775,6 +4827,7 @@ GpStatus METAFILE_DrawImagePointsRect(GpMetafile *metafile, GpImage *image,
+ {
+     EmfPlusDrawImagePoints *draw_image_record;
+     DWORD image_id, attributes_id;
++    GpPointF corners[4];
+     GpStatus stat;
+ 
+     if (count != 3) return InvalidParameter;
+@@ -4845,6 +4898,11 @@ GpStatus METAFILE_DrawImagePointsRect(GpMetafile *metafile, GpImage *image,
+     draw_image_record->count = 3;
+     memcpy(draw_image_record->PointData.pointsF, points, 3 * sizeof(*points));
+     METAFILE_WriteRecords(metafile);
++
++    memcpy(corners, points, 3 * sizeof(*points));
++    corners[3].X = points[1].X + points[2].X - points[0].X;
++    corners[3].Y = points[1].Y + points[2].Y - points[0].Y;
++    METAFILE_AdjustFrameWorldPoints(metafile, corners, 4);
+     return Ok;
+ }
+ 
+@@ -5051,7 +5109,7 @@ static GpStatus METAFILE_AddPenObject(GpMetafile *metafile, GpPen *pen, DWORD *i
+     }
+     if (data_flags & PenDataNonCenter)
+     {
+-        *(REAL*)(pen_data->OptionalData + i) = pen->align;
++        *(DWORD*)(pen_data->OptionalData + i) = pen->align;
+         i += sizeof(DWORD);
+     }
+     if (data_flags & PenDataCustomStartCap)
+@@ -5101,6 +5159,7 @@ GpStatus METAFILE_DrawPath(GpMetafile *metafile, GpPen *pen, GpPath *path)
+     draw_path_record->PenId = pen_id;
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFramePath(metafile, path, pen);
+     return Ok;
+ }
+ 
+@@ -5140,6 +5199,7 @@ GpStatus METAFILE_DrawEllipse(GpMetafile *metafile, GpPen *pen, GpRectF *rect)
+         memcpy(&record->RectData.rectF, rect, sizeof(*rect));
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFrameRect(metafile, rect, METAFILE_PenInflate(pen));
+     return Ok;
+ }
+ 
+@@ -5181,6 +5241,7 @@ GpStatus METAFILE_FillPath(GpMetafile *metafile, GpBrush *brush, GpPath *path)
+     }
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFramePath(metafile, path, NULL);
+     return Ok;
+ }
+ 
+@@ -5230,6 +5291,7 @@ GpStatus METAFILE_FillEllipse(GpMetafile *metafile, GpBrush *brush, GpRectF *rec
+         memcpy(&record->RectData.rectF, rect, sizeof(*rect));
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFrameRect(metafile, rect, 0.0f);
+     return Ok;
+ }
+ 
+@@ -5283,6 +5345,7 @@ GpStatus METAFILE_FillPie(GpMetafile *metafile, GpBrush *brush, const GpRectF *r
+         memcpy(&record->RectData.rectF, rect, sizeof(*rect));
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFrameRect(metafile, rect, 0.0f);
+     return Ok;
+ }
+ 
+@@ -5486,6 +5549,11 @@ GpStatus METAFILE_FillRegion(GpMetafile* metafile, GpBrush* brush, GpRegion* reg
+         fill_region_record->data.BrushId = brush_id;
+ 
+     METAFILE_WriteRecords(metafile);
++    {
++        GpRectF bounds;
++        if (metafile->record_graphics && GdipGetRegionBounds(region, metafile->record_graphics, &bounds) == Ok)
++            METAFILE_AdjustFrameRect(metafile, &bounds, 0.0f);
++    }
+ 
+     return Ok;
+ }
+@@ -5541,6 +5609,8 @@ GpStatus METAFILE_DrawRectangles(GpMetafile *metafile, GpPen *pen, const GpRectF
+         memcpy(record->RectData.rectF, rects, sizeof(*rects) * count);
+ 
+     METAFILE_WriteRecords(metafile);
++    for (i = 0; i < count; i++)
++        METAFILE_AdjustFrameRect(metafile, &rects[i], METAFILE_PenInflate(pen));
+ 
+     return Ok;
+ }
+@@ -5586,6 +5656,7 @@ GpStatus METAFILE_DrawArc(GpMetafile *metafile, GpPen *pen, const GpRectF *rect,
+         memcpy(&record->RectData.rectF, rect, sizeof(*rect));
+ 
+     METAFILE_WriteRecords(metafile);
++    METAFILE_AdjustFrameRect(metafile, rect, METAFILE_PenInflate(pen));
+ 
+     return Ok;
+ }

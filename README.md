@@ -2,7 +2,7 @@
 
 Can the current Articulate 360 / Storyline 360 Windows apps run on an Intel Mac through upstream Wine — no VM, no Boot Camp, no CrossOver, no remote Windows, no licensing/auth bypass?
 
-**Where it stands:** the Articulate 360 Desktop App signs in, and Storyline 360 installs, launches and opens projects on a patched Wine 11.16. Preview, Save and Publish still fail. This is a research log, not something to install for day-to-day work.
+**Where it stands:** the Articulate 360 Desktop App signs in, and Storyline 360 installs, launches, opens, previews, saves and publishes projects on a patched Wine 11.16 (Run 27 went through nine sample projects). It is slower than on Windows and draws without antialiasing. This is a research log, not something to install for day-to-day work.
 
 **Scope:** Intel Macs only. Apple Silicon (Rosetta 2 / Game Porting Toolkit) was not tested and is not supported here. You need your own Articulate 360 subscription and installers; none are included.
 
@@ -43,7 +43,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
 | Preview | **WORKS** — the null player came from the locale gap fixed by patch 0012 (Run 15); the blank preview pane was CEF drawing from a separate GPU process, fixed by `--in-process-gpu` in the launcher | 16 |
-| Save / Player dialog / Publish | **FAIL** in Run 09 — managed NREs (null player), same root as Preview; not re-tested since patch 0012 | 09 |
+| Save / Player dialog / Publish | **WORKS** — Save round-trips; Publish to Web, LMS (SCORM 1.2 and 2004) and Video produce output that plays in Chromium. Run 09's failures were the null player fixed by patch 0012 | 09, 27 |
 | Graphics feature level | **FIXED** by patch 0003 — Direct3D feature level 9_3 → 11_1 on MoltenVK | 10 |
 | Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005 (0006 was not actually deployed until Run 14) | 11 |
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
@@ -63,13 +63,22 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Storyline opened from the Desktop App | **FIXED** by patch 0018 — the Desktop App started `Storyline.exe` with none of the launcher's CEF switches (so no in-process GPU, which Preview needs, Run 16); `WINE_APPEND_ARGS` (set by both Dock launchers from `tools/launcher/storyline-args.sh`) makes Wine's `CreateProcess` add them | 23 |
 | Crowded Home ribbon in slide view | **FIXED** by patch 0019 — when the ribbon is too narrow, Storyline collapses small buttons to icons, but Wine's `DrawText` still drew their labels into a negative-width rectangle, over the next group | 24 |
 | Blurry text on Retina displays | **IMPROVED** by patch 0020 and Retina mode at 192 DPI — Storyline is DPI-unaware, so every pixel is doubled; Wine's default halftone doubling was the blurriest option, and the launchers now pick xBR (`WINE_SCALE_FILTER=xbr`), which keeps edges crisp and the 96-DPI layout unchanged. Truly sharp slide text needs Storyline to render at 2×, which breaks its fixed-pixel layout | 25 |
+| Triggers panel spacing | **FIXED** by patches 0021 and 0022 — Wine's gdiplus kept the outer transform visible inside `BeginContainer`, so WinForms counted each trigger's offset twice and pushed lines out of their rows; and an unbounded WinForms text rectangle wrapped negative after a viewport offset, so the "–" before each action vanished | 26 |
+| Radio buttons and checkboxes on the slide canvas, Slide Layers thumbnails | **FIXED** by patch 0023 — Wine's gdiplus left most metafile records out of the frame bounds, dropped pen alignment and `ResetClip` on playback, and (after 0021) played back in container space instead of device space | 27 |
+| Notch in circle outlines | **FIXED** by patch 0024 — a closed ellipse's last point sat a few ulps off its first, and widening turned the gap into a notch | 27 |
+| Opening a project from the Dock launcher | **FIXED** in the launcher — Storyline opens only its first argument, so the project goes before the CEF switches, with a Mac path mapped to `Z:`. Finder double-click still does not pass the file | 27 |
+| Publish speed | **IMPROVED** by patch 0025 — Wine gave every window under WinForms' message-only parking window a hidden IME window, and on macOS each one creates and destroys a Cocoa window; Numbers-French-SL2 to Web: content phase 49–50 s → **37–38 s**, whole publish 66–77 s → **55–64 s** (three cold runs each) | 28 |
+| No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified on the authoring canvas and in published output) | 29 |
+| Japanese and Chinese candidate list position | **IMPROVED** by patch 0027 — Storyline draws its own text caret and never tells the IME where it is, so Wine gave macOS a position of 0,0 and the candidate list opened at the top left of the screen; it now opens at the bottom left of the slide canvas, where Windows puts the default IME window in the same case (not next to the typed text, because Storyline does not report its caret) | 30 |
+| "New"/"Beta" feature badges (e.g. next to AI Assistant) | **FIXED** by patch 0028 — Storyline draws the badge text with `DrawText` into a rectangle of the point plus `int.MaxValue`, which overflows to a huge negative edge; Wine clipped the text to that inverted rectangle and drew an empty blue box, and now treats an edge that wrapped around as unbounded | 31 |
+| Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
-  `win32u.so` (0006, 0009, 0020, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014), `ieframe.dll` (0015), `windowscodecs.dll` (0017) and `user32.dll` (0019) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
+  `win32u.so` (0006, 0009, 0020, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
@@ -82,7 +91,8 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
   EXEs on the patched Wine; `~/Applications/Articulate360Bridge.app` handles `articulate://` sign-in callbacks. Both set
   `WINE_MAC_APP_NAMES` so the menu bar and Dock say "Articulate 360" and "Storyline 360" instead of "wine" (patch 0010 in
   `winemac.so`, which names each process after its Windows exe). Both also source `storyline-args.sh`, whose
-  `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started.
+  `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started, and
+  `WINE_DWRITE_NBSP_NOT_WHITESPACE=1`, which turns on patch 0026.
   Both set `WINE_SCALE_FILTER=xbr` so the patched `win32u.so` (patch 0020) doubles Storyline's windows with xBR on Retina displays.
 
 ## What worked

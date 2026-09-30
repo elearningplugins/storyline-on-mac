@@ -30,6 +30,9 @@ echo "patched wine at $M/bin/wine"; "$M/bin/wine" --version
 # --- dwrite (PE) : IDWriteTextAnalyzer1 justification methods (patch 0002) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" || echo "dwrite patch already applied"; }
+# (patch 0026: WINE_DWRITE_NBSP_NOT_WHITESPACE=1 stops reporting no-break spaces as white space, because Storyline breaks lines at every white space character; issue #20)
+P26="$(dirname "$0")/../wine-patches/0026-dwrite-opt-in-no-break-spaces-are-not-white-space.patch"
+cd "$SRC/wine-wine-11.16" && { git apply --check "$P26" 2>/dev/null && git apply "$P26" || echo "dwrite patch 0026 already applied"; }
 cd "$B" && make -j4 dlls/dwrite/x86_64-windows/dwrite.dll > make-dwrite.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/dwrite.dll"; cp "$B/dlls/dwrite/x86_64-windows/dwrite.dll" "$M/lib/wine/x86_64-windows/dwrite.dll"
 echo "patched dwrite.dll in $M (also copy it over <prefix>/drive_c/windows/system32/dwrite.dll)"
@@ -75,6 +78,16 @@ PU="$HERE/../wine-patches/upstream/macports-0001-win32u-Enable-host-Vulkan-porta
 if patch -p1 -N -s --dry-run < "$PU" >/dev/null 2>&1; then patch -p1 -N -s < "$PU"
 elif patch -p1 -R -s --dry-run < "$PU" >/dev/null 2>&1; then echo "MacPorts Vulkan portability patch already applied"
 else echo "MacPorts Vulkan portability patch neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0022: GDI_ROUND saturates instead of wrapping, so WinForms' unbounded text rectangles survive a viewport offset; the trigger list's "–" marks need it)
+P22="$HERE/../wine-patches/0022-win32u-saturate-GDI_ROUND-instead-of-wrapping.patch"
+if git apply --check "$P22" 2>/dev/null; then git apply "$P22"
+elif git apply --reverse --check "$P22" 2>/dev/null; then echo "GDI_ROUND saturation patch already applied"
+else echo "patch 0022 neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0025: no default IME window for children of message-only windows, as on Windows; each WinForms text pane parked there otherwise creates and destroys a Cocoa window, about 12 s of a 70 s publish in Run 28)
+P25="$HERE/../wine-patches/0025-win32u-no-default-IME-window-for-descendants-of-message-only-windows.patch"
+if git apply --check "$P25" 2>/dev/null; then git apply "$P25"
+elif git apply --reverse --check "$P25" 2>/dev/null; then echo "message-only IME window patch already applied"
+else echo "patch 0025 neither applies nor is already applied" >&2; exit 1; fi
 # (patch 0009: WINE_PERF_LOG=1 timing lines from d2d1 and win32u for tools/perf/; silent otherwise)
 P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
 if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
@@ -103,9 +116,12 @@ else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
-# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners) and CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) ---
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons), the world transform is relative to BeginContainer (0021, trigger list lines), metafiles get real frame bounds and play back in device space (0023, radio buttons and checkboxes on the slide canvas) and closed outlines lose their rounding-error closing point (0024, notch in every circle outline) ---
 cd "$SRC/wine-wine-11.16"
-for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch"; do
+for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch" \
+         "$HERE/../wine-patches/0021-gdiplus-make-the-world-transform-relative-to-BeginContainer.patch" \
+         "$HERE/../wine-patches/0023-gdiplus-fix-metafile-frame-bounds-pen-alignment-ResetClip-and-playback-space.patch" \
+         "$HERE/../wine-patches/0024-gdiplus-tolerate-rounding-when-removing-repeated-path-points.patch"; do
   if git apply --check "$P" 2>/dev/null; then git apply "$P"
   elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
   else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
@@ -134,8 +150,21 @@ P19="$HERE/../wine-patches/0019-user32-draw-nothing-for-inverted-DrawText-rectan
 if git apply --check "$P19" 2>/dev/null; then git apply "$P19"
 elif git apply --reverse --check "$P19" 2>/dev/null; then echo "inverted DrawText rectangle patch already applied"
 else echo "patch 0019 neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0028: DrawText treats a rectangle edge that wrapped around, like Storyline's point + int.MaxValue, as unbounded instead of clipping everything; the right panel's "New"/"Beta" badge text needs it)
+P28="$HERE/../wine-patches/0028-user32-treat-DrawText-rectangle-edges-that-wrapped-around-as-unbounded.patch"
+if git apply --check "$P28" 2>/dev/null; then git apply "$P28"
+elif git apply --reverse --check "$P28" 2>/dev/null; then echo "wrapped DrawText rectangle patch already applied"
+else echo "patch 0028 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/user32/x86_64-windows/user32.dll dlls/user32/i386-windows/user32.dll > make-user32.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/user32.dll"; cp "$B/dlls/user32/$a-windows/user32.dll" "$M/lib/wine/$a-windows/user32.dll"; done
 echo "patched user32.dll (64- and 32-bit) in $M"
+# --- imm32 (PE) : with no composition position and no caret, the IME candidate list goes to the bottom left of the focus window, as on Windows (patch 0027); Storyline sets neither, so macOS showed it at the top left of the screen ---
+P27="$HERE/../wine-patches/0027-imm32-default-IME-composition-rect-at-the-bottom-left-of-the-focus-window.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P27" 2>/dev/null; then git apply "$P27"
+elif git apply --reverse --check "$P27" 2>/dev/null; then echo "default IME composition rect patch already applied"
+else echo "patch 0027 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/imm32/x86_64-windows/imm32.dll dlls/imm32/i386-windows/imm32.dll > make-imm32.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/imm32.dll"; cp "$B/dlls/imm32/$a-windows/imm32.dll" "$M/lib/wine/$a-windows/imm32.dll"; done
+echo "patched imm32.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi

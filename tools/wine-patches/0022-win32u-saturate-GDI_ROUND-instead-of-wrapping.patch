@@ -1,0 +1,16 @@
+diff --git a/dlls/win32u/ntgdi_private.h b/dlls/win32u/ntgdi_private.h
+--- a/dlls/win32u/ntgdi_private.h
++++ b/dlls/win32u/ntgdi_private.h
+@@ -107,7 +107,11 @@
+  */
+ static inline INT GDI_ROUND(double val)
+ {
+-   return (int)floor(val + 0.5);
++   /* saturate instead of wrapping, so an unbounded rectangle such as WinForms' Int32.MaxValue extent stays unbounded after a viewport offset */
++   val = floor(val + 0.5);
++   if (val >= 2147483647.0) return 2147483647;
++   if (val <= -2147483648.0) return -2147483647 - 1;
++   return (int)val;
+ }
+ 
+ #define GET_DC_PHYSDEV(dc,func) \

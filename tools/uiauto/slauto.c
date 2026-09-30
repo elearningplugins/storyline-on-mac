@@ -10,6 +10,7 @@
  *   slauto tree  <title-substr>      - list that window's visible child windows (screen rects)
  *   slauto drag  <x1> <y1> <x2> <y2> - press at the first point, move, release at the second
  *   slauto close <title-substr>      - post WM_CLOSE to the window
+ *   slauto redraw <title-substr>     - invalidate and repaint the window and its children
  */
 #include <windows.h>
 #include <stdio.h>
@@ -92,8 +93,10 @@ static void type_text(const char *s)
 // Storyline stacks a transparent layered WPF window over its main window; macOS clicks fall through its clear pixels but Wine hit-tests injected input by rectangle.
 static BOOL CALLBACK enum_overlay(HWND h, LPARAM lp)
 {
-    char c[64]; LONG ex = GetWindowLongA(h, GWL_EXSTYLE);
+    char c[64], t[8]; LONG ex = GetWindowLongA(h, GWL_EXSTYLE);
     if (!IsWindowVisible(h) || !(ex & WS_EX_LAYERED) || (ex & WS_EX_TRANSPARENT)) return TRUE;
+    // The overlay is untitled; titled layered WPF windows such as AiWriterWindow are real popups that must keep receiving clicks.
+    if (GetWindowTextA(h, t, sizeof(t))) return TRUE;
     GetClassNameA(h, c, sizeof(c));
     if (!strncmp(c, "HwndWrapper[Storyline;Main;", 27)) SetWindowLongA(h, GWL_EXSTYLE, ex | WS_EX_TRANSPARENT);
     return TRUE;
@@ -176,6 +179,11 @@ int main(int argc, char **argv)
         GetWindowRect(h, &r); printf("%ld %ld\n", (r.left + r.right) / 2, (r.top + r.bottom) / 2);
         if (!strcmp(argv[1], "clicktext")) click_at((r.left + r.right) / 2, (r.top + r.bottom) / 2);
         return 0;
+    }
+    if (!strcmp(argv[1], "redraw") && argc >= 3)
+    {
+        HWND h = find(argv[2]); if (!h) { puts("not found"); return 1; }
+        RedrawWindow(h, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN | RDW_UPDATENOW); return 0;
     }
     if (!strcmp(argv[1], "drag") && argc >= 6) { drag(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5])); return 0; }
     if (!strcmp(argv[1], "close") && argc >= 3)
