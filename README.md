@@ -73,14 +73,14 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Open, Save and folder dialogs (Insert > Audio, Save As, Publish folder) | **NATIVE** with patch 0031 — Storyline's WinForms dialogs go through Wine's common item dialog, which drew a Windows XP-style file browser; it now shows the macOS open and save panels, with the file type filters in a "File type" menu, and returns the choice to Storyline as a Windows path. Dialogs with custom controls keep Wine's dialog, and `WINE_MAC_FILE_DIALOGS=0` turns the Mac panels off | 33 |
 | Text box borders cut off on the right (Publish > Project Info and other Metro text boxes) | **FIXED** by patch 0032 — Storyline's `MetroTextBox` paints its border through a window DC, with a gradient pen for the side lines; Wine's gdiplus clipped that pen's software drawing to the text box's client area, 6 px smaller on every side, so the right edge vanished and the left edge stopped partway down | 34 |
 | Date picker calendar (Publish > Project Info > Date "Custom") | **NATIVE** with patch 0033 — the drop-down opened Wine's Windows-style month calendar; it now opens the macOS calendar popover, and picking a day sets the date. One-digit day and month fields are sized to their text, so "9 /30/2026" reads "9/30/2026". `WINE_MAC_DATE_PICKER=0` brings back Wine's calendar | 35 |
-| Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
+| Antialiasing (e.g. the AI Assistant "Use experimental features" toggle) | **FIXED** by patch 0030 — Wine's gdiplus stored `SmoothingModeAntiAlias` but never used it, so curves and diagonal edges were jagged; path fills and strokes now take 16 samples per pixel and blend by coverage, and anti-aliased strokes are widened at GDI+'s default 0.25 px flatness instead of 1 px | 32 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016, 0031, 0033), `winemac.drv` (0031, 0033), `comdlg32.dll` (0031), `comctl32.dll` and `comctl32_v6.dll` (0033),
-  `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024, 0032), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024, 0030, 0032), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,

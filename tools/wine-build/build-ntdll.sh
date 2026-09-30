@@ -125,12 +125,13 @@ else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
-# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons), the world transform is relative to BeginContainer (0021, trigger list lines), metafiles get real frame bounds and play back in device space (0023, radio buttons and checkboxes on the slide canvas) and closed outlines lose their rounding-error closing point (0024, notch in every circle outline) ---
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons), the world transform is relative to BeginContainer (0021, trigger list lines), metafiles get real frame bounds and play back in device space (0023, radio buttons and checkboxes on the slide canvas), closed outlines lose their rounding-error closing point (0024, notch in every circle outline) and SmoothingModeAntiAlias anti-aliases path fills and strokes (0030, jagged toggles and rounded shapes) ---
 cd "$SRC/wine-wine-11.16"
 for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch" \
          "$HERE/../wine-patches/0021-gdiplus-make-the-world-transform-relative-to-BeginContainer.patch" \
          "$HERE/../wine-patches/0023-gdiplus-fix-metafile-frame-bounds-pen-alignment-ResetClip-and-playback-space.patch" \
-         "$HERE/../wine-patches/0024-gdiplus-tolerate-rounding-when-removing-repeated-path-points.patch"; do
+         "$HERE/../wine-patches/0024-gdiplus-tolerate-rounding-when-removing-repeated-path-points.patch" \
+         "$HERE/../wine-patches/0030-gdiplus-anti-alias-path-fills-and-strokes.patch"; do
   if git apply --check "$P" 2>/dev/null; then git apply "$P"
   elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
   else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi

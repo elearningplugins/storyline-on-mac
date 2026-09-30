@@ -1,0 +1,222 @@
+diff --git a/dlls/gdiplus/graphics.c b/dlls/gdiplus/graphics.c
+--- a/dlls/gdiplus/graphics.c
++++ b/dlls/gdiplus/graphics.c
+@@ -1339,6 +1339,12 @@
+     gdi_dc_release(graphics, hdc);
+ 
+     return status;
++}
++
++static BOOL graphics_antialias(GpGraphics *graphics)
++{
++    return (graphics->smoothing == SmoothingModeAntiAlias || graphics->smoothing == SmoothingModeHighQuality) &&
++        graphics->compmode != CompositingModeSourceCopy;
+ }
+ 
+ static BOOL brush_can_fill_pixels(GpBrush *brush)
+@@ -4223,14 +4229,16 @@
+     GpPath *wide_path;
+     GpMatrix *transform=NULL;
+     REAL flatness=1.0;
++    /* Anti-aliased strokes are widened at any width so that their edges get partial coverage */
++    BOOL widen_all = graphics_antialias(graphics) && pen->width > 0.0 && brush_can_fill_pixels(pen->brush);
+ 
+     /* Check if the final pen thickness in pixels is too thin. */
+-    if (pen->unit == UnitPixel)
++    if (!widen_all && pen->unit == UnitPixel)
+     {
+         if (pen->width < 1.415)
+             return SOFTWARE_GdipDrawThinPath(graphics, pen, path);
+     }
+-    else
++    else if (!widen_all)
+     {
+         GpPointF points[3] = {{0,0}, {1,0}, {0,1}};
+ 
+@@ -4279,6 +4287,10 @@
+             t.matrix[0] * t.matrix[0] + t.matrix[1] * t.matrix[1],
+             t.matrix[2] * t.matrix[2] + t.matrix[3] * t.matrix[3]));
+     }
++
++    /* A one-pixel tolerance turns small arcs into visible polygons once their edges are smooth */
++    if (widen_all)
++        flatness *= FlatnessDefault;
+ 
+     if (stat == Ok)
+         stat = GdipWidenPath(wide_path, pen, transform, flatness);
+@@ -4321,7 +4333,8 @@
+ 
+     if (is_metafile_graphics(graphics))
+         retval = METAFILE_DrawPath((GpMetafile*)graphics->image, pen, path);
+-    else if (!has_gdi_dc(graphics) || graphics->alpha_hdc || !brush_can_fill_path(pen->brush, FALSE))
++    else if (!has_gdi_dc(graphics) || graphics->alpha_hdc || graphics_antialias(graphics) ||
++             !brush_can_fill_path(pen->brush, FALSE))
+         retval = SOFTWARE_GdipDrawPath(graphics, pen, path);
+     else
+         retval = GDI32_GdipDrawPath(graphics, pen, path);
+@@ -4653,8 +4666,153 @@
+     }
+ 
+     return stat;
++}
++
++static void add_span_coverage(BYTE *row, INT left, INT right)
++{
++    INT first = left / 4, last = (right - 1) / 4, x;
++
++    if (first == last)
++    {
++        row[first] += right - left;
++        return;
++    }
++
++    row[first] += 4 * (first + 1) - left;
++    for (x = first + 1; x < last; x++)
++        row[x] += 4;
++    row[last] += right - 4 * last;
+ }
++
++static GpStatus AA_GdipFillPath(GpGraphics *graphics, GpBrush *brush, GpPath *path)
++{
++    GpStatus stat;
++    GpPath *sample_path = NULL;
++    GpRegion *region = NULL;
++    GpMatrix transform;
++    GpRectF bounds;
++    GpRect rect;
++    RECT sample_bounds, clip_box;
++    HRGN hrgn = NULL, clip = NULL;
++    RGNDATA *rgndata = NULL;
++    RECT *rects;
++    BYTE *coverage = NULL;
++    DWORD *pixels = NULL;
++    DWORD size, i;
++    INT y, left, top, right, bottom;
+ 
++    if (!brush_can_fill_pixels(brush))
++        return NotImplemented;
++
++    stat = gdi_transform_acquire(graphics);
++    if (stat != Ok)
++        return stat;
++
++    stat = GdipClonePath(path, &sample_path);
++    if (stat == Ok)
++        stat = get_graphics_transform(graphics, WineCoordinateSpaceGdiDevice, CoordinateSpaceWorld, &transform);
++    if (stat == Ok)
++        stat = GdipTransformPath(sample_path, &transform);
++    if (stat == Ok)
++        stat = GdipGetPathWorldBounds(sample_path, &bounds, NULL, NULL);
++    if (stat == Ok)
++        stat = get_clip_hrgn(graphics, &clip);
++    if (stat != Ok)
++        goto done;
++
++    left = floorf(bounds.X) - 1;
++    top = floorf(bounds.Y) - 1;
++    right = ceilf(bounds.X + bounds.Width) + 2;
++    bottom = ceilf(bounds.Y + bounds.Height) + 2;
++    if (clip)
++    {
++        if (GetRgnBox(clip, &clip_box) == NULLREGION)
++            goto done;
++        left = max(left, clip_box.left);
++        top = max(top, clip_box.top);
++        right = min(right, clip_box.right);
++        bottom = min(bottom, clip_box.bottom);
++    }
++    if (right <= left || bottom <= top)
++        goto done;
++
++    /* Beyond this the 4x4 sample grid is too costly; the aliased path still draws the shape */
++    if ((LONGLONG)(right - left) * (bottom - top) > 4096 * 4096)
++    {
++        stat = NotImplemented;
++        goto done;
++    }
++
++    rect.X = left;
++    rect.Y = top;
++    rect.Width = right - left;
++    rect.Height = bottom - top;
++
++    /* The region scanner samples at integer points, so this places each pixel's 16 samples at +/-0.125 and +/-0.375 around its center */
++    GdipSetMatrixElements(&transform, 4.0, 0.0, 0.0, 4.0, 1.5 - 4.0 * left, 1.5 - 4.0 * top);
++    stat = GdipTransformPath(sample_path, &transform);
++    if (stat == Ok)
++        stat = GdipCreateRegionPath(sample_path, &region);
++    if (stat == Ok)
++    {
++        SetRect(&sample_bounds, 0, 0, 4 * rect.Width, 4 * rect.Height);
++        stat = get_region_hrgn(&region->node, &sample_bounds, &hrgn);
++    }
++    if (stat != Ok || !hrgn)
++        goto done;
++
++    size = GetRegionData(hrgn, 0, NULL);
++    rgndata = malloc(size);
++    coverage = calloc(rect.Width * rect.Height, sizeof(*coverage));
++    pixels = calloc(rect.Width * rect.Height, sizeof(*pixels));
++    if (!rgndata || !coverage || !pixels)
++    {
++        stat = OutOfMemory;
++        goto done;
++    }
++    GetRegionData(hrgn, size, rgndata);
++
++    rects = (RECT *)rgndata->Buffer;
++    for (i = 0; i < rgndata->rdh.nCount; i++)
++    {
++        INT span_left = max(rects[i].left, 0), span_right = min(rects[i].right, 4 * rect.Width);
++
++        if (span_left >= span_right)
++            continue;
++        for (y = max(rects[i].top, 0); y < min(rects[i].bottom, 4 * rect.Height); y++)
++            add_span_coverage(coverage + (y / 4) * rect.Width, span_left, span_right);
++    }
++
++    stat = brush_fill_pixels(graphics, brush, pixels, &rect, rect.Width);
++    if (stat != Ok)
++        goto done;
++
++    for (i = 0; i < rect.Width * rect.Height; i++)
++    {
++        if (!coverage[i])
++            pixels[i] = 0;
++        else if (coverage[i] < 16)
++            pixels[i] = (pixels[i] & 0xffffff) | (((pixels[i] >> 24) * coverage[i] / 16) << 24);
++    }
++
++    stat = alpha_blend_pixels(graphics, rect.X, rect.Y, (BYTE *)pixels, rect.Width, rect.Height,
++        rect.Width * 4, PixelFormat32bppARGB);
++
++done:
++    free(pixels);
++    free(coverage);
++    free(rgndata);
++    if (hrgn)
++        DeleteObject(hrgn);
++    if (clip)
++        DeleteObject(clip);
++    GdipDeleteRegion(region);
++    GdipDeletePath(sample_path);
++    gdi_transform_release(graphics);
++
++    return stat;
++}
++
+ GpStatus WINGDIPAPI GdipFillPath(GpGraphics *graphics, GpBrush *brush, GpPath *path)
+ {
+     GpStatus stat = NotImplemented;
+@@ -4673,7 +4831,10 @@
+     if (is_metafile_graphics(graphics))
+         return METAFILE_FillPath((GpMetafile*)graphics->image, brush, path);
+ 
+-    if (!graphics->image && !graphics->alpha_hdc)
++    if (graphics_antialias(graphics))
++        stat = AA_GdipFillPath(graphics, brush, path);
++
++    if (stat == NotImplemented && !graphics->image && !graphics->alpha_hdc)
+         stat = GDI32_GdipFillPath(graphics, brush, path);
+ 
+     if (stat == NotImplemented)
