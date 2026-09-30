@@ -67,6 +67,9 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git a
 # (patch 0016: the Windows wait and app-starting cursors show AppKit's busy cursor instead of the Windows hourglass)
 P16="$HERE/../wine-patches/0016-winemac-show-the-AppKit-busy-cursor-for-the-wait-cursors.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git apply "$P16"; elif git apply --check -R "$P16" 2>/dev/null; then echo "winemac busy-cursor patch already applied"; else echo "patch 0016 does not apply"; exit 1; fi
+# (patch 0029: a process that finds the initial display mode key waits until its creator has finished writing it; reading it half-written turned Retina mode off for that process, e.g. Storyline opening at 720x407 when started alongside the Desktop Service)
+P29="$HERE/../wine-patches/0029-winemac-wait-for-the-initial-display-mode-to-be-written.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P29" 2>/dev/null; then git apply "$P29"; elif git apply --check -R "$P29" 2>/dev/null; then echo "initial display mode patch already applied"; else echo "patch 0029 does not apply"; exit 1; fi
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
 echo "patched winemac.so in $M"

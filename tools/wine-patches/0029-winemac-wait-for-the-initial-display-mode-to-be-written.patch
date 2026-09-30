@@ -1,0 +1,48 @@
+diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
+--- a/dlls/winemac.drv/display.c
++++ b/dlls/winemac.drv/display.c
+@@ -206,6 +206,24 @@ fail:
+ }
+ 
+ 
++static BOOL read_dword(HKEY hkey, const char* name, DWORD* val);
++
++static void wait_for_initial_display_mode(HKEY parent_hkey)
++{
++    LARGE_INTEGER delay = {.QuadPart = -20 * 10000};
++    DWORD complete;
++    int i;
++
++    /* The process that created the key may still be writing it; reading it early makes retina_on false for this whole process */
++    for (i = 0; i < 100; i++)
++    {
++        if (read_dword(parent_hkey, "Complete", &complete) && complete) return;
++        NtDelayExecution(FALSE, &delay);
++    }
++    WARN("initial display mode is still incomplete\n");
++}
++
++
+ static void init_original_display_mode(void)
+ {
+     BOOL success = FALSE;
+@@ -234,7 +252,10 @@ static void init_original_display_mode(void)
+     /* If we didn't create a new key, then it already existed.  Something already stored
+        the initial display mode since Wine was started.  We don't want to overwrite it. */
+     if (disposition != REG_CREATED_NEW_KEY)
++    {
++        wait_for_initial_display_mode(parent_hkey);
+         goto done;
++    }
+ 
+     if (macdrv_get_monitors(kCGNullDirectDisplay, &monitors, &num_monitors))
+         goto fail;
+@@ -246,6 +267,8 @@ static void init_original_display_mode(void)
+         if (!write_display_settings(parent_hkey, monitors[i].id))
+             goto fail;
+     }
++    if (!set_setting_value(parent_hkey, "Complete", 1))
++        goto fail;
+ 
+ done:
+     success = TRUE;

@@ -40,8 +40,43 @@ Patching Wine rather than Storyline keeps to the rule of no patched Articulate b
 - Layout is identical to the previous setup: Player Properties shows "Starts collapsed" in full and five rows of player controls.
 - The Articulate 360 Desktop App's main window draws correctly with `RetinaMode=y` (Run 04e had seen blank WPF dialogs before WPF software rendering was turned on).
 
+## Start-up race: Storyline sometimes opened at 720×407 (patch 0029)
+With Retina mode on, Storyline occasionally opened in a broken state: `slauto list` reported its window as 720×407 instead of 1440×814, and the start page's web content was drawn at double size.
+
+![Broken start page after the race](img/run25-race-before.png)
+
+**Cause.** winemac turns Retina mode on for a process only if the current display mode matches the "initial display mode" stored in the volatile key `HKLM\Software\Wine\Mac Driver\Initial Display Mode`. The first process after the wineserver starts creates that key, then writes each display's values in separate calls. A process that starts at the same moment finds the key already there, assumes it is complete, and reads it. If the values aren't written yet, the match fails and `retina_on` is false for that whole process; it is only re-checked on a display change. The Dock launcher starts the Desktop Service and Storyline together, so a cold start (right after `wineserver -k` or a reboot) can hit this.
+
+**Reproduction.** A test program created the key empty right after `wineserver -k` and filled in the real values 3 s later; a probe process started 1.5 s in:
+
+| | Normal cold start | Probe while the key is still being written (3 runs) |
+|---|---|---|
+| Stock winemac | 2880×1800 mode, `HORZRES` 5760 | 1440×900 mode, `HORZRES` 1440 (Retina off), 3 of 3 |
+| Patch 0029 | 2880×1800 mode, `HORZRES` 5760 | 2880×1800 mode, `HORZRES` 5760, 3 of 3 |
+
+Storyline launched through the Dock launcher while the key was held empty, on stock winemac, opened in exactly the broken state above (720×407 in `slauto list`). Five natural cold starts with the key not held all came up correctly, so the race is rare in normal use.
+
+**Fix.** `tools/wine-patches/0029-winemac-wait-for-the-initial-display-mode-to-be-written.patch` (`dlls/winemac.drv/display.c`): the process that creates the key writes a `Complete` value after all displays, and a process that finds the key already there waits for `Complete`, polling every 20 ms for up to 2 s. `build-ntdll.sh` applies it with the other winemac patches.
+
+Storyline launched with patch 0029 (the key held empty for 1 s at start-up) opened normally:
+
+![Normal start page with patch 0029](img/run25-race-after.png)
+
+## Resize cost
+Start page, 40 cycles of resizing the main window to 3/4 size and back with a full redraw, Storyline main-process CPU time, one run each:
+
+| Filter | CPU during 40 cycles |
+|---|---:|
+| xBR (`WINE_SCALE_FILTER=xbr`) | 53.0 s |
+| Wine's default halftone (variable unset) | 62.6 s |
+
+xBR adds no measurable cost here; nearly all of it is the start page's web content laying out again after each resize.
+
+## Desktop App
+- The main window draws correctly with Retina mode on.
+- Reading the Desktop App's environment block from another process shows `WINE_SCALE_FILTER=xbr` next to `WINE_APPEND_ARGS`, which Run 23 showed reaching Storyline when it is opened from the Desktop App.
+
 ## Not yet verified
 - The Desktop App's secondary WPF dialogs (Run 04e's "Unable to Install" dialog was the one that went blank).
-- Storyline started from the Desktop App's Open button picking up `WINE_SCALE_FILTER` (same inheritance `WINE_APPEND_ARGS` relies on, Run 23).
-- CPU cost during full-window repaints such as resizing.
 - Layered windows (`alpha_mask` set) still use `StretchBlt` without halftone, as before.
+- A key left incomplete by a crashed writer makes each later process wait the full 2 s once, until the wineserver restarts.
