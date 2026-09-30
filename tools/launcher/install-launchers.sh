@@ -23,6 +23,9 @@ rm -rf "$B"; osacompile -o "$B" "$HERE/../macos-url-bridge/bridge.applescript"
   -c 'Add :CFBundleURLTypes array' -c 'Add :CFBundleURLTypes:0 dict' \
   -c 'Add :CFBundleURLTypes:0:CFBundleURLName string Articulate 360 sign-in callback' \
   -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes array' -c 'Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string articulate' "$P"
+# macOS charges the mic and camera to whichever bundle started Storyline, and denies them silently when that bundle's Info.plist has no usage string; osacompile's defaults say "This script needs access"
+/usr/libexec/PlistBuddy -c 'Set :NSMicrophoneUsageDescription Articulate 360 apps record narration and screen recordings with your microphone.' \
+  -c 'Set :NSCameraUsageDescription Articulate 360 apps record webcam video with your camera.' "$P"
 codesign --force --sign - --identifier Articulate360Bridge "$B"
 # only the installed copy should claim articulate://, so test builds into other folders are not registered
 if [ "$DEST" = "$HOME/Applications" ]; then

@@ -189,5 +189,13 @@ else echo "patch 0027 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/imm32/x86_64-windows/imm32.dll dlls/imm32/i386-windows/imm32.dll > make-imm32.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/imm32.dll"; cp "$B/dlls/imm32/$a-windows/imm32.dll" "$M/lib/wine/$a-windows/imm32.dll"; done
 echo "patched imm32.dll (64- and 32-bit) in $M"
+# --- winmm (PE) : mixerOpen honours MIXER_OBJECTF_WAVEIN and the other object types in fdwOpen (patch 0034); Storyline's 32-bit recording helper opened the Mac mic's mixer by wave-in ID, got the first output device's mixer, and filed the mic under Speakers ---
+P34="$HERE/../wine-patches/0034-winmm-mixerOpen-honours-the-object-type-in-fdwOpen.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P34" 2>/dev/null; then git apply "$P34"
+elif git apply --reverse --check "$P34" 2>/dev/null; then echo "mixerOpen object type patch already applied"
+else echo "patch 0034 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/winmm/x86_64-windows/winmm.dll dlls/winmm/i386-windows/winmm.dll > make-winmm.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winmm.dll"; cp "$B/dlls/winmm/$a-windows/winmm.dll" "$M/lib/wine/$a-windows/winmm.dll"; done
+echo "patched winmm.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi

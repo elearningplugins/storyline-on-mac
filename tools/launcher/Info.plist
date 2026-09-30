@@ -11,4 +11,6 @@
   <key>CFBundleIconFile</key><string>Articulate360</string>
   <key>LSMinimumSystemVersion</key><string>15.0</string>
   <key>NSHighResolutionCapable</key><true/>
+  <key>NSMicrophoneUsageDescription</key><string>Articulate 360 apps record narration and screen recordings with your microphone.</string>
+  <key>NSCameraUsageDescription</key><string>Articulate 360 apps record webcam video with your camera.</string>
 </dict></plist>
