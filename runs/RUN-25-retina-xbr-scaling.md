@@ -74,7 +74,7 @@ xBR adds no measurable cost here; nearly all of it is the start page's web conte
 
 ## Desktop App
 - The main window draws correctly with Retina mode on.
-- Reading the Desktop App's environment block from another process shows `WINE_SCALE_FILTER=xbr` next to `WINE_APPEND_ARGS`, which Run 23 showed reaching Storyline when it is opened from the Desktop App.
+- Storyline opened with the Desktop App's Open button has `WINE_SCALE_FILTER=xbr` in its environment block (read from another process), and its window is DPI-unaware at 1440×817, scaled to 2880×1634.
 
 ## Not yet verified
 - The Desktop App's secondary WPF dialogs (Run 04e's "Unable to Install" dialog was the one that went blank).
