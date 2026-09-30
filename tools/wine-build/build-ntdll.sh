@@ -30,6 +30,9 @@ echo "patched wine at $M/bin/wine"; "$M/bin/wine" --version
 # --- dwrite (PE) : IDWriteTextAnalyzer1 justification methods (patch 0002) ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0002-dwrite-implement-IDWriteTextAnalyzer1-justification.patch" || echo "dwrite patch already applied"; }
+# (patch 0026: WINE_DWRITE_NBSP_NOT_WHITESPACE=1 stops reporting no-break spaces as white space, because Storyline breaks lines at every white space character; issue #20)
+P26="$(dirname "$0")/../wine-patches/0026-dwrite-opt-in-no-break-spaces-are-not-white-space.patch"
+cd "$SRC/wine-wine-11.16" && { git apply --check "$P26" 2>/dev/null && git apply "$P26" || echo "dwrite patch 0026 already applied"; }
 cd "$B" && make -j4 dlls/dwrite/x86_64-windows/dwrite.dll > make-dwrite.log 2>&1
 rm -f "$M/lib/wine/x86_64-windows/dwrite.dll"; cp "$B/dlls/dwrite/x86_64-windows/dwrite.dll" "$M/lib/wine/x86_64-windows/dwrite.dll"
 echo "patched dwrite.dll in $M (also copy it over <prefix>/drive_c/windows/system32/dwrite.dll)"
