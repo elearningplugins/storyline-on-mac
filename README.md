@@ -1,24 +1,66 @@
-# Storyline 360 on macOS (Intel) via Wine — research log
+# Storyline 360 on macOS (Intel), without Parallels or a VM
 
-Can the current Articulate 360 / Storyline 360 Windows apps run on an Intel Mac through upstream Wine — no VM, no Boot Camp, no CrossOver, no remote Windows, no licensing/auth bypass?
+Run the genuine Articulate 360 Desktop App and Storyline 360 directly on an Intel Mac, on a patched build of upstream Wine. No Parallels, no virtual machine, no Boot Camp, no CrossOver, no remote Windows, and no licensing or sign-in bypass: you sign in with your own Articulate 360 account and use the official installers.
 
-**Where it stands:** the Articulate 360 Desktop App signs in, and Storyline 360 installs, launches, opens, previews, saves and publishes projects on a patched Wine 11.16 (Run 27 went through nine sample projects). It is slower than on Windows and draws without antialiasing. This is a research log, not something to install for day-to-day work.
+**What works:** the Desktop App signs in and shows your catalog. Storyline 360 installs, launches from the Dock, and opens, edits, previews, saves and publishes projects (Web, LMS with SCORM 1.2 and 2004, and Video). Nine sample projects were taken through all of that in Run 27. Wine 11.16 carries 33 patches here, which fix the drawing, text and speed problems found along the way. Storyline's open, save and folder dialogs and its date picker use the native macOS panels, and its windows are doubled with xBR on Retina displays. It is slower than on Windows, and a few things don't work yet; see [Known issues](#known-issues).
 
-**Scope:** Intel Macs only. Apple Silicon (Rosetta 2 / Game Porting Toolkit) was not tested and is not supported here. You need your own Articulate 360 subscription and installers; none are included.
+**Requirements:** an Intel Mac (Apple Silicon is not tested), MacPorts, and your own Articulate 360 subscription. No Articulate software is included. Setup is currently a sequence of scripts; see [Set up](#set-up). A prebuilt, one-command installer is planned in [#32](https://github.com/elearningplugins/storyline-on-mac/issues/32).
 
-Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Every experiment is recorded under [runs/](runs/) with sanitized logs under [logs/](logs/). Licensed binaries, Wine prefixes, and snapshots are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
+**How it got here:** every problem was investigated and fixed in a numbered run under [runs/](runs/), with sanitized logs under [logs/](logs/) and the original plan in [docs/research-plan.md](docs/research-plan.md). Licensed binaries and Wine prefixes are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
 
-## Environment
+## Set up
 
-| | |
-|---|---|
-| Host | 2019 MacBook Pro 15,4 (Core i5, Iris Plus 645), macOS 15.7.9 |
-| Wine | MacPorts `wine-devel` 11.16 (`+ffmpeg +gstreamer`, binary archive), Wine Mono 11.3.0, Gecko 2.47.4 |
-| MacPorts | 2.12.6 Sequoia pkg, SHA-256 + Developer ID/notarization verified |
-| Input | `articulate-360.exe` (Burn 3.11.2, bundle 1.125.37980.0), SHA-256 `bc725a70…c88e9` |
-| Winetricks | release 20260125, tag commit `57063f0b…` |
+```bash
+# prerequisites (privileged): MacPorts 2.12.6, then
+sudo port install wine-devel cabextract
+
+# 1. prefix: real .NET 4.8, Windows 10, DisableNonAdminInstalls, and every prefix setting listed under "How it runs"
+tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
+
+# 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
+tools/install-core-admin.sh wine-dotnet48-noadmintask
+
+# 3. patched Wine mirror (all 33 patches), then its PE modules copied into the prefix's system32
+tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
+
+# 4. Dock launchers and the articulate:// bridge in ~/Applications
+tools/launcher/install-launchers.sh
+
+# 5. Storyline: sign in with the Articulate 360 app, then run the official bundle it downloads under the patched Wine (Run 07)
+WINEPREFIX=~/StorylineLab/prefixes/wine-dotnet48-noadmintask ~/StorylineLab/wine-patched/bin/wine ~/StorylineLab/inputs/storyline-360-x64-bundle.exe
+
+# any step with focused Wine logging
+tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/articulate-360.exe
+```
+
+After that, open **Storyline 360** or **Articulate 360** from `~/Applications` or the Dock like any other Mac app. To open a project directly, pass it to the launcher script: `"$HOME/Applications/Storyline 360.app/Contents/MacOS/Storyline 360" ~/path/to/project.story` (Finder double-click doesn't pass the file yet; see [Known issues](#known-issues)).
+
+`tools/install-core-admin.sh` takes `burn-payloads/` from the Burn package cache of an earlier install attempt (Run 04b); with the patched Wine, running the original `articulate-360.exe` also installs the core end to end (Run 06).
+
+### Tools for debugging
+
+`tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
+
+To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh <label> [VAR=value ...]`. It launches Storyline with `WINE_PERF_LOG=1`, samples CPU once a second, and writes `summary.txt` to `~/StorylineLab/perf/<time>-<label>/` when you quit. Add `--sample-clicks N` after the label to take a stack sample of Storyline after each of your first N clicks once a project has loaded. `tools/perf/perf-mark.sh "text"` adds a timestamped note during a session. See Run 14. `tools/perf/auto-caret.sh <label> [clicks]` runs a whole caret session hands-off (new project, two text boxes, repeated clicks); see Run 15.
+
+`tools/uiauto/` drives Storyline from scripts: clicks and keys injected inside Wine, and window screenshots. See [tools/uiauto/README.md](tools/uiauto/README.md).
+
+## Known issues
+
+- **Installing Storyline from the Desktop App fails** with "Directory has unexpected ACL" (Wine's security descriptors don't round-trip). Running the official Storyline bundle directly works (Run 07).
+- **Chromium (CEF) has no GPU.** Wine's d3d11 has no WARP device and hardware ANGLE fails, so the start page and browser views use software rendering (Runs 09, 16).
+- **Slower than Windows.** New Project loads in about 3.4 s (Run 15), and publishing Numbers-French-SL2 to Web takes 55–64 s (Run 28). Most of the remaining start-up time is .NET JIT (Run 12).
+- **Slide text isn't truly sharp on Retina.** Storyline is DPI-unaware, so Wine doubles its windows. xBR keeps edges crisp, but rendering at 2× would break Storyline's fixed-pixel layout (Run 25).
+- **Double-clicking a `.story` file in Finder** starts Storyline without opening the project, because the launcher gets no file argument from Finder's Apple Event. Passing the file to the launcher script works (see [Set up](#set-up), Run 27).
+- **The Japanese and Chinese candidate list** opens at the bottom left of the slide canvas rather than next to the typed text, because Storyline doesn't report its caret position (Run 30).
+- **Desktop Service start-up** still spends about 4 s retrying a missing Review backups file, inside Articulate's code (Run 22).
+- **Not tested:** Apple Silicon, the Desktop App's secondary dialogs with Retina mode on, and multi-select in the native open panel.
+
+Open work is tracked in [issues](https://github.com/elearningplugins/storyline-on-mac/issues): a test plan covering five years of Storyline release notes (#27) and a pinned prebuilt Wine with a one-command installer (#32).
 
 ## Status board
+
+### Installing and signing in
 
 | Step | Result | Run |
 |---|---|---|
@@ -40,24 +82,29 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Patched `ntdll.so` research build | **WORKS** — core MSI custom actions run; original EXE installs end-to-end under real .NET 4.8 | 06 |
 | Storyline install (official bundle, direct) | **INSTALLED** — all 5 packages 0x0 incl. .NET Desktop Runtime 10 | 07 |
 | Install via Desktop App → Installer Service | **FAIL** — "Directory has unexpected ACL" (Wine security-descriptor round-trip) | 07 |
+
+### Storyline 360
+
+| Area | Result | Run |
+|---|---|---|
 | Storyline launch + start page | **RUNS** (CEF GPU process fails → software fallback, slow first paint) | 08 |
 | New Project → text layout | **FIXED** by patch 0002 — authoring window renders, 0 exceptions | 08 |
-| Preview | **WORKS** — the null player came from the locale gap fixed by patch 0012 (Run 15); the blank preview pane was CEF drawing from a separate GPU process, fixed by `--in-process-gpu` in the launcher | 16 |
 | Save / Player dialog / Publish | **WORKS** — Save round-trips; Publish to Web, LMS (SCORM 1.2 and 2004) and Video produce output that plays in Chromium. Run 09's failures were the null player fixed by patch 0012 | 09, 27 |
-| Graphics feature level | **FIXED** by patch 0003 — Direct3D feature level 9_3 → 11_1 on MoltenVK | 10 |
-| Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005 (0006 was not actually deployed until Run 14) | 11 |
 | Incident | **T2 ANS2 (SSD controller) panic** during heavy `+file` tracing — tracing rules added | 09 |
-| New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | CEF GPU (start-page panel, browser views) | **degraded** — Wine d3d11 has no WARP device; hardware ANGLE also fails; software fallback after retries. Views drew nothing because winemac can't show a child window drawn by another process; `--in-process-gpu` keeps CEF's compositor in Storyline | 09, 16 |
+| Graphics feature level | **FIXED** by patch 0003 — Direct3D feature level 9_3 → 11_1 on MoltenVK | 10 |
 | Desktop App drawing on the Vulkan renderer | **FIXED** by WPF software rendering (was clipped labels and stray lines; OpenGL renderer drew a blank window; patch 0005 ruled out; 0006 was not deployed then) | — |
+| Text box editing | FL fixed (0003), D2D shaders fixed (0004); the "freeze" is the AI writer popup's 30 Hz layered-window loop — CPU 182% → 63% with 0005 (0006 was not actually deployed until Run 14) | 11 |
+| New Project load | 20.9 s → **13.7 s** warm (RNG + colour-space patches); rest is .NET JIT of IL-only assemblies | 12 |
 | Text cursor in text boxes and Notes | **FIXED** by patch 0008 — Wine's d2d1 drew `MASK_INVERT` images as plain source-over, so the white caret was invisible; caret still takes a while to appear | 13 |
 | Performance instrumentation | `tools/perf/perf-session.sh` + patch 0009 (`WINE_PERF_LOG=1`): caret/typing latency, D2D paint cost, layered-window load, CPU per process | 14 |
-| CEF start-up | `--enable-features=NetworkServiceInProcess2` in the launcher runs Chromium's network service as a thread instead of another `Storyline.exe` (.NET boot); `Cef.Initialize` 2.3 s → **1.9 s** mean of 3 traced cold launches | 20 |
 | Click delay and New Project load | **FIXED** by patch 0012 — Wine didn't answer `GetLocaleInfoEx(LOCALE_SNAME)` for unknown well-formed locale names, so Storyline's player failed to load and was rebuilt on every click; click → caret 3.3 s → **0.23 s**, load 30–38 s → **3.4 s** | 15 |
+| Preview | **WORKS** — the null player came from the locale gap fixed by patch 0012 (Run 15); the blank preview pane was CEF drawing from a separate GPU process, fixed by `--in-process-gpu` in the launcher | 16 |
 | Story View scene-card shadows | **FIXED** by patch 0013 — Wine's gdiplus ignored preset blends on path gradient brushes, so the rounded shadow corners painted solid white | 17 |
 | Pill buttons (Save / Don't Save / Cancel…) | **FIXED** by patch 0014 — Wine's `GdipClosePathFigures` never closed a path's last figure, so the antialiased outline skipped the bottom edge and left nubs at both ends | 17 |
 | Start screen right panel (Articulate's web content) | **FIXED** by patch 0015 — the panel is an IE `WebBrowser` (Wine's mshtml + Gecko), kept hidden until `ProgressChanged` reports a finished load; Wine never fired that event, so the panel stayed blank | 18 |
 | Busy cursor (e.g. after New Project) | **FIXED** by patch 0016 — winemac had no Mac equivalent for the Windows wait and app-starting cursors, so it drew the Windows hourglass; it now shows AppKit's busy cursor | 19 |
+| CEF start-up | `--enable-features=NetworkServiceInProcess2` in the launcher runs Chromium's network service as a thread instead of another `Storyline.exe` (.NET boot); `Cef.Initialize` 2.3 s → **1.9 s** mean of 3 traced cold launches | 20 |
 | Image decoding (icons, WIC) | **FIXED** by patch 0017 — windowscodecs re-read the codec lists from the registry on every decode (~97 wineserver round trips per image); small icons 1.9 ms → **0.26 ms** each | 21 |
 | Desktop Service wait at launch | **IMPROVED** — the Dock launcher starts the service before Storyline asks for it; cold launch waits 12–13 s instead of 18–21 s for the service. About 4 s left is the service retrying a missing Review backups file (inside Articulate; not fixable here). Warm relaunches (service still running) wait 0.4 s | 22 |
 | Storyline opened from the Desktop App | **FIXED** by patch 0018 — the Desktop App started `Storyline.exe` with none of the launcher's CEF switches (so no in-process GPU, which Preview needs, Run 16); `WINE_APPEND_ARGS` (set by both Dock launchers from `tools/launcher/storyline-args.sh`) makes Wine's `CreateProcess` add them | 23 |
@@ -71,13 +118,13 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified on the authoring canvas and in published output) | 29 |
 | Japanese and Chinese candidate list position | **IMPROVED** by patch 0027 — Storyline draws its own text caret and never tells the IME where it is, so Wine gave macOS a position of 0,0 and the candidate list opened at the top left of the screen; it now opens at the bottom left of the slide canvas, where Windows puts the default IME window in the same case (not next to the typed text, because Storyline does not report its caret) | 30 |
 | "New"/"Beta" feature badges (e.g. next to AI Assistant) | **FIXED** by patch 0028 — Storyline draws the badge text with `DrawText` into a rectangle of the point plus `int.MaxValue`, which overflows to a huge negative edge; Wine clipped the text to that inverted rectangle and drew an empty blue box, and now treats an edge that wrapped around as unbounded | 31 |
+| Antialiasing (e.g. the AI Assistant "Use experimental features" toggle) | **FIXED** by patch 0030 — Wine's gdiplus stored `SmoothingModeAntiAlias` but never used it, so curves and diagonal edges were jagged; path fills and strokes now take 16 samples per pixel and blend by coverage, and anti-aliased strokes are widened at GDI+'s default 0.25 px flatness instead of 1 px | 32 |
 | Open, Save and folder dialogs (Insert > Audio, Save As, Publish folder) | **NATIVE** with patch 0031 — Storyline's WinForms dialogs go through Wine's common item dialog, which drew a Windows XP-style file browser; it now shows the macOS open and save panels, with the file type filters in a "File type" menu, and returns the choice to Storyline as a Windows path. Dialogs with custom controls keep Wine's dialog, and `WINE_MAC_FILE_DIALOGS=0` turns the Mac panels off | 33 |
 | Text box borders cut off on the right (Publish > Project Info and other Metro text boxes) | **FIXED** by patch 0032 — Storyline's `MetroTextBox` paints its border through a window DC, with a gradient pen for the side lines; Wine's gdiplus clipped that pen's software drawing to the text box's client area, 6 px smaller on every side, so the right edge vanished and the left edge stopped partway down | 34 |
 | Date picker calendar (Publish > Project Info > Date "Custom") | **NATIVE** with patch 0033 — the drop-down opened Wine's Windows-style month calendar; it now opens the macOS calendar popover, and picking a day sets the date. One-digit day and month fields are sized to their text, so "9 /30/2026" reads "9/30/2026". `WINE_MAC_DATE_PICKER=0` brings back Wine's calendar | 35 |
-| Antialiasing (e.g. the AI Assistant "Use experimental features" toggle) | **FIXED** by patch 0030 — Wine's gdiplus stored `SmoothingModeAntiAlias` but never used it, so curves and diagonal edges were jagged; path fills and strokes now take 16 samples per pixel and blend by coverage, and anti-aliased strokes are widened at GDI+'s default 0.25 px flatness instead of 1 px | 32 |
 
 
-## Current setup (what actually runs)
+## How it runs
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016, 0029, 0031, 0033), `winemac.drv` (0031, 0033), `comdlg32.dll` (0031), `comctl32.dll` and `comctl32_v6.dll` (0033),
@@ -97,8 +144,24 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
   `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started, and
   `WINE_DWRITE_NBSP_NOT_WHITESPACE=1`, which turns on patch 0026.
   Both set `WINE_SCALE_FILTER=xbr` so the patched `win32u.so` (patch 0020) doubles Storyline's windows with xBR on Retina displays.
+- **Native Mac dialogs** are on by default, with no launcher setting needed: the open, save and folder panels (patch 0031) and the date picker calendar (patch 0033). `WINE_MAC_FILE_DIALOGS=0` and `WINE_MAC_DATE_PICKER=0` bring back Wine's own versions.
 
-## What worked
+## Tested on
+
+| | |
+|---|---|
+| Host | 2019 MacBook Pro 15,4 (Core i5, Iris Plus 645), macOS 15.7.9 |
+| Wine | MacPorts `wine-devel` 11.16 (`+ffmpeg +gstreamer`, binary archive), with the patched modules built from the same 11.16 source; Wine Mono 11.3.0, Gecko 2.47.4 |
+| Storyline | Storyline 360 3.125.37980.0 (64-bit) |
+| MacPorts | 2.12.6 Sequoia pkg, SHA-256 + Developer ID/notarization verified |
+| Input | `articulate-360.exe` (Burn 3.11.2, bundle 1.125.37980.0), SHA-256 `bc725a70…c88e9` |
+| Winetricks | release 20260125, tag commit `57063f0b…` |
+
+## Early findings (Runs 01–06)
+
+What it took to get the Desktop App signed in and the installers working.
+
+### What worked
 
 - **Articulate 360 Desktop App signs in and shows the full catalog under Wine 11.16 + real .NET Framework 4.8** (Run 04). Desktop Service is spawned by the app; no Windows service or scheduled task needed.
 - `msiexec /a` (administrative install) lays the core package out without running any custom action; the only registry the real installer writes is three small keys, imported from a prefix where it did complete.
@@ -108,7 +171,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 - Running the original `articulate-360.exe` unmodified. The WPF managed bootstrapper paints and runs its detect/plan/apply phases under Wine Mono.
 - Pre-setting `HKLM\Software\Articulate\Common\Settings\DisableNonAdminInstalls = "true"` (REG_SZ) in the prefix before install. This is Articulate's own enterprise deployment switch; it makes the installer skip Task Scheduler registration, which is the only part of the core MSI Wine can't handle.
 
-## What didn't
+### What didn't
 
 - Native CLR hosting under real .NET 4.8 on stock Wine: both WiX Burn's `mbahost` and DTF `SFXCA` fail with 0x8007000E creating an AppDomain, while managed EXEs run normally. Root cause is Wine's wow64 address range for 32-bit processes (Run 05); fixed by patch 0001 (Run 06).
 
@@ -117,40 +180,12 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 - Core MSI in a stock prefix: Wine's `taskschd` stubs `get_IdleSettings`, and Articulate's custom action (using the managed TaskScheduler wrapper) throws on it. A Wine patch returning a stub `IIdleSettings` would also fix this (not attempted; registry route was cheaper).
 - Wine Mono as a stand-in for .NET Framework 4.8: good enough for the installer UI, not for the Desktop App (missing `System.Diagnostics.Eventing.Reader` types).
 
-## Reproduce
-
-```bash
-# prerequisites (privileged): MacPorts 2.12.6, then
-sudo port install wine-devel cabextract
-
-# 1. prefix: real .NET 4.8, Windows 10, DisableNonAdminInstalls, and every prefix setting listed under "Current setup"
-tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
-
-# 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
-tools/install-core-admin.sh wine-dotnet48-noadmintask
-
-# 3. patched Wine mirror (all nine patches), then its PE modules copied into the prefix's system32
-tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
-
-# 4. Dock launchers and the articulate:// bridge in ~/Applications
-tools/launcher/install-launchers.sh
-
-# 5. Storyline: sign in with the Articulate 360 app, then run the official bundle it downloads under the patched Wine (Run 07)
-WINEPREFIX=~/StorylineLab/prefixes/wine-dotnet48-noadmintask ~/StorylineLab/wine-patched/bin/wine ~/StorylineLab/inputs/storyline-360-x64-bundle.exe
-
-# any step with focused Wine logging
-tools/run-wine-logged.sh wine-dotnet48-noadmintask burn ~/StorylineLab/inputs/articulate-360.exe
-```
-
-`tools/install-core-admin.sh` takes `burn-payloads/` from the Burn package cache of an earlier install attempt (Run 04b); with the patched Wine, running the original `articulate-360.exe` also installs the core end to end (Run 06).
-
-`tools/run-wine-logged.sh` writes a header (macOS build, Wine version, prefix, Windows build number, input hash, exit code) to each log so every run is self-describing.
-
-To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh <label> [VAR=value ...]`. It launches Storyline with `WINE_PERF_LOG=1`, samples CPU once a second, and writes `summary.txt` to `~/StorylineLab/perf/<time>-<label>/` when you quit. Add `--sample-clicks N` after the label to take a stack sample of Storyline after each of your first N clicks once a project has loaded. `tools/perf/perf-mark.sh "text"` adds a timestamped note during a session. See Run 14. `tools/perf/auto-caret.sh <label> [clicks]` runs a whole caret session hands-off (new project, two text boxes, repeated clicks); see Run 15.
-
 ## Rules kept
 
-No Gatekeeper/SIP changes, no quarantine stripping, no `--no-sandbox`, no TLS/licensing/code-signing bypass, no patched Articulate binaries. The only change to Articulate's behavior is a registry value its own deployment guide documents.
+No Gatekeeper/SIP changes, no quarantine stripping, no `--no-sandbox`, no TLS/licensing/code-signing bypass, no patched or modified Articulate binaries, and nothing patched in memory. Every fix is in Wine. Outside Wine, the only settings that change how Articulate's software runs are:
+- `DisableNonAdminInstalls`, a registry value from Articulate's own deployment guide;
+- standard Chromium (CEF) command-line switches that the launchers pass to Storyline (`--disable-gpu`, `--in-process-gpu` and `--enable-features=NetworkServiceInProcess2`);
+- the Windows setting that turns off WPF hardware acceleration for the Desktop App.
 
 ## License
 
