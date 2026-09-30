@@ -1,0 +1,20 @@
+diff --git a/dlls/gdiplus/graphicspath.c b/dlls/gdiplus/graphicspath.c
+--- a/dlls/gdiplus/graphicspath.c
++++ b/dlls/gdiplus/graphicspath.c
+@@ -2613,9 +2613,15 @@ GpStatus widen_flat_path_anchors(GpPath *flat_path, GpPen *pen, REAL pen_width,
+     return stat;
+ }
+ 
++static BOOL coords_equal(REAL a, REAL b)
++{
++    return fabsf(a - b) <= 1e-5f * fmaxf(1.0f, fmaxf(fabsf(a), fabsf(b)));
++}
++
++/* Flattening leaves a closing point a few ulps off its start, and widening a near-zero segment notches the outline. */
+ static BOOL points_equal(const PointF* points, int index1, int index2)
+ {
+-    return !memcmp(&points[index1], &points[index2], sizeof(*points));
++    return coords_equal(points[index1].X, points[index2].X) && coords_equal(points[index1].Y, points[index2].Y);
+ }
+ 
+ static void remove_repeated_points(GpPath *path)
