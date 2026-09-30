@@ -145,6 +145,11 @@ P19="$HERE/../wine-patches/0019-user32-draw-nothing-for-inverted-DrawText-rectan
 if git apply --check "$P19" 2>/dev/null; then git apply "$P19"
 elif git apply --reverse --check "$P19" 2>/dev/null; then echo "inverted DrawText rectangle patch already applied"
 else echo "patch 0019 neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0028: DrawText treats a rectangle edge that wrapped around, like Storyline's point + int.MaxValue, as unbounded instead of clipping everything; the right panel's "New"/"Beta" badge text needs it)
+P28="$HERE/../wine-patches/0028-user32-treat-DrawText-rectangle-edges-that-wrapped-around-as-unbounded.patch"
+if git apply --check "$P28" 2>/dev/null; then git apply "$P28"
+elif git apply --reverse --check "$P28" 2>/dev/null; then echo "wrapped DrawText rectangle patch already applied"
+else echo "patch 0028 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/user32/x86_64-windows/user32.dll dlls/user32/i386-windows/user32.dll > make-user32.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/user32.dll"; cp "$B/dlls/user32/$a-windows/user32.dll" "$M/lib/wine/$a-windows/user32.dll"; done
 echo "patched user32.dll (64- and 32-bit) in $M"
