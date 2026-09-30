@@ -67,9 +67,17 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git a
 # (patch 0016: the Windows wait and app-starting cursors show AppKit's busy cursor instead of the Windows hourglass)
 P16="$HERE/../wine-patches/0016-winemac-show-the-AppKit-busy-cursor-for-the-wait-cursors.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git apply "$P16"; elif git apply --check -R "$P16" 2>/dev/null; then echo "winemac busy-cursor patch already applied"; else echo "patch 0016 does not apply"; exit 1; fi
-cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
+# (patch 0031: the common item dialog shows the native NSOpenPanel/NSSavePanel through new winemac.drv exports, so Insert > Audio, Save As and Publish's folder picker look like Mac dialogs; WINE_MAC_FILE_DIALOGS=0 brings back Wine's own dialog)
+P31="$HERE/../wine-patches/0031-winemac-comdlg32-show-the-native-macOS-open-and-save-panels.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P31" 2>/dev/null; then git apply "$P31"; elif git apply --check -R "$P31" 2>/dev/null; then echo "native file dialog patch already applied"; else echo "patch 0031 does not apply"; exit 1; fi
+# 0031 adds winemac.drv.spec and cocoa_filedialog.m to Makefile.in, so the generated Makefile has to be refreshed before building
+cd "$B" && make Makefile > make-makefile.log 2>&1
+cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so dlls/winemac.drv/x86_64-windows/winemac.drv dlls/winemac.drv/i386-windows/winemac.drv \
+  dlls/comdlg32/x86_64-windows/comdlg32.dll dlls/comdlg32/i386-windows/comdlg32.dll > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
-echo "patched winemac.so in $M"
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/comdlg32.dll"
+  cp "$B/dlls/winemac.drv/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/winemac.drv"; cp "$B/dlls/comdlg32/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comdlg32.dll"; done
+echo "patched winemac.so, winemac.drv and comdlg32.dll (64- and 32-bit) in $M"
 # --- win32u (unix) : UpdateLayeredWindow copy fast path (patch 0006); the code lives in win32u.so, not win32u.dll ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
