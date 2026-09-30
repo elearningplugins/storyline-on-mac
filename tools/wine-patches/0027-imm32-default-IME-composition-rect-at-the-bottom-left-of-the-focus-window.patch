@@ -1,0 +1,41 @@
+diff --git a/dlls/imm32/ime.c b/dlls/imm32/ime.c
+--- a/dlls/imm32/ime.c
++++ b/dlls/imm32/ime.c
+@@ -574,6 +574,29 @@ BOOL WINAPI ImeProcessKey( HIMC himc, UINT vkey, LPARAM lparam, BYTE *state )
+     return ret;
+ }
+ 
++static void ime_set_default_composition_rect( INPUTCONTEXT *ctx )
++{
++    GUITHREADINFO info = {.cbSize = sizeof(info)};
++    HWND target = ctx->hWnd ? ctx->hWnd : GetFocus();
++    DPI_AWARENESS_CONTEXT old_context;
++    RECT rect;
++    BOOL ret;
++
++    if ((ctx->fdwInit & INIT_COMPFORM) && ctx->cfCompForm.dwStyle != CFS_DEFAULT) return;
++    if (GetGUIThreadInfo( GetCurrentThreadId(), &info ) && info.hwndCaret) return;
++    if (!target) return;
++
++    /* SetIMECompositionRect expects per-monitor DPI coordinates */
++    old_context = SetThreadDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE );
++    ret = GetClientRect( target, &rect );
++    SetThreadDpiAwarenessContext( old_context );
++    if (!ret) return;
++
++    /* Windows places the default IME window in the bottom left */
++    SetRect( &rect, rect.left, rect.bottom, rect.left + 1, rect.bottom + 1 );
++    NtUserCallTwoParam( (ULONG_PTR)target, (ULONG_PTR)&rect, NtUserCallTwoParam_SetIMECompositionRect );
++}
++
+ UINT WINAPI ImeToAsciiEx( UINT vkey, UINT vsc, BYTE *state, TRANSMSGLIST *msgs, UINT flags, HIMC himc )
+ {
+     COMPOSITIONSTRING *compstr;
+@@ -589,6 +612,7 @@ UINT WINAPI ImeToAsciiEx( UINT vkey, UINT vsc, BYTE *state, TRANSMSGLIST *msgs,
+     if (!is_ime_hkl( GetKeyboardLayout( 0 ) )) return 0;
+ 
+     if (!(ctx = ImmLockIMC( himc ))) return 0;
++    if (vkey != VK_PROCESSKEY) ime_set_default_composition_rect( ctx );
+     if (!(compstr = ImmLockIMCC( ctx->hCompStr ))) goto done;
+     size = max( compstr->dwSize, sizeof(COMPOSITIONSTRING) );
+ 
