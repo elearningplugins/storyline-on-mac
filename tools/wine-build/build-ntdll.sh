@@ -148,5 +148,13 @@ else echo "patch 0019 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/user32/x86_64-windows/user32.dll dlls/user32/i386-windows/user32.dll > make-user32.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/user32.dll"; cp "$B/dlls/user32/$a-windows/user32.dll" "$M/lib/wine/$a-windows/user32.dll"; done
 echo "patched user32.dll (64- and 32-bit) in $M"
+# --- imm32 (PE) : with no composition position and no caret, the IME candidate list goes to the bottom left of the focus window, as on Windows (patch 0027); Storyline sets neither, so macOS showed it at the top left of the screen ---
+P27="$HERE/../wine-patches/0027-imm32-default-IME-composition-rect-at-the-bottom-left-of-the-focus-window.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P27" 2>/dev/null; then git apply "$P27"
+elif git apply --reverse --check "$P27" 2>/dev/null; then echo "default IME composition rect patch already applied"
+else echo "patch 0027 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/imm32/x86_64-windows/imm32.dll dlls/imm32/i386-windows/imm32.dll > make-imm32.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/imm32.dll"; cp "$B/dlls/imm32/$a-windows/imm32.dll" "$M/lib/wine/$a-windows/imm32.dll"; done
+echo "patched imm32.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi
