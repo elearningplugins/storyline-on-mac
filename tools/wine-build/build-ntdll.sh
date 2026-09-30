@@ -135,6 +135,11 @@ for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blen
   elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
   else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
 done
+# (patch 0032: a Graphics on a window DC gets the whole window as its device bounds instead of the client area; MetroTextBox paints its border through one, and its gradient side lines were clipped away)
+P32="$HERE/../wine-patches/0032-gdiplus-use-the-whole-window-as-device-bounds-for-window-DCs.patch"
+if git apply --check "$P32" 2>/dev/null; then git apply "$P32"
+elif git apply --reverse --check "$P32" 2>/dev/null; then echo "$(basename "$P32") already applied"
+else echo "$(basename "$P32") neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/gdiplus/x86_64-windows/gdiplus.dll dlls/gdiplus/i386-windows/gdiplus.dll > make-gdiplus.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/gdiplus.dll"; cp "$B/dlls/gdiplus/$a-windows/gdiplus.dll" "$M/lib/wine/$a-windows/gdiplus.dll"; done
 echo "patched gdiplus.dll (64- and 32-bit) in $M"
