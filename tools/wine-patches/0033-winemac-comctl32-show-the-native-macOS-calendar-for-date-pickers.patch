@@ -1,0 +1,593 @@
+diff --git a/dlls/comctl32/datetime.c b/dlls/comctl32/datetime.c
+--- a/dlls/comctl32/datetime.c
++++ b/dlls/comctl32/datetime.c
+@@ -77,6 +77,8 @@ typedef struct
+     WCHAR textbuf[256];
+     POINT monthcal_pos;
+     int pendingUpdown;
++    UINT64 mac_picker; /* native macOS calendar popover, while it is open */
++    DWORD mac_closed_tick;
+ } DATETIME_INFO, *LPDATETIME_INFO;
+ 
+ /* this list of defines is closely related to `allowedformatchars' defined
+@@ -623,7 +625,9 @@ static int DATETIME_GetFieldWidth (const DATETIME_INFO *infoPtr, HDC hdc, int co
+ 	    case ONEDIGITMINUTE:
+ 	    case ONEDIGITMONTH:
+ 	    case ONEDIGITYEAR:
+-	        /* these seem to use a two byte field */
++	        DATETIME_ReturnTxt (infoPtr, count, buffer, ARRAY_SIZE(buffer));
++	        bufptr = buffer;
++	        break;
+ 	    case TWODIGITDAY:
+ 	    case TWODIGIT12HOUR:
+ 	    case TWODIGIT24HOUR:
+@@ -942,6 +946,98 @@ DATETIME_SetSelectedField (DATETIME_INFO *infoPtr, int select)
+     infoPtr->nCharsEntered = 0;
+ }
+ 
++#define DATETIME_MAC_TIMER 0x4d43
++#define MAC_DATE_PICKER_OK 1
++#define MAC_DATE_PICKER_PENDING 0
++
++static UINT64 (CDECL *mac_picker_show)(HWND, UINT, UINT, UINT);
++static UINT (CDECL *mac_picker_result)(UINT64, UINT *);
++static void (CDECL *mac_picker_close)(UINT64);
++
++static BOOL DATETIME_GetMacCalendarFuncs(void)
++{
++    HMODULE module;
++    WCHAR env[8];
++
++    if (mac_picker_show) return TRUE;
++    if (GetEnvironmentVariableW(L"WINE_MAC_DATE_PICKER", env, ARRAY_SIZE(env)) && !wcscmp(env, L"0"))
++        return FALSE;
++    if (!(module = GetModuleHandleW(L"winemac.drv"))) return FALSE;
++
++    mac_picker_result = (void *)GetProcAddress(module, "wine_date_picker_result");
++    mac_picker_close = (void *)GetProcAddress(module, "wine_date_picker_close");
++    if (!mac_picker_result || !mac_picker_close) return FALSE;
++    mac_picker_show = (void *)GetProcAddress(module, "wine_date_picker_show");
++    return mac_picker_show != NULL;
++}
++
++static UINT DATETIME_DateToYmd(const SYSTEMTIME *date)
++{
++    return date->wYear * 10000 + date->wMonth * 100 + date->wDay;
++}
++
++/* Applies the day picked in the Mac popover, or on dismiss closes a popover that is still open */
++static LRESULT DATETIME_PollMacCalendar(DATETIME_INFO *infoPtr, BOOL dismiss)
++{
++    UINT date = 0, status = mac_picker_result(infoPtr->mac_picker, &date);
++
++    if (status == MAC_DATE_PICKER_PENDING && !dismiss) return 0;
++
++    KillTimer(infoPtr->hwndSelf, DATETIME_MAC_TIMER);
++    mac_picker_close(infoPtr->mac_picker);
++    infoPtr->mac_picker = 0;
++
++    if (status == MAC_DATE_PICKER_OK && date)
++    {
++        infoPtr->date.wYear = date / 10000;
++        infoPtr->date.wMonth = date / 100 % 100;
++        infoPtr->date.wDay = date % 100;
++        MONTHCAL_CalculateDayOfWeek(&infoPtr->date, TRUE);
++        infoPtr->dateValid = TRUE;
++        SendMessageW(infoPtr->hwndCheckbut, BM_SETCHECK, BST_CHECKED, 0);
++        InvalidateRect(infoPtr->hwndSelf, NULL, TRUE);
++        DATETIME_SendDateTimeChangeNotify(infoPtr);
++    }
++    else
++        infoPtr->mac_closed_tick = GetTickCount();
++
++    DATETIME_SendSimpleNotify(infoPtr, DTN_CLOSEUP);
++    return 0;
++}
++
++/* Opens the native macOS calendar popover instead of the month calendar; returns FALSE to fall back to the month calendar */
++static BOOL DATETIME_ShowMacCalendar(DATETIME_INFO *infoPtr)
++{
++    SYSTEMTIME range[2];
++    UINT min_date = 0, max_date = 0;
++    DWORD limits;
++
++    if (infoPtr->mac_picker)
++    {
++        DATETIME_PollMacCalendar(infoPtr, TRUE);
++        return TRUE;
++    }
++    /* The click that dismissed the popover must not open it again */
++    if (GetTickCount() - infoPtr->mac_closed_tick < 300) return TRUE;
++
++    if (!DATETIME_GetMacCalendarFuncs()) return FALSE;
++    if (GetWindowLongW(infoPtr->hMonthCal, GWL_STYLE) & (MCS_MULTISELECT | MCS_WEEKNUMBERS | MCS_DAYSTATE))
++        return FALSE;
++
++    DATETIME_SendSimpleNotify(infoPtr, DTN_DROPDOWN);
++
++    limits = SendMessageW(infoPtr->hMonthCal, MCM_GETRANGE, 0, (LPARAM)range);
++    if (limits & GDTR_MIN) min_date = DATETIME_DateToYmd(&range[0]);
++    if (limits & GDTR_MAX) max_date = DATETIME_DateToYmd(&range[1]);
++
++    infoPtr->mac_picker = mac_picker_show(infoPtr->hwndSelf, DATETIME_DateToYmd(&infoPtr->date), min_date, max_date);
++    if (infoPtr->mac_picker)
++        SetTimer(infoPtr->hwndSelf, DATETIME_MAC_TIMER, 50, NULL);
++    else
++        ShowWindow(infoPtr->hMonthCal, SW_SHOW);
++    return TRUE;
++}
++
+ static LRESULT
+ DATETIME_LButtonDown (DATETIME_INFO *infoPtr, INT x, INT y)
+ {
+@@ -1005,7 +1101,7 @@ DATETIME_LButtonDown (DATETIME_INFO *infoPtr, INT x, INT y)
+             lprgSysTimeArray->wYear, lprgSysTimeArray->wMonth, lprgSysTimeArray->wDay);
+             SendMessageW(infoPtr->hMonthCal, MCM_SETCURSEL, 0, (LPARAM)(&infoPtr->date));
+ 
+-            if (infoPtr->bDropdownEnabled) {
++            if (infoPtr->bDropdownEnabled && !DATETIME_ShowMacCalendar(infoPtr)) {
+                 ShowWindow(infoPtr->hMonthCal, SW_SHOW);
+                 DATETIME_SendSimpleNotify (infoPtr, DTN_DROPDOWN);
+             }
+@@ -1595,6 +1691,12 @@ DATETIME_Destroy (DATETIME_INFO *infoPtr)
+ {
+     COMCTL32_CloseThemeForWindow(infoPtr->hwndSelf);
+ 
++    if (infoPtr->mac_picker)
++    {
++        KillTimer(infoPtr->hwndSelf, DATETIME_MAC_TIMER);
++        mac_picker_close(infoPtr->mac_picker);
++        infoPtr->mac_picker = 0;
++    }
+     if (infoPtr->hwndCheckbut)
+ 	DestroyWindow(infoPtr->hwndCheckbut);
+     if (infoPtr->hUpdown)
+@@ -1750,6 +1852,11 @@ DATETIME_WindowProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+     case WM_DESTROY:
+ 	return DATETIME_Destroy (infoPtr);
+ 
++    case WM_TIMER:
++        if (wParam == DATETIME_MAC_TIMER && infoPtr->mac_picker)
++            return DATETIME_PollMacCalendar (infoPtr, FALSE);
++        return DefWindowProcW (hwnd, uMsg, wParam, lParam);
++
+     case WM_COMMAND:
+         return DATETIME_Command (infoPtr, wParam, lParam);
+ 
+diff --git a/dlls/winemac.drv/Makefile.in b/dlls/winemac.drv/Makefile.in
+--- a/dlls/winemac.drv/Makefile.in
++++ b/dlls/winemac.drv/Makefile.in
+@@ -21,6 +21,7 @@ SOURCES = \
+ 	cocoa_app.m \
+ 	cocoa_clipboard.m \
+ 	cocoa_cursorclipping.m \
++	cocoa_datepicker.m \
+ 	cocoa_display.m \
+ 	cocoa_event.m \
+ 	cocoa_filedialog.m \
+diff --git a/dlls/winemac.drv/cocoa_datepicker.m b/dlls/winemac.drv/cocoa_datepicker.m
+new file mode 100644
+--- /dev/null
++++ b/dlls/winemac.drv/cocoa_datepicker.m
+@@ -0,0 +1,243 @@
++/* MACDRV Cocoa calendar popover for date picker controls; LGPL 2.1 or later, like the rest of Wine */
++
++#import <AppKit/AppKit.h>
++#include "macdrv_cocoa.h"
++#import "cocoa_app.h"
++#import "cocoa_window.h"
++
++
++@class WineDatePicker;
++
++@interface WineDatePickerView : NSDatePicker
++{
++@public
++    WineDatePicker* owner;
++}
++@end
++
++@interface WineDatePicker : NSObject <NSPopoverDelegate>
++{
++@public
++    WineWindow* window;
++    CGRect rect;
++    unsigned int date;
++    unsigned int minDate;
++    unsigned int maxDate;
++    NSPopover* popover;
++    WineDatePickerView* pickerView;
++    unsigned int result;
++    int status;
++}
++- (void) finish:(int)newStatus;
++@end
++
++
++static NSCalendar* utc_calendar(void)
++{
++    NSCalendar* calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian] autorelease];
++    calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
++    return calendar;
++}
++
++static NSDate* date_from_ymd(NSCalendar* calendar, unsigned int ymd)
++{
++    NSDateComponents* components;
++
++    if (!ymd) return nil;
++    components = [[[NSDateComponents alloc] init] autorelease];
++    components.year = ymd / 10000;
++    components.month = ymd / 100 % 100;
++    components.day = ymd % 100;
++    components.hour = 12;
++    return [calendar dateFromComponents:components];
++}
++
++static unsigned int ymd_from_date(NSCalendar* calendar, NSDate* value)
++{
++    NSDateComponents* components;
++
++    if (!value) return 0;
++    components = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:value];
++    return components.year * 10000 + components.month * 100 + components.day;
++}
++
++
++@implementation WineDatePickerView
++
++    /* A click on a day of the shown month picks it; clicks on the header only change the month, so they keep the popover open */
++    - (void) mouseDown:(NSEvent*)event
++    {
++        NSCalendar* calendar = utc_calendar();
++        unsigned int before = ymd_from_date(calendar, self.dateValue), after;
++        NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
++        CGFloat fromTop = self.isFlipped ? point.y : NSHeight(self.bounds) - point.y;
++
++        [super mouseDown:event];
++
++        after = ymd_from_date(calendar, self.dateValue);
++        if (owner && before / 100 == after / 100 && (before != after || fromTop > NSHeight(self.bounds) / 4))
++        {
++            owner->result = after;
++            [owner finish:MACDRV_DATE_PICKER_OK];
++        }
++    }
++
++    - (void) keyDown:(NSEvent*)event
++    {
++        NSString* chars = event.charactersIgnoringModifiers;
++        unichar c = chars.length ? [chars characterAtIndex:0] : 0;
++
++        if (!owner)
++            [super keyDown:event];
++        else if (c == '\r' || c == 3)
++        {
++            owner->result = ymd_from_date(utc_calendar(), self.dateValue);
++            [owner finish:MACDRV_DATE_PICKER_OK];
++        }
++        else if (c == 27)
++            [owner finish:MACDRV_DATE_PICKER_CANCEL];
++        else
++            [super keyDown:event];
++    }
++
++    - (void) cancelOperation:(id)sender
++    {
++        [owner finish:MACDRV_DATE_PICKER_CANCEL];
++    }
++
++    - (BOOL) acceptsFirstResponder
++    {
++        return YES;
++    }
++
++@end
++
++
++@implementation WineDatePicker
++
++    - (void) dealloc
++    {
++        [window release];
++        [popover release];
++        [pickerView release];
++        [super dealloc];
++    }
++
++    - (void) finish:(int)newStatus
++    {
++        if (__atomic_load_n(&status, __ATOMIC_ACQUIRE) != MACDRV_DATE_PICKER_PENDING) return;
++        __atomic_store_n(&status, newStatus, __ATOMIC_RELEASE);
++        if (popover.shown) [popover close];
++    }
++
++    - (void) show
++    {
++        NSCalendar* calendar = utc_calendar();
++        NSView* view = window.contentView;
++        NSViewController* controller;
++        NSView* container;
++        NSRect anchor = NSRectFromCGRect(rect);
++        NSSize size;
++        const CGFloat margin = 8;
++
++        if (!view || !window.visible)
++        {
++            [self finish:MACDRV_DATE_PICKER_CANCEL];
++            return;
++        }
++
++        pickerView = [[WineDatePickerView alloc] initWithFrame:NSZeroRect];
++        pickerView->owner = self;
++        pickerView.calendar = calendar;
++        pickerView.timeZone = calendar.timeZone;
++        pickerView.datePickerStyle = NSDatePickerStyleClockAndCalendar;
++        pickerView.datePickerElements = NSDatePickerElementFlagYearMonthDay;
++        pickerView.datePickerMode = NSDatePickerModeSingle;
++        pickerView.bezeled = NO;
++        pickerView.bordered = NO;
++        pickerView.drawsBackground = NO;
++        pickerView.focusRingType = NSFocusRingTypeNone;
++        pickerView.minDate = date_from_ymd(calendar, minDate);
++        pickerView.maxDate = date_from_ymd(calendar, maxDate);
++        pickerView.dateValue = date_from_ymd(calendar, date) ?: [NSDate date];
++        [pickerView sizeToFit];
++        size = pickerView.frame.size;
++
++        container = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, size.width + 2 * margin, size.height + 2 * margin)] autorelease];
++        [pickerView setFrameOrigin:NSMakePoint(margin, margin)];
++        [container addSubview:pickerView];
++
++        controller = [[[NSViewController alloc] init] autorelease];
++        controller.view = container;
++
++        popover = [[NSPopover alloc] init];
++        popover.contentViewController = controller;
++        popover.contentSize = container.frame.size;
++        popover.behavior = NSPopoverBehaviorTransient;
++        popover.animates = NO;
++        popover.delegate = self;
++
++        [[WineApplicationController sharedController] flipRect:&anchor];
++        anchor = [window convertRectFromScreen:anchor];
++        anchor = [view convertRect:anchor fromView:nil];
++
++        [popover showRelativeToRect:anchor ofView:view preferredEdge:view.isFlipped ? NSRectEdgeMaxY : NSRectEdgeMinY];
++        [pickerView.window makeFirstResponder:pickerView];
++    }
++
++    - (void) popoverDidClose:(NSNotification*)notification
++    {
++        [self finish:MACDRV_DATE_PICKER_CANCEL];
++    }
++
++@end
++
++
++/* rect is the date picker control in Mac global coordinates; the popover opens below it and stays until a day is picked or it is dismissed */
++macdrv_date_picker macdrv_date_picker_start(macdrv_window w, CGRect rect, unsigned int date,
++                                            unsigned int min_date, unsigned int max_date)
++{
++    WineDatePicker* dp = [[WineDatePicker alloc] init];
++
++    dp->window = [(WineWindow*)w retain];
++    dp->rect = rect;
++    dp->date = date;
++    dp->minDate = min_date;
++    dp->maxDate = max_date;
++
++    [dp retain];
++    OnMainThreadAsync(^{
++        @autoreleasepool
++        {
++            [dp show];
++        }
++        [dp release];
++    });
++
++    return (macdrv_date_picker)dp;
++}
++
++int macdrv_date_picker_status(macdrv_date_picker p)
++{
++    WineDatePicker* dp = (WineDatePicker*)p;
++    return __atomic_load_n(&dp->status, __ATOMIC_ACQUIRE);
++}
++
++unsigned int macdrv_date_picker_result(macdrv_date_picker p)
++{
++    WineDatePicker* dp = (WineDatePicker*)p;
++    return macdrv_date_picker_status(p) == MACDRV_DATE_PICKER_OK ? dp->result : 0;
++}
++
++/* Closes the popover if it is still open and releases it */
++void macdrv_date_picker_close(macdrv_date_picker p)
++{
++    WineDatePicker* dp = (WineDatePicker*)p;
++
++    OnMainThreadAsync(^{
++        [dp finish:MACDRV_DATE_PICKER_CANCEL];
++        dp->popover.delegate = nil;
++        if (dp->pickerView) dp->pickerView->owner = nil;
++        [dp release];
++    });
++}
+diff --git a/dlls/winemac.drv/dllmain.c b/dlls/winemac.drv/dllmain.c
+--- a/dlls/winemac.drv/dllmain.c
++++ b/dlls/winemac.drv/dllmain.c
+@@ -400,6 +400,33 @@ void CDECL wine_file_dialog_close(UINT64 handle)
+     MACDRV_CALL(file_dialog_close, &params);
+ }
+ 
++/* comctl32 shows the native calendar popover below the date picker hwnd through these three exports; dates are yyyymmdd */
++UINT64 CDECL wine_date_picker_show(HWND hwnd, UINT date, UINT min_date, UINT max_date)
++{
++    struct date_picker_start_params params =
++    {
++        .hwnd = HandleToUlong(hwnd), .date = date, .min_date = min_date, .max_date = max_date,
++    };
++
++    if (MACDRV_CALL(date_picker_start, &params)) return 0;
++    return params.handle;
++}
++
++UINT CDECL wine_date_picker_result(UINT64 handle, UINT *date)
++{
++    struct date_picker_result_params params = { .handle = handle };
++
++    MACDRV_CALL(date_picker_result, &params);
++    *date = params.date;
++    return params.status;
++}
++
++void CDECL wine_date_picker_close(UINT64 handle)
++{
++    struct date_picker_close_params params = { .handle = handle };
++    MACDRV_CALL(date_picker_close, &params);
++}
++
+ 
+ static BOOL process_attach(void)
+ {
+diff --git a/dlls/winemac.drv/macdrv_cocoa.h b/dlls/winemac.drv/macdrv_cocoa.h
+--- a/dlls/winemac.drv/macdrv_cocoa.h
++++ b/dlls/winemac.drv/macdrv_cocoa.h
+@@ -235,6 +235,22 @@ extern unsigned int macdrv_file_dialog_result(macdrv_file_dialog dialog, char *b
+ extern void macdrv_file_dialog_close(macdrv_file_dialog dialog);
+ 
+ 
++/* date picker */
++typedef struct opaque_macdrv_date_picker* macdrv_date_picker;
++
++enum {
++    MACDRV_DATE_PICKER_PENDING,
++    MACDRV_DATE_PICKER_OK,
++    MACDRV_DATE_PICKER_CANCEL,
++};
++
++extern macdrv_date_picker macdrv_date_picker_start(macdrv_window window, CGRect rect, unsigned int date,
++                                                   unsigned int min_date, unsigned int max_date);
++extern int macdrv_date_picker_status(macdrv_date_picker picker);
++extern unsigned int macdrv_date_picker_result(macdrv_date_picker picker);
++extern void macdrv_date_picker_close(macdrv_date_picker picker);
++
++
+ /* cursor */
+ extern void macdrv_set_cursor(CFStringRef name, CFArrayRef frames);
+ extern int macdrv_cursor_name_available(CFStringRef name);
+diff --git a/dlls/winemac.drv/macdrv_main.c b/dlls/winemac.drv/macdrv_main.c
+--- a/dlls/winemac.drv/macdrv_main.c
++++ b/dlls/winemac.drv/macdrv_main.c
+@@ -676,6 +676,38 @@ static NTSTATUS macdrv_file_dialog_close_call(void *arg)
+     return STATUS_SUCCESS;
+ }
+ 
++static NTSTATUS macdrv_date_picker_start_call(void *arg)
++{
++    struct date_picker_start_params *params = arg;
++    HWND hwnd = (HWND)(UINT_PTR)params->hwnd;
++    RECT rect;
++    macdrv_window window = macdrv_get_cocoa_window(NtUserGetAncestor(hwnd, GA_ROOT), TRUE);
++
++    params->handle = 0;
++    if (!window) return STATUS_UNSUCCESSFUL;
++    if (!NtUserGetWindowRect(hwnd, &rect, NtUserGetWinMonitorDpi(hwnd, MDT_RAW_DPI))) return STATUS_UNSUCCESSFUL;
++    params->handle = (UINT_PTR)macdrv_date_picker_start(window, cgrect_mac_from_win(cgrect_from_rect(rect)),
++                                                        params->date, params->min_date, params->max_date);
++    return params->handle ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
++}
++
++static NTSTATUS macdrv_date_picker_result_call(void *arg)
++{
++    struct date_picker_result_params *params = arg;
++    macdrv_date_picker picker = param_ptr(params->handle);
++
++    params->status = macdrv_date_picker_status(picker);
++    params->date = params->status == MACDRV_DATE_PICKER_OK ? macdrv_date_picker_result(picker) : 0;
++    return STATUS_SUCCESS;
++}
++
++static NTSTATUS macdrv_date_picker_close_call(void *arg)
++{
++    struct date_picker_close_params *params = arg;
++    macdrv_date_picker_close(param_ptr(params->handle));
++    return STATUS_SUCCESS;
++}
++
+ 
+ const unixlib_entry_t __wine_unix_call_funcs[] =
+ {
+@@ -684,6 +716,9 @@ const unixlib_entry_t __wine_unix_call_funcs[] =
+     macdrv_file_dialog_start_call,
+     macdrv_file_dialog_result_call,
+     macdrv_file_dialog_close_call,
++    macdrv_date_picker_start_call,
++    macdrv_date_picker_result_call,
++    macdrv_date_picker_close_call,
+ };
+ 
+ C_ASSERT( ARRAYSIZE(__wine_unix_call_funcs) == unix_funcs_count );
+@@ -713,6 +748,9 @@ const unixlib_entry_t __wine_unix_call_wow64_funcs[] =
+     macdrv_file_dialog_start_call,
+     macdrv_file_dialog_result_call,
+     macdrv_file_dialog_close_call,
++    macdrv_date_picker_start_call,
++    macdrv_date_picker_result_call,
++    macdrv_date_picker_close_call,
+ };
+ 
+ C_ASSERT( ARRAYSIZE(__wine_unix_call_wow64_funcs) == unix_funcs_count );
+diff --git a/dlls/winemac.drv/unixlib.h b/dlls/winemac.drv/unixlib.h
+--- a/dlls/winemac.drv/unixlib.h
++++ b/dlls/winemac.drv/unixlib.h
+@@ -26,6 +26,9 @@ enum macdrv_funcs
+     unix_file_dialog_start,
+     unix_file_dialog_result,
+     unix_file_dialog_close,
++    unix_date_picker_start,
++    unix_date_picker_result,
++    unix_date_picker_close,
+     unix_funcs_count
+ };
+ 
+@@ -82,6 +85,29 @@ struct file_dialog_close_params
+     UINT64 handle;
+ };
+ 
++/* Dates are yyyymmdd, and 0 means no limit */
++struct date_picker_start_params
++{
++    UINT64 hwnd;
++    UINT32 date;
++    UINT32 min_date;
++    UINT32 max_date;
++    UINT32 padding;
++    UINT64 handle;
++};
++
++struct date_picker_result_params
++{
++    UINT64 handle;
++    UINT32 status;
++    UINT32 date;
++};
++
++struct date_picker_close_params
++{
++    UINT64 handle;
++};
++
+ /* macdrv_app_icon result */
+ struct app_icon_entry
+ {
+diff --git a/dlls/winemac.drv/winemac.drv.spec b/dlls/winemac.drv/winemac.drv.spec
+--- a/dlls/winemac.drv/winemac.drv.spec
++++ b/dlls/winemac.drv/winemac.drv.spec
+@@ -1,3 +1,6 @@
+ @ cdecl wine_file_dialog_show(long wstr wstr str wstr ptr long long)
+ @ cdecl wine_file_dialog_result(int64 ptr long ptr ptr)
+ @ cdecl wine_file_dialog_close(int64)
++@ cdecl wine_date_picker_show(long long long long)
++@ cdecl wine_date_picker_result(int64 ptr)
++@ cdecl wine_date_picker_close(int64)
