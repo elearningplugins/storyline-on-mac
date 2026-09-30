@@ -1,0 +1,35 @@
+diff --git a/dlls/dwrite/analyzer.c b/dlls/dwrite/analyzer.c
+--- a/dlls/dwrite/analyzer.c
++++ b/dlls/dwrite/analyzer.c
+@@ -897,6 +897,22 @@ BOOL lb_is_newline_char(WCHAR ch)
+     return c == b_LF || c == b_NL || c == b_CR || c == b_BK;
+ }
+ 
++static BOOL is_no_break_space(UINT32 ch)
++{
++    return ch == 0x00a0 || ch == 0x2007 || ch == 0x202f;
++}
++
++/* WINE_DWRITE_NBSP_NOT_WHITESPACE=1 reports no-break spaces as non-white space (Windows reports them as white space), for apps that treat every white space as a break opportunity. */
++static BOOL no_break_spaces_are_not_whitespace(void)
++{
++    static LONG state = -1;
++    WCHAR value[2];
++
++    if (state == -1)
++        state = GetEnvironmentVariableW(L"WINE_DWRITE_NBSP_NOT_WHITESPACE", value, ARRAY_SIZE(value)) == 1 && value[0] == '1';
++    return state;
++}
++
+ static HRESULT analyze_linebreaks(IDWriteTextAnalysisSource *source, UINT32 position,
+         UINT32 length, DWRITE_LINE_BREAKPOINT *breakpoints)
+ {
+@@ -942,7 +958,7 @@ static HRESULT analyze_linebreaks(IDWriteTextAnalysisSource *source, UINT32 posi
+ 
+         breakpoints[index].breakConditionBefore = DWRITE_BREAK_CONDITION_NEUTRAL;
+         breakpoints[index].breakConditionAfter  = DWRITE_BREAK_CONDITION_NEUTRAL;
+-        breakpoints[index].isWhitespace = opentype_is_whitespace(context.ch);
++        breakpoints[index].isWhitespace = opentype_is_whitespace(context.ch) && !(is_no_break_space(context.ch) && no_break_spaces_are_not_whitespace());
+         breakpoints[index].isSoftHyphen = context.ch == 0x00ad /* Unicode Soft Hyphen */;
+         breakpoints[index].padding = 0;
+         ++index;
