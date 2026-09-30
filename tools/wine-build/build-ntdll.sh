@@ -75,6 +75,11 @@ PU="$HERE/../wine-patches/upstream/macports-0001-win32u-Enable-host-Vulkan-porta
 if patch -p1 -N -s --dry-run < "$PU" >/dev/null 2>&1; then patch -p1 -N -s < "$PU"
 elif patch -p1 -R -s --dry-run < "$PU" >/dev/null 2>&1; then echo "MacPorts Vulkan portability patch already applied"
 else echo "MacPorts Vulkan portability patch neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0022: GDI_ROUND saturates instead of wrapping, so WinForms' unbounded text rectangles survive a viewport offset; the trigger list's "–" marks need it)
+P22="$HERE/../wine-patches/0022-win32u-saturate-GDI_ROUND-instead-of-wrapping.patch"
+if git apply --check "$P22" 2>/dev/null; then git apply "$P22"
+elif git apply --reverse --check "$P22" 2>/dev/null; then echo "GDI_ROUND saturation patch already applied"
+else echo "patch 0022 neither applies nor is already applied" >&2; exit 1; fi
 # (patch 0009: WINE_PERF_LOG=1 timing lines from d2d1 and win32u for tools/perf/; silent otherwise)
 P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
 if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
@@ -98,9 +103,10 @@ else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
-# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners) and CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) ---
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons) and the world transform is relative to BeginContainer (0021, trigger list lines) ---
 cd "$SRC/wine-wine-11.16"
-for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch"; do
+for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch" \
+         "$HERE/../wine-patches/0021-gdiplus-make-the-world-transform-relative-to-BeginContainer.patch"; do
   if git apply --check "$P" 2>/dev/null; then git apply "$P"
   elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
   else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
