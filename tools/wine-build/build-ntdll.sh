@@ -80,6 +80,11 @@ P22="$HERE/../wine-patches/0022-win32u-saturate-GDI_ROUND-instead-of-wrapping.pa
 if git apply --check "$P22" 2>/dev/null; then git apply "$P22"
 elif git apply --reverse --check "$P22" 2>/dev/null; then echo "GDI_ROUND saturation patch already applied"
 else echo "patch 0022 neither applies nor is already applied" >&2; exit 1; fi
+# (patch 0025: no default IME window for children of message-only windows, as on Windows; each WinForms text pane parked there otherwise creates and destroys a Cocoa window, about 12 s of a 70 s publish in Run 28)
+P25="$HERE/../wine-patches/0025-win32u-no-default-IME-window-for-descendants-of-message-only-windows.patch"
+if git apply --check "$P25" 2>/dev/null; then git apply "$P25"
+elif git apply --reverse --check "$P25" 2>/dev/null; then echo "message-only IME window patch already applied"
+else echo "patch 0025 neither applies nor is already applied" >&2; exit 1; fi
 # (patch 0009: WINE_PERF_LOG=1 timing lines from d2d1 and win32u for tools/perf/; silent otherwise)
 P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
 if git apply --check "$P9" 2>/dev/null; then git apply "$P9"

@@ -66,6 +66,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Radio buttons and checkboxes on the slide canvas, Slide Layers thumbnails | **FIXED** by patch 0023 — Wine's gdiplus left most metafile records out of the frame bounds, dropped pen alignment and `ResetClip` on playback, and (after 0021) played back in container space instead of device space | 27 |
 | Notch in circle outlines | **FIXED** by patch 0024 — a closed ellipse's last point sat a few ulps off its first, and widening turned the gap into a notch | 27 |
 | Opening a project from the Dock launcher | **FIXED** in the launcher — Storyline opens only its first argument, so the project goes before the CEF switches, with a Mac path mapped to `Z:`. Finder double-click still does not pass the file | 27 |
+| Publish speed | **IMPROVED** by patch 0025 — Wine gave every window under WinForms' message-only parking window a hidden IME window, and on macOS each one creates and destroys a Cocoa window; Numbers-French-SL2 to Web: content phase 49–50 s → **37–38 s**, whole publish 66–77 s → **55–64 s** (three cold runs each) | 28 |
 | Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
 
 
@@ -73,7 +74,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
-  `win32u.so` (0006, 0009, 0022, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017) and `user32.dll` (0019) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017) and `user32.dll` (0019) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
