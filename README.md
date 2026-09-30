@@ -62,19 +62,20 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Desktop Service wait at launch | **IMPROVED** — the Dock launcher starts the service before Storyline asks for it; cold launch waits 12–13 s instead of 18–21 s for the service. About 4 s left is the service retrying a missing Review backups file (inside Articulate; not fixable here). Warm relaunches (service still running) wait 0.4 s | 22 |
 | Storyline opened from the Desktop App | **FIXED** by patch 0018 — the Desktop App started `Storyline.exe` with none of the launcher's CEF switches (so no in-process GPU, which Preview needs, Run 16); `WINE_APPEND_ARGS` (set by both Dock launchers from `tools/launcher/storyline-args.sh`) makes Wine's `CreateProcess` add them | 23 |
 | Crowded Home ribbon in slide view | **FIXED** by patch 0019 — when the ribbon is too narrow, Storyline collapses small buttons to icons, but Wine's `DrawText` still drew their labels into a negative-width rectangle, over the next group | 24 |
+| Blurry text on Retina displays | **IMPROVED** by patch 0020 and Retina mode at 192 DPI — Storyline is DPI-unaware, so every pixel is doubled; Wine's default halftone doubling was the blurriest option, and the launchers now pick xBR (`WINE_SCALE_FILTER=xbr`), which keeps edges crisp and the 96-DPI layout unchanged. Truly sharp slide text needs Storyline to render at 2×, which breaks its fixed-pixel layout | 25 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
-  `win32u.so` (0006, 0009, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014), `ieframe.dll` (0015), `windowscodecs.dll` (0017) and `user32.dll` (0019) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  `win32u.so` (0006, 0009, 0020, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014), `ieframe.dll` (0015), `windowscodecs.dll` (0017) and `user32.dll` (0019) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
   `DisableNonAdminInstalls=true`, Articulate 360 core laid out via `msiexec /a` + registry import, Storyline installed by the
   official bundle, .NET Desktop Runtime 10 x64 from that bundle. Mac driver: `LeftCommandIsCtrl`/`RightCommandIsCtrl=y`;
-  `RetinaMode` currently `n` (WPF dialogs went blank with it on); `Direct3D\renderer=vulkan` since Run 10; WPF hardware
+  `RetinaMode=y` with `LogPixels=192` since Run 25 (it was `n` because WPF dialogs went blank in Run 04e; the Desktop App's main window draws correctly with it on now, its secondary dialogs are not re-tested); `Direct3D\renderer=vulkan` since Run 10; WPF hardware
   acceleration off (`HKCU\Software\Microsoft\Avalon.Graphics\DisableHWAcceleration=1`) because the Desktop App drew clipped
   labels and stray lines through wined3d on Vulkan and nothing at all on OpenGL.
 - **Launchers**: `~/Applications/Articulate 360.app` and `~/Applications/Storyline 360.app` (tools/launcher/) run the genuine
@@ -82,6 +83,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
   `WINE_MAC_APP_NAMES` so the menu bar and Dock say "Articulate 360" and "Storyline 360" instead of "wine" (patch 0010 in
   `winemac.so`, which names each process after its Windows exe). Both also source `storyline-args.sh`, whose
   `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started.
+  Both set `WINE_SCALE_FILTER=xbr` so the patched `win32u.so` (patch 0020) doubles Storyline's windows with xBR on Retina displays.
 
 ## What worked
 

@@ -80,11 +80,16 @@ P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
 if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
 elif git apply --reverse --check "$P9" 2>/dev/null; then echo "perf instrumentation patch already applied"
 else echo "patch 0009 neither applies nor is already applied; it needs 0004, 0006 and 0008 first" >&2; exit 1; fi
+# (patch 0020: WINE_SCALE_FILTER=xbr enlarges DPI-unaware windows with xBR instead of halftone, which the Retina launchers set)
+P20="$HERE/../wine-patches/0020-win32u-xbr-filter-for-scaled-dpi-unaware-windows.patch"
+if git apply --check "$P20" 2>/dev/null; then git apply "$P20"
+elif git apply --reverse --check "$P20" 2>/dev/null; then echo "scale filter patch already applied"
+else echo "patch 0020 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/win32u/win32u.so dlls/win32u/x86_64-windows/win32u.dll dlls/d2d1/x86_64-windows/d2d1.dll > make-win32u.log 2>&1
 rm -f "$M/lib/wine/x86_64-unix/win32u.so"; cp "$B/dlls/win32u/win32u.so" "$M/lib/wine/x86_64-unix/win32u.so"
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
-echo "patched win32u.so, win32u.dll and d2d1.dll (with 0009) in $M"
+echo "patched win32u.so (with 0009, 0020), win32u.dll and d2d1.dll (with 0009) in $M"
 # --- kernelbase (PE) : GetLocaleInfoEx answers LOCALE_SNAME for unknown well-formed names like Windows 10 (patch 0012); without it Storyline reloads its player on every click ---
 P12="$HERE/../wine-patches/0012-kernelbase-answer-LOCALE_SNAME-for-unknown-well-formed-locale-names.patch"; cd "$SRC/wine-wine-11.16"
 if git apply --check "$P12" 2>/dev/null; then git apply "$P12"

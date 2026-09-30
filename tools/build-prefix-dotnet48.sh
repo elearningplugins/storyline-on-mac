@@ -13,10 +13,12 @@ wine reg add 'HKLM\Software\Articulate\Common\Settings' /v DisableNonAdminInstal
 wine reg add 'HKCU\Software\Microsoft\Avalon.Graphics' /v DisableHWAcceleration /t REG_DWORD /d 1 /f
 # Vulkan renderer: GL stops at feature level 9_3; the patched wined3d reaches 11_1 on MoltenVK (Run 10).
 wine reg add 'HKCU\Software\Wine\Direct3D' /v renderer /t REG_SZ /d vulkan /f
-# Mac driver: Command keys act as Ctrl; RetinaMode off because WPF dialogs went blank with it on (Run 04e).
+# Mac driver: Command keys act as Ctrl; RetinaMode on at 192 DPI so Storyline keeps its 96-DPI layout and the launchers' xBR filter doubles it (Run 25).
 wine reg add 'HKCU\Software\Wine\Mac Driver' /v LeftCommandIsCtrl /t REG_SZ /d y /f
 wine reg add 'HKCU\Software\Wine\Mac Driver' /v RightCommandIsCtrl /t REG_SZ /d y /f
-wine reg add 'HKCU\Software\Wine\Mac Driver' /v RetinaMode /t REG_SZ /d n /f
+wine reg add 'HKCU\Software\Wine\Mac Driver' /v RetinaMode /t REG_SZ /d y /f
+wine reg add 'HKCU\Control Panel\Desktop' /v LogPixels /t REG_DWORD /d 192 /f
+wine reg add 'HKLM\System\CurrentControlSet\Hardware Profiles\Current\Software\Fonts' /v LogPixels /t REG_DWORD /d 192 /f
 # Busy and app-starting cursors map to the native arrow; macOS has no app busy cursor (Run 11).
 wine reg add 'HKCU\Software\Wine\Mac Driver\Cursors' /v 'user32.dll,32514' /t REG_SZ /d arrowCursor /f
 wine reg add 'HKCU\Software\Wine\Mac Driver\Cursors' /v 'user32.dll,32650' /t REG_SZ /d arrowCursor /f
