@@ -2,7 +2,7 @@
 
 Run the genuine Articulate 360 Desktop App and Storyline 360 directly on an Intel Mac, on a patched build of upstream Wine. No Parallels, no virtual machine, no Boot Camp, no CrossOver, no remote Windows, and no licensing or sign-in bypass: you sign in with your own Articulate 360 account and use the official installers.
 
-**What works:** the Desktop App signs in and shows your catalog. Storyline 360 installs, launches from the Dock, and opens, edits, previews, saves and publishes projects (Web, LMS with SCORM 1.2 and 2004, and Video). Nine sample projects were taken through all of that in Run 27. Wine 11.16 carries 34 patches here, which fix the drawing, text and speed problems found along the way. Storyline's open, save and folder dialogs and its date picker use the native macOS panels, and its windows are doubled with xBR on Retina displays. It is slower than on Windows, and a few things don't work yet; see [Known issues](#known-issues).
+**What works:** the Desktop App signs in and shows your catalog. Storyline 360 installs, launches from the Dock, and opens, edits, previews, saves and publishes projects (Web, LMS with SCORM 1.2 and 2004, and Video). Nine sample projects were taken through all of that in Run 27. Wine 11.16 carries 35 patches here, which fix the drawing, text and speed problems found along the way. Storyline's open, save and folder dialogs and its date picker use the native macOS panels, and its windows are doubled with xBR on Retina displays. It is slower than on Windows, and a few things don't work yet; see [Known issues](#known-issues).
 
 **Requirements:** an Intel Mac (Apple Silicon is not tested), MacPorts, and your own Articulate 360 subscription. No Articulate software is included. Setup is currently a sequence of scripts; see [Set up](#set-up). A prebuilt, one-command installer is planned in [#32](https://github.com/elearningplugins/storyline-on-mac/issues/32).
 
@@ -20,7 +20,7 @@ tools/build-prefix-dotnet48.sh wine-dotnet48-noadmintask
 # 2. Articulate 360 core laid out without custom actions (needs ~/StorylineLab/inputs/burn-payloads from your own installer)
 tools/install-core-admin.sh wine-dotnet48-noadmintask
 
-# 3. patched Wine mirror (all 34 patches), then its PE modules copied into the prefix's system32
+# 3. patched Wine mirror (all 35 patches), then its PE modules copied into the prefix's system32
 tools/wine-build/build-ntdll.sh wine-dotnet48-noadmintask
 
 # 4. Dock launchers and the articulate:// bridge in ~/Applications
@@ -53,6 +53,7 @@ To time a Storyline session, quit Storyline and run `tools/perf/perf-session.sh 
 - **Slide text isn't truly sharp on Retina.** Storyline is DPI-unaware, so Wine doubles its windows. xBR keeps edges crisp, but rendering at 2× would break Storyline's fixed-pixel layout (Run 25).
 - **Double-clicking a `.story` file in Finder** starts Storyline without opening the project, because the launcher gets no file argument from Finder's Apple Event. Passing the file to the launcher script works (see [Set up](#set-up), Run 27).
 - **The Japanese and Chinese candidate list** opens at the bottom left of the slide canvas rather than next to the typed text, because Storyline doesn't report its caret position (Run 30).
+- **Screen recording's picture is untested with the final patch.** Patch 0035 gives Wine's Mac driver a screen read; the CoreGraphics version recorded in Storyline but slowly, and the ScreenCaptureKit stream that replaced it has only been exercised through its fallback, because macOS grants Screen Recording only to processes the launcher starts (Run 36).
 - **Screen recording's microphone meter stays flat**, although the narration records. Storyline reads the level through Windows' `IAudioMeterInformation`, which Wine doesn't implement (Run 36).
 - **Desktop Service start-up** still spends about 4 s retrying a missing Review backups file, inside Articulate's code (Run 22).
 - **Not tested:** Apple Silicon, the Desktop App's secondary dialogs with Retina mode on, and multi-select in the native open panel.
@@ -124,12 +125,13 @@ Open work is tracked in [issues](https://github.com/elearningplugins/storyline-o
 | Text box borders cut off on the right (Publish > Project Info and other Metro text boxes) | **FIXED** by patch 0032 — Storyline's `MetroTextBox` paints its border through a window DC, with a gradient pen for the side lines; Wine's gdiplus clipped that pen's software drawing to the text box's client area, 6 px smaller on every side, so the right edge vanished and the left edge stopped partway down | 34 |
 | Date picker calendar (Publish > Project Info > Date "Custom") | **NATIVE** with patch 0033 — the drop-down opened Wine's Windows-style month calendar; it now opens the macOS calendar popover, and picking a day sets the date. One-digit day and month fields are sized to their text, so "9 /30/2026" reads "9/30/2026". `WINE_MAC_DATE_PICKER=0` brings back Wine's calendar | 35 |
 | Microphone in screen recording | **FIXED** by patch 0034 and the launchers — the recording dialog listed the Mac mic under Speakers and left Microphone empty, because Wine's `mixerOpen` ignored `MIXER_OBJECTF_WAVEIN` and opened the first output device's mixer; and macOS silently fed silence to the mic, because the launchers had no `NSMicrophoneUsageDescription` | 36 |
+| Screen recording picture | **PATCHED, not yet tested in Storyline** by patch 0035 — recordings were black, because Wine's Mac driver had no way to read the screen and every GDI copy from a screen DC returned an empty frame; `macdrv_GetImage` now serves those reads from a ScreenCaptureKit stream, with a CoreGraphics screenshot as the fallback | 36 |
 
 
 ## How it runs
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016, 0029, 0031, 0033), `winemac.drv` (0031, 0033), `comdlg32.dll` (0031), `comctl32.dll` and `comctl32_v6.dll` (0033),
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016, 0029, 0031, 0033, 0035), `winemac.drv` (0031, 0033), `comdlg32.dll` (0031), `comctl32.dll` and `comctl32_v6.dll` (0033),
   `win32u.so` (0006, 0009, 0020, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024, 0030, 0032), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028), `imm32.dll` (0027) and `winmm.dll` (0034) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
@@ -145,7 +147,7 @@ Open work is tracked in [issues](https://github.com/elearningplugins/storyline-o
   `winemac.so`, which names each process after its Windows exe). Both also source `storyline-args.sh`, whose
   `WINE_APPEND_ARGS` makes the patched `kernelbase.dll` (patch 0018) add Storyline's CEF switches however it is started, and
   `WINE_DWRITE_NBSP_NOT_WHITESPACE=1`, which turns on patch 0026.
-  All three launchers, the bridge included, carry microphone and camera usage strings: macOS charges the mic to whichever of them started Storyline and refuses it silently without one.
+  All three launchers, the bridge included, carry microphone and camera usage strings: macOS charges the mic to whichever of them started Storyline and refuses it silently without one. Screen recording also needs Screen Recording permission for that launcher, which macOS asks for on the first recording (patch 0035).
   Both set `WINE_SCALE_FILTER=xbr` so the patched `win32u.so` (patch 0020) doubles Storyline's windows with xBR on Retina displays.
 - **Native Mac dialogs** are on by default, with no launcher setting needed: the open, save and folder panels (patch 0031) and the date picker calendar (patch 0033). `WINE_MAC_FILE_DIALOGS=0` and `WINE_MAC_DATE_PICKER=0` bring back Wine's own versions.
 
