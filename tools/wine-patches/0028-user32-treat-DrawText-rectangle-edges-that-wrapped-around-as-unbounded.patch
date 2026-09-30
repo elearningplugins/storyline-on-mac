@@ -1,0 +1,25 @@
+diff --git a/dlls/user32/text.c b/dlls/user32/text.c
+--- a/dlls/user32/text.c
++++ b/dlls/user32/text.c
+@@ -881,10 +881,21 @@ INT WINAPI DrawTextExW( HDC hdc, LPWSTR str, INT i_count,
+     ellipsis_data ellip;
+     BOOL invert_y=FALSE;
+     int ret = 0;
++    RECT unwrapped;
+ 
+     TRACE("%s, %d, [%s] %08x\n", debugstr_wn (str, count), count,
+         wine_dbgstr_rect(rect), flags);
+ 
++    /* An edge more than 2^27 (the GDI coordinate limit) past the opposite one wrapped around, as in left + INT_MAX; treat it as unbounded */
++    if (!(flags & DT_CALCRECT) && ((LONGLONG)rect->right < (LONGLONG)rect->left - (1 << 27) ||
++                                   (LONGLONG)rect->bottom < (LONGLONG)rect->top - (1 << 27)))
++    {
++        unwrapped = *rect;
++        if ((LONGLONG)unwrapped.right < (LONGLONG)unwrapped.left - (1 << 27)) unwrapped.right = MAXLONG;
++        if ((LONGLONG)unwrapped.bottom < (LONGLONG)unwrapped.top - (1 << 27)) unwrapped.bottom = MAXLONG;
++        rect = &unwrapped;
++    }
++
+     if (dtp) TRACE("Params: iTabLength=%d, iLeftMargin=%d, iRightMargin=%d\n",
+           dtp->iTabLength, dtp->iLeftMargin, dtp->iRightMargin);
+ 

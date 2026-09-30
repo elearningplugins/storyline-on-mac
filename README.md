@@ -69,6 +69,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Publish speed | **IMPROVED** by patch 0025 — Wine gave every window under WinForms' message-only parking window a hidden IME window, and on macOS each one creates and destroys a Cocoa window; Numbers-French-SL2 to Web: content phase 49–50 s → **37–38 s**, whole publish 66–77 s → **55–64 s** (three cold runs each) | 28 |
 | No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified on the authoring canvas and in published output) | 29 |
 | Japanese and Chinese candidate list position | **IMPROVED** by patch 0027 — Storyline draws its own text caret and never tells the IME where it is, so Wine gave macOS a position of 0,0 and the candidate list opened at the top left of the screen; it now opens at the bottom left of the slide canvas, where Windows puts the default IME window in the same case (not next to the typed text, because Storyline does not report its caret) | 30 |
+| "New"/"Beta" feature badges (e.g. next to AI Assistant) | **FIXED** by patch 0028 — Storyline draws the badge text with `DrawText` into a rectangle of the point plus `int.MaxValue`, which overflows to a huge negative edge; Wine clipped the text to that inverted rectangle and drew an empty blue box, and now treats an edge that wrapped around as unbounded | 31 |
 | Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
 
 
@@ -76,7 +77,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
   replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
-  `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
+  `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.
 - **Prefix**: `~/StorylineLab/prefixes/wine-dotnet48-noadmintask` — real .NET Framework 4.8 (winetricks), Windows 10 mode,
