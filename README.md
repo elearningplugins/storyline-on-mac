@@ -67,7 +67,7 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | Notch in circle outlines | **FIXED** by patch 0024 — a closed ellipse's last point sat a few ulps off its first, and widening turned the gap into a notch | 27 |
 | Opening a project from the Dock launcher | **FIXED** in the launcher — Storyline opens only its first argument, so the project goes before the CEF switches, with a Mac path mapped to `Z:`. Finder double-click still does not pass the file | 27 |
 | Publish speed | **IMPROVED** by patch 0025 — Wine gave every window under WinForms' message-only parking window a hidden IME window, and on macOS each one creates and destroys a Cocoa window; Numbers-French-SL2 to Web: content phase 49–50 s → **37–38 s**, whole publish 66–77 s → **55–64 s** (three cold runs each) | 28 |
-| No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified in published output) | 29 |
+| No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified on the authoring canvas and in published output) | 29 |
 | Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
 
 

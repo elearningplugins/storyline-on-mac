@@ -42,11 +42,19 @@ Without the fix, Storyline keeps both characters (they reach `paths.js` unchange
 |---|---|
 | ![Before: the line breaks after "the"](img/run29-nbsp-before.png) | ![After: "has been the industry's" wraps together](img/run29-nbsp-after.png) |
 
+**Authoring canvas**, Tab 1 layer open in slide view, Storyline relaunched with and without the variable:
+
+| Variable unset | `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` |
+|---|---|
+| ![Editor before: the line breaks after "the"](img/run29-editor-before.png) | ![Editor after: "has been the industry's" wraps together](img/run29-editor-after.png) |
+
+The canvas breaks the lines exactly as the published output does.
+
 **Wine's dwrite `analyzer` tests** (built out of tree, loaded with the old DLL, the new DLL, and the new DLL with the variable set): output is identical in all three. Each has the same 2 failures, both caused by the out-of-tree build lacking the test font resource (`couldn't find resource` at `analyzer.c:542`, then `hr 0x80004005` at line 569). No existing test covers no-break spaces in line breakpoints.
 
 ## Not verified
-- The authoring canvas and Preview. They should follow the same line-break rule as publishing, but screenshots were not possible (the Mac screen was locked during this run).
-- What Option+Space inserts into a Storyline text box under winemac.
+- Preview.
+- What Option+Space inserts into a Storyline text box under winemac (real macOS key events need Accessibility permission, which neither Cursor nor Terminal has in this lab).
 - Classic Text (Uniscribe); this patch does not touch it.
 - U+2011 (non-breaking hyphen), justified text, and the other examples listed in the issue.
 - Windows.
