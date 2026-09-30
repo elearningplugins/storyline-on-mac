@@ -92,8 +92,10 @@ static void type_text(const char *s)
 // Storyline stacks a transparent layered WPF window over its main window; macOS clicks fall through its clear pixels but Wine hit-tests injected input by rectangle.
 static BOOL CALLBACK enum_overlay(HWND h, LPARAM lp)
 {
-    char c[64]; LONG ex = GetWindowLongA(h, GWL_EXSTYLE);
+    char c[64], t[8]; LONG ex = GetWindowLongA(h, GWL_EXSTYLE);
     if (!IsWindowVisible(h) || !(ex & WS_EX_LAYERED) || (ex & WS_EX_TRANSPARENT)) return TRUE;
+    // The overlay is untitled; titled layered WPF windows such as AiWriterWindow are real popups that must keep receiving clicks.
+    if (GetWindowTextA(h, t, sizeof(t))) return TRUE;
     GetClassNameA(h, c, sizeof(c));
     if (!strncmp(c, "HwndWrapper[Storyline;Main;", 27)) SetWindowLongA(h, GWL_EXSTYLE, ex | WS_EX_TRANSPARENT);
     return TRUE;
