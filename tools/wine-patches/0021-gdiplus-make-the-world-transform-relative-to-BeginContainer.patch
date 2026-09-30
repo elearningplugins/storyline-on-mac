@@ -1,0 +1,180 @@
+diff --git a/dlls/gdiplus/graphics.c b/dlls/gdiplus/graphics.c
+--- a/dlls/gdiplus/graphics.c
++++ b/dlls/gdiplus/graphics.c
+@@ -2257,6 +2257,7 @@
+     PixelOffsetMode pixeloffset;
+     UINT textcontrast;
+     GpMatrix worldtrans;
++    GpMatrix base;
+     GpRegion* clip;
+     INT origin_x, origin_y;
+ } GraphicsContainerItem;
+@@ -2284,6 +2285,7 @@
+     (*container)->origin_x = graphics->origin_x;
+     (*container)->origin_y = graphics->origin_y;
+     (*container)->worldtrans = graphics->worldtrans;
++    (*container)->base = graphics->worldtrans;
+ 
+     sts = GdipCloneRegion(graphics->clip, &(*container)->clip);
+     if(sts != Ok){
+@@ -2293,8 +2295,43 @@
+     }
+ 
+     return Ok;
++}
++
++/* Inside a BeginContainer block the world transform is relative to the transform in effect when the block began, as on Windows. */
++static BOOL get_container_base(GpGraphics *graphics, GpMatrix *base)
++{
++    GraphicsContainerItem *container;
++
++    LIST_FOR_EACH_ENTRY(container, &graphics->containers, GraphicsContainerItem, entry)
++    {
++        if (container->type != BEGIN_CONTAINER) continue;
++        *base = container->base;
++        return TRUE;
++    }
++    return FALSE;
++}
++
++static void get_local_worldtrans(GpGraphics *graphics, GpMatrix *local)
++{
++    GpMatrix base;
++    BOOL invertible;
++
++    *local = graphics->worldtrans;
++    if (!get_container_base(graphics, &base)) return;
++    if (GdipIsMatrixInvertible(&base, &invertible) != Ok || !invertible) return;
++    GdipInvertMatrix(&base);
++    GdipMultiplyMatrix(local, &base, MatrixOrderAppend);
+ }
+ 
++static void set_local_worldtrans(GpGraphics *graphics, const GpMatrix *local)
++{
++    GpMatrix base;
++
++    graphics->worldtrans = *local;
++    if (get_container_base(graphics, &base))
++        GdipMultiplyMatrix(&graphics->worldtrans, &base, MatrixOrderAppend);
++}
++
+ static void delete_container(GraphicsContainerItem* container)
+ {
+     GdipDeleteRegion(container->clip);
+@@ -5461,7 +5498,7 @@
+     if(graphics->busy)
+         return ObjectBusy;
+ 
+-    *matrix = graphics->worldtrans;
++    get_local_worldtrans(graphics, matrix);
+     return Ok;
+ }
+ 
+@@ -6496,6 +6533,7 @@
+ 
+ GpStatus WINGDIPAPI GdipResetWorldTransform(GpGraphics *graphics)
+ {
++    GpMatrix m;
+     GpStatus stat;
+ 
+     TRACE("(%p)\n", graphics);
+@@ -6514,12 +6552,15 @@
+             return stat;
+     }
+ 
+-    return GdipSetMatrixElements(&graphics->worldtrans, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
++    GdipSetMatrixElements(&m, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
++    set_local_worldtrans(graphics, &m);
++    return Ok;
+ }
+ 
+ GpStatus WINGDIPAPI GdipRotateWorldTransform(GpGraphics *graphics, REAL angle,
+     GpMatrixOrder order)
+ {
++    GpMatrix m;
+     GpStatus stat;
+ 
+     TRACE("(%p, %.2f, %d)\n", graphics, angle, order);
+@@ -6538,7 +6579,10 @@
+             return stat;
+     }
+ 
+-    return GdipRotateMatrix(&graphics->worldtrans, angle, order);
++    get_local_worldtrans(graphics, &m);
++    stat = GdipRotateMatrix(&m, angle, order);
++    if (stat == Ok) set_local_worldtrans(graphics, &m);
++    return stat;
+ }
+ 
+ static GpStatus begin_container(GpGraphics *graphics,
+@@ -6616,6 +6660,7 @@
+     transform.matrix[5] = dstrect->Y - scaled_srcrect.Y;
+ 
+     GdipMultiplyMatrix(&graphics->worldtrans, &transform, MatrixOrderPrepend);
++    container->base = graphics->worldtrans;
+ 
+     if (is_metafile_graphics(graphics))
+         METAFILE_BeginContainer((GpMetafile*)graphics->image, dstrect, srcrect, unit, container->contid);
+@@ -6709,6 +6754,7 @@
+ GpStatus WINGDIPAPI GdipScaleWorldTransform(GpGraphics *graphics, REAL sx,
+     REAL sy, GpMatrixOrder order)
+ {
++    GpMatrix m;
+     GpStatus stat;
+ 
+     TRACE("(%p, %.2f, %.2f, %d)\n", graphics, sx, sy, order);
+@@ -6726,7 +6772,10 @@
+             return stat;
+     }
+ 
+-    return GdipScaleMatrix(&graphics->worldtrans, sx, sy, order);
++    get_local_worldtrans(graphics, &m);
++    stat = GdipScaleMatrix(&m, sx, sy, order);
++    if (stat == Ok) set_local_worldtrans(graphics, &m);
++    return stat;
+ }
+ 
+ GpStatus WINGDIPAPI GdipSetClipGraphics(GpGraphics *graphics, GpGraphics *srcgraphics,
+@@ -7043,7 +7092,7 @@
+             return stat;
+     }
+ 
+-    graphics->worldtrans = *matrix;
++    set_local_worldtrans(graphics, matrix);
+ 
+     return Ok;
+ }
+@@ -7051,6 +7100,7 @@
+ GpStatus WINGDIPAPI GdipTranslateWorldTransform(GpGraphics *graphics, REAL dx,
+     REAL dy, GpMatrixOrder order)
+ {
++    GpMatrix m;
+     GpStatus stat;
+ 
+     TRACE("(%p, %.2f, %.2f, %d)\n", graphics, dx, dy, order);
+@@ -7068,7 +7118,10 @@
+             return stat;
+     }
+ 
+-    return GdipTranslateMatrix(&graphics->worldtrans, dx, dy, order);
++    get_local_worldtrans(graphics, &m);
++    stat = GdipTranslateMatrix(&m, dx, dy, order);
++    if (stat == Ok) set_local_worldtrans(graphics, &m);
++    return stat;
+ }
+ 
+ /*****************************************************************************
+@@ -7338,11 +7391,11 @@
+             return ret;
+     }
+ 
+-    m = graphics->worldtrans;
++    get_local_worldtrans(graphics, &m);
+ 
+     ret = GdipMultiplyMatrix(&m, matrix, order);
+     if(ret == Ok)
+-        graphics->worldtrans = m;
++        set_local_worldtrans(graphics, &m);
+ 
+     return ret;
+ }
