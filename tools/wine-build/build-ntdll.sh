@@ -70,14 +70,20 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git a
 # (patch 0031: the common item dialog shows the native NSOpenPanel/NSSavePanel through new winemac.drv exports, so Insert > Audio, Save As and Publish's folder picker look like Mac dialogs; WINE_MAC_FILE_DIALOGS=0 brings back Wine's own dialog)
 P31="$HERE/../wine-patches/0031-winemac-comdlg32-show-the-native-macOS-open-and-save-panels.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P31" 2>/dev/null; then git apply "$P31"; elif git apply --check -R "$P31" 2>/dev/null; then echo "native file dialog patch already applied"; else echo "patch 0031 does not apply"; exit 1; fi
-# 0031 adds winemac.drv.spec and cocoa_filedialog.m to Makefile.in, so the generated Makefile has to be refreshed before building
+# (patch 0033: the date picker's drop-down shows the native macOS calendar popover through more winemac.drv exports, and one-digit date fields are sized to their text; WINE_MAC_DATE_PICKER=0 brings back Wine's month calendar)
+P33="$HERE/../wine-patches/0033-winemac-comctl32-show-the-native-macOS-calendar-for-date-pickers.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P33" 2>/dev/null; then git apply "$P33"; elif git apply --check -R "$P33" 2>/dev/null; then echo "native date picker patch already applied"; else echo "patch 0033 does not apply"; exit 1; fi
+# 0031 and 0033 add winemac.drv.spec, cocoa_filedialog.m and cocoa_datepicker.m to Makefile.in, so the generated Makefile has to be refreshed before building
 cd "$B" && make Makefile > make-makefile.log 2>&1
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so dlls/winemac.drv/x86_64-windows/winemac.drv dlls/winemac.drv/i386-windows/winemac.drv \
-  dlls/comdlg32/x86_64-windows/comdlg32.dll dlls/comdlg32/i386-windows/comdlg32.dll > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
+  dlls/comdlg32/x86_64-windows/comdlg32.dll dlls/comdlg32/i386-windows/comdlg32.dll \
+  dlls/comctl32/x86_64-windows/comctl32.dll dlls/comctl32/i386-windows/comctl32.dll \
+  dlls/comctl32_v6/x86_64-windows/comctl32_v6.dll dlls/comctl32_v6/i386-windows/comctl32_v6.dll > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
-for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/comdlg32.dll"
-  cp "$B/dlls/winemac.drv/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/winemac.drv"; cp "$B/dlls/comdlg32/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comdlg32.dll"; done
-echo "patched winemac.so, winemac.drv and comdlg32.dll (64- and 32-bit) in $M"
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comctl32.dll" "$M/lib/wine/$a-windows/comctl32_v6.dll"
+  cp "$B/dlls/winemac.drv/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/winemac.drv"; cp "$B/dlls/comdlg32/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comdlg32.dll"
+  cp "$B/dlls/comctl32/$a-windows/comctl32.dll" "$M/lib/wine/$a-windows/comctl32.dll"; cp "$B/dlls/comctl32_v6/$a-windows/comctl32_v6.dll" "$M/lib/wine/$a-windows/comctl32_v6.dll"; done
+echo "patched winemac.so, winemac.drv, comdlg32.dll, comctl32.dll and comctl32_v6.dll (64- and 32-bit) in $M"
 # --- win32u (unix) : UpdateLayeredWindow copy fast path (patch 0006); the code lives in win32u.so, not win32u.dll ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
