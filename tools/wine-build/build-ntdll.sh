@@ -70,9 +70,23 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git a
 # (patch 0029: a process that finds the initial display mode key waits until its creator has finished writing it; reading it half-written turned Retina mode off for that process, e.g. Storyline opening at 720x407 when started alongside the Desktop Service)
 P29="$HERE/../wine-patches/0029-winemac-wait-for-the-initial-display-mode-to-be-written.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P29" 2>/dev/null; then git apply "$P29"; elif git apply --check -R "$P29" 2>/dev/null; then echo "initial display mode patch already applied"; else echo "patch 0029 does not apply"; exit 1; fi
-cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
+# (patch 0031: the common item dialog shows the native NSOpenPanel/NSSavePanel through new winemac.drv exports, so Insert > Audio, Save As and Publish's folder picker look like Mac dialogs; WINE_MAC_FILE_DIALOGS=0 brings back Wine's own dialog)
+P31="$HERE/../wine-patches/0031-winemac-comdlg32-show-the-native-macOS-open-and-save-panels.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P31" 2>/dev/null; then git apply "$P31"; elif git apply --check -R "$P31" 2>/dev/null; then echo "native file dialog patch already applied"; else echo "patch 0031 does not apply"; exit 1; fi
+# (patch 0033: the date picker's drop-down shows the native macOS calendar popover through more winemac.drv exports, and one-digit date fields are sized to their text; WINE_MAC_DATE_PICKER=0 brings back Wine's month calendar)
+P33="$HERE/../wine-patches/0033-winemac-comctl32-show-the-native-macOS-calendar-for-date-pickers.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P33" 2>/dev/null; then git apply "$P33"; elif git apply --check -R "$P33" 2>/dev/null; then echo "native date picker patch already applied"; else echo "patch 0033 does not apply"; exit 1; fi
+# 0031 and 0033 add winemac.drv.spec, cocoa_filedialog.m and cocoa_datepicker.m to Makefile.in, so the generated Makefile has to be refreshed before building
+cd "$B" && make Makefile > make-makefile.log 2>&1
+cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so dlls/winemac.drv/x86_64-windows/winemac.drv dlls/winemac.drv/i386-windows/winemac.drv \
+  dlls/comdlg32/x86_64-windows/comdlg32.dll dlls/comdlg32/i386-windows/comdlg32.dll \
+  dlls/comctl32/x86_64-windows/comctl32.dll dlls/comctl32/i386-windows/comctl32.dll \
+  dlls/comctl32_v6/x86_64-windows/comctl32_v6.dll dlls/comctl32_v6/i386-windows/comctl32_v6.dll > make-winemac.log 2>&1; cp "$B/dlls/ntdll/ntdll.so" "$M/lib/wine/x86_64-unix/ntdll.so"
 rm -f "$M/lib/wine/x86_64-unix/winemac.so"; cp "$B/dlls/winemac.drv/winemac.so" "$M/lib/wine/x86_64-unix/winemac.so"
-echo "patched winemac.so in $M"
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comctl32.dll" "$M/lib/wine/$a-windows/comctl32_v6.dll"
+  cp "$B/dlls/winemac.drv/$a-windows/winemac.drv" "$M/lib/wine/$a-windows/winemac.drv"; cp "$B/dlls/comdlg32/$a-windows/comdlg32.dll" "$M/lib/wine/$a-windows/comdlg32.dll"
+  cp "$B/dlls/comctl32/$a-windows/comctl32.dll" "$M/lib/wine/$a-windows/comctl32.dll"; cp "$B/dlls/comctl32_v6/$a-windows/comctl32_v6.dll" "$M/lib/wine/$a-windows/comctl32_v6.dll"; done
+echo "patched winemac.so, winemac.drv, comdlg32.dll, comctl32.dll and comctl32_v6.dll (64- and 32-bit) in $M"
 # --- win32u (unix) : UpdateLayeredWindow copy fast path (patch 0006); the code lives in win32u.so, not win32u.dll ---
 cd "$SRC/wine-wine-11.16" && { git apply --check "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" 2>/dev/null \
   && git apply "$(dirname "$0")/../wine-patches/0006-win32u-UpdateLayeredWindow-copy-fast-path.patch" || echo "win32u patch already applied"; }
@@ -119,16 +133,22 @@ else echo "patch 0018 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/kernelbase/x86_64-windows/kernelbase.dll dlls/kernelbase/i386-windows/kernelbase.dll > make-kernelbase.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/kernelbase.dll"; cp "$B/dlls/kernelbase/$a-windows/kernelbase.dll" "$M/lib/wine/$a-windows/kernelbase.dll"; done
 echo "patched kernelbase.dll (0012, 0018; 64- and 32-bit) in $M"
-# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons), the world transform is relative to BeginContainer (0021, trigger list lines), metafiles get real frame bounds and play back in device space (0023, radio buttons and checkboxes on the slide canvas) and closed outlines lose their rounding-error closing point (0024, notch in every circle outline) ---
+# --- gdiplus (PE) : path gradients honour preset blends (0013, Story View's scene-card shadow corners), CloseAllFigures closes the last figure (0014, outlines of Storyline's pill buttons), the world transform is relative to BeginContainer (0021, trigger list lines), metafiles get real frame bounds and play back in device space (0023, radio buttons and checkboxes on the slide canvas), closed outlines lose their rounding-error closing point (0024, notch in every circle outline) and SmoothingModeAntiAlias anti-aliases path fills and strokes (0030, jagged toggles and rounded shapes) ---
 cd "$SRC/wine-wine-11.16"
 for P in "$HERE/../wine-patches/0013-gdiplus-implement-path-gradient-preset-blend.patch" "$HERE/../wine-patches/0014-gdiplus-close-the-last-figure-in-GdipClosePathFigures.patch" \
          "$HERE/../wine-patches/0021-gdiplus-make-the-world-transform-relative-to-BeginContainer.patch" \
          "$HERE/../wine-patches/0023-gdiplus-fix-metafile-frame-bounds-pen-alignment-ResetClip-and-playback-space.patch" \
-         "$HERE/../wine-patches/0024-gdiplus-tolerate-rounding-when-removing-repeated-path-points.patch"; do
+         "$HERE/../wine-patches/0024-gdiplus-tolerate-rounding-when-removing-repeated-path-points.patch" \
+         "$HERE/../wine-patches/0030-gdiplus-anti-alias-path-fills-and-strokes.patch"; do
   if git apply --check "$P" 2>/dev/null; then git apply "$P"
   elif git apply --reverse --check "$P" 2>/dev/null; then echo "$(basename "$P") already applied"
   else echo "$(basename "$P") neither applies nor is already applied" >&2; exit 1; fi
 done
+# (patch 0032: a Graphics on a window DC gets the whole window as its device bounds instead of the client area; MetroTextBox paints its border through one, and its gradient side lines were clipped away)
+P32="$HERE/../wine-patches/0032-gdiplus-use-the-whole-window-as-device-bounds-for-window-DCs.patch"
+if git apply --check "$P32" 2>/dev/null; then git apply "$P32"
+elif git apply --reverse --check "$P32" 2>/dev/null; then echo "$(basename "$P32") already applied"
+else echo "$(basename "$P32") neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/gdiplus/x86_64-windows/gdiplus.dll dlls/gdiplus/i386-windows/gdiplus.dll > make-gdiplus.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/gdiplus.dll"; cp "$B/dlls/gdiplus/$a-windows/gdiplus.dll" "$M/lib/wine/$a-windows/gdiplus.dll"; done
 echo "patched gdiplus.dll (64- and 32-bit) in $M"

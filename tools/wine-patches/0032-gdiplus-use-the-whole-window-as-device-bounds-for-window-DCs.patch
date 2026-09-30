@@ -1,0 +1,22 @@
+diff --git a/dlls/gdiplus/graphics.c b/dlls/gdiplus/graphics.c
+--- a/dlls/gdiplus/graphics.c
++++ b/dlls/gdiplus/graphics.c
+@@ -419,9 +419,18 @@ static GpStatus get_graphics_device_bounds(GpGraphics* graphics, GpRectF* rect)
+     GpUnit unit;
+ 
+     if(graphics->hwnd) {
++        POINT dc_org, client_org = {0, 0};
++        RECT window_rect;
++
+         if(!GetClientRect(graphics->hwnd, &wnd_rect))
+             return GenericError;
+ 
++        /* A DC from GetWindowDC or GetDCEx(DCX_WINDOW) starts at the window's corner and covers the whole window */
++        if (graphics->hdc && GetDCOrgEx(graphics->hdc, &dc_org) && GetWindowRect(graphics->hwnd, &window_rect) &&
++            ClientToScreen(graphics->hwnd, &client_org) && (dc_org.x != client_org.x || dc_org.y != client_org.y) &&
++            dc_org.x == window_rect.left && dc_org.y == window_rect.top)
++            SetRect(&wnd_rect, 0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top);
++
+         rect->X = wnd_rect.left;
+         rect->Y = wnd_rect.top;
+         rect->Width = wnd_rect.right - wnd_rect.left;
