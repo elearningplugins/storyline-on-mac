@@ -73,10 +73,10 @@ Start page, 40 cycles of resizing the main window to 3/4 size and back with a fu
 xBR adds no measurable cost here; nearly all of it is the start page's web content laying out again after each resize.
 
 ## Desktop App
-- The main window draws correctly with Retina mode on.
+- The main window draws correctly with Retina mode on, and so does the menu next to the profile picture and the dialog opened from it (checked by eye on the Mac).
 - Storyline opened with the Desktop App's Open button has `WINE_SCALE_FILTER=xbr` in its environment block (read from another process), and its window is DPI-unaware at 1440×817, scaled to 2880×1634.
 
 ## Not yet verified
-- The Desktop App's secondary WPF dialogs (Run 04e's "Unable to Install" dialog was the one that went blank).
+- Run 04e's "Unable to Install" dialog specifically (the one that went blank); triggering it means clicking Install on another product.
 - Layered windows (`alpha_mask` set) still use `StretchBlt` without halftone, as before.
 - A key left incomplete by a crashed writer makes each later process wait the full 2 s once, until the wineserver restarts.
