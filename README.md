@@ -70,13 +70,14 @@ Full method and constraints: [docs/research-plan.md](docs/research-plan.md). Eve
 | No-break spaces (issue #20) | **FIXED** by patch 0026 (opt-in, set by the launchers) — Storyline breaks a line at any character DirectWrite calls white space, and DirectWrite, on Windows too, calls U+00A0, U+2007 and U+202F white space; `WINE_DWRITE_NBSP_NOT_WHITESPACE=1` stops that, so words joined by a no-break space wrap together (verified on the authoring canvas and in published output) | 29 |
 | Japanese and Chinese candidate list position | **IMPROVED** by patch 0027 — Storyline draws its own text caret and never tells the IME where it is, so Wine gave macOS a position of 0,0 and the candidate list opened at the top left of the screen; it now opens at the bottom left of the slide canvas, where Windows puts the default IME window in the same case (not next to the typed text, because Storyline does not report its caret) | 30 |
 | "New"/"Beta" feature badges (e.g. next to AI Assistant) | **FIXED** by patch 0028 — Storyline draws the badge text with `DrawText` into a rectangle of the point plus `int.MaxValue`, which overflows to a huge negative edge; Wine clipped the text to that inverted rectangle and drew an empty blue box, and now treats an edge that wrapped around as unbounded | 31 |
+| Open, Save and folder dialogs (Insert > Audio, Save As, Publish folder) | **NATIVE** with patch 0031 — Storyline's WinForms dialogs go through Wine's common item dialog, which drew a Windows XP-style file browser; it now shows the macOS open and save panels, with the file type filters in a "File type" menu, and returns the choice to Storyline as a Windows path. Dialogs with custom controls keep Wine's dialog, and `WINE_MAC_FILE_DIALOGS=0` turns the Mac panels off | 33 |
 | Antialiasing | **MISSING** — Wine's gdiplus ignores the smoothing mode, so curves and diagonal edges are jagged | 27 |
 
 
 ## Current setup (what actually runs)
 
 - **Patched Wine**: `~/StorylineLab/wine-patched/` is a symlink mirror of `/opt/local/lib/wine` with only the patched modules
-  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016),
+  replaced — `ntdll.so` (0001, 0007, 0011), `dwrite.dll` (0002, 0026), `wined3d.dll` (0003), `d2d1.dll` (0004, 0008, 0009), `winemac.so` (0005, 0010, 0016, 0031), `winemac.drv` and `comdlg32.dll` (0031),
   `win32u.so` (0006, 0009, 0022, 0025, plus MacPorts' Vulkan portability patch), `kernelbase.dll` (0012, 0018), `gdiplus.dll` (0013, 0014, 0021, 0023, 0024), `ieframe.dll` (0015), `windowscodecs.dll` (0017), `user32.dll` (0019, 0028) and `imm32.dll` (0027) — plus a copy of the loader and a `share` symlink. Patches are in `tools/wine-patches/`; all of them are
   built by `tools/wine-build/build-ntdll.sh`. `/opt/local` is never modified. PE modules the prefix keeps its own copy of
   (e.g. `system32/dwrite.dll`) are replaced with the patched build too.

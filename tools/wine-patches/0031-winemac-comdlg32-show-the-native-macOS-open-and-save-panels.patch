@@ -1,0 +1,809 @@
+diff --git a/dlls/comdlg32/itemdlg.c b/dlls/comdlg32/itemdlg.c
+--- a/dlls/comdlg32/itemdlg.c
++++ b/dlls/comdlg32/itemdlg.c
+@@ -263,7 +263,7 @@ static void events_OnTypeChange(FileDialogImpl *This)
+         DeactivateActCtx(0, ctx_cookie);
+ }
+ 
+-static HRESULT events_OnOverwrite(FileDialogImpl *This, IShellItem *shellitem)
++static HRESULT events_OnOverwrite(FileDialogImpl *This, IShellItem *shellitem, BOOL prompt)
+ {
+     ULONG_PTR ctx_cookie = 0;
+     events_client *cursor;
+@@ -291,7 +291,7 @@ static HRESULT events_OnOverwrite(FileDialogImpl *This, IShellItem *shellitem)
+ 
+     if(SUCCEEDED(hr))
+     {
+-        if (response == FDEOR_DEFAULT)
++        if (response == FDEOR_DEFAULT && prompt)
+         {
+             WCHAR buf[100];
+             int answer;
+@@ -773,7 +773,7 @@ static HRESULT on_default_action(FileDialogImpl *This)
+                     if (SUCCEEDED(hr))
+                     {
+                         if (shell_item_exists(shellitem))
+-                            hr = events_OnOverwrite(This, shellitem);
++                            hr = events_OnOverwrite(This, shellitem, TRUE);
+ 
+                         IShellItem_Release(shellitem);
+                     }
+@@ -2519,13 +2519,257 @@ static ULONG WINAPI IFileDialog2_fnRelease(IFileDialog2 *iface)
+     return ref;
+ }
+ 
++#define MAC_FILE_DIALOG_SAVE         0x1
++#define MAC_FILE_DIALOG_MULTISELECT  0x2
++#define MAC_FILE_DIALOG_FOLDERS      0x4
++#define MAC_FILE_DIALOG_HIDDEN       0x8
++#define MAC_FILE_DIALOG_PENDING      0
++#define MAC_FILE_DIALOG_OK           1
++
++struct mac_file_dialog_funcs
++{
++    UINT64 (CDECL *show)(UINT, const WCHAR *, const WCHAR *, const char *, const WCHAR *, const WCHAR *, UINT, UINT);
++    UINT (CDECL *result)(UINT64, char *, UINT, UINT *, UINT *);
++    void (CDECL *close)(UINT64);
++};
++
++static BOOL get_mac_file_dialog_funcs(FileDialogImpl *This, struct mac_file_dialog_funcs *funcs)
++{
++    HMODULE module = GetModuleHandleW(L"winemac.drv");
++    WCHAR env[8];
++
++    if (!module || !list_empty(&This->cctrls) || This->hmenu_opendropdown) return FALSE;
++    if (GetEnvironmentVariableW(L"WINE_MAC_FILE_DIALOGS", env, ARRAY_SIZE(env)) && !wcscmp(env, L"0"))
++        return FALSE;
++
++    funcs->show = (void *)GetProcAddress(module, "wine_file_dialog_show");
++    funcs->result = (void *)GetProcAddress(module, "wine_file_dialog_result");
++    funcs->close = (void *)GetProcAddress(module, "wine_file_dialog_close");
++    return funcs->show && funcs->result && funcs->close;
++}
++
++static char *get_mac_start_dir(FileDialogImpl *This)
++{
++    IShellItem *folder = This->psi_setfolder ? This->psi_setfolder : This->psi_defaultfolder;
++    WCHAR *path;
++    char *unix_path = NULL;
++
++    if (folder && SUCCEEDED(IShellItem_GetDisplayName(folder, SIGDN_FILESYSPATH, &path)))
++    {
++        unix_path = wine_get_unix_file_name(path);
++        CoTaskMemFree(path);
++    }
++    return unix_path;
++}
++
++static WCHAR *get_mac_filters(FileDialogImpl *This)
++{
++    WCHAR *filters, *pos;
++    UINT i, len = 1;
++
++    for (i = 0; i < This->filterspec_count; i++)
++        len += lstrlenW(This->filterspecs[i].pszName) + lstrlenW(This->filterspecs[i].pszSpec) + 2;
++    if (!(pos = filters = malloc(len * sizeof(WCHAR)))) return NULL;
++
++    for (i = 0; i < This->filterspec_count; i++)
++    {
++        lstrcpyW(pos, This->filterspecs[i].pszName);
++        pos += lstrlenW(pos) + 1;
++        lstrcpyW(pos, This->filterspecs[i].pszSpec);
++        pos += lstrlenW(pos) + 1;
++    }
++    *pos = 0;
++    return filters;
++}
++
++/* Turns the panel's UTF-8 paths into results the way on_default_action does for the Wine dialog, then asks the app through OnFileOk */
++static HRESULT set_mac_results(FileDialogImpl *This, const char *paths, UINT filter_index)
++{
++    IShellFolder *psf_desktop;
++    IShellItem *item;
++    LPITEMIDLIST *pidla;
++    const char *path;
++    UINT count = 0, i;
++    BOOL appended = FALSE;
++    HRESULT hr;
++
++    for (path = paths; *path; path += strlen(path) + 1) count++;
++    if (!count || !(pidla = calloc(count, sizeof(*pidla)))) return E_FAIL;
++
++    if (This->filterspec_count)
++    {
++        This->filetypeindex = min(filter_index, This->filterspec_count - 1);
++        set_current_filter(This, This->filterspecs[This->filetypeindex].pszSpec);
++    }
++
++    for (i = 0, path = paths; *path; path += strlen(path) + 1)
++    {
++        WCHAR *dos_path = wine_get_dos_file_name(path), filename[MAX_PATH], extbuf[MAX_PATH], *newext = NULL;
++
++        if (!dos_path) continue;
++        lstrcpynW(filename, dos_path, MAX_PATH);
++        HeapFree(GetProcessHeap(), 0, dos_path);
++
++        if (This->dlg_type == ITEMDLG_TYPE_SAVE)
++        {
++            if (This->current_filter)
++                newext = get_first_ext_from_spec(extbuf, This->current_filter);
++            if (!newext && This->default_ext)
++            {
++                lstrcpyW(extbuf, L".");
++                lstrcatW(extbuf, This->default_ext);
++                newext = extbuf;
++            }
++            if (newext && lstrcmpiW(PathFindExtensionW(filename), newext) &&
++                lstrlenW(filename) + lstrlenW(newext) < MAX_PATH)
++            {
++                lstrcatW(filename, newext);
++                if (!i) appended = TRUE;
++            }
++        }
++
++        if (!(pidla[i] = SHSimpleIDListFromPath(filename))) continue;
++        if (!i) set_file_name(This, PathFindFileNameW(filename));
++        i++;
++    }
++    count = i;
++
++    hr = count ? SHGetDesktopFolder(&psf_desktop) : E_FAIL;
++    if (SUCCEEDED(hr))
++    {
++        if (This->psia_results)
++        {
++            IShellItemArray_Release(This->psia_results);
++            This->psia_results = NULL;
++        }
++        hr = SHCreateShellItemArray(NULL, psf_desktop, count, (PCUITEMID_CHILD_ARRAY)pidla, &This->psia_results);
++        IShellFolder_Release(psf_desktop);
++    }
++
++    for (i = 0; i < count; i++) ILFree(pidla[i]);
++    free(pidla);
++    if (FAILED(hr)) return hr;
++
++    if (SUCCEEDED(IShellItemArray_GetItemAt(This->psia_results, 0, &item)))
++    {
++        IShellItem *parent;
++        if (SUCCEEDED(IShellItem_GetParent(item, &parent)))
++        {
++            if (This->psi_folder) IShellItem_Release(This->psi_folder);
++            This->psi_folder = parent;
++        }
++        IShellItem_Release(item);
++    }
++
++    if ((This->options & FOS_OVERWRITEPROMPT) && This->dlg_type == ITEMDLG_TYPE_SAVE)
++    {
++        IShellItem *shellitem;
++        if (SUCCEEDED(IShellItemArray_GetItemAt(This->psia_results, 0, &shellitem)))
++        {
++            /* The Mac panel has already asked about replacing the name it returned, but not about an extension added here */
++            if (shell_item_exists(shellitem)) hr = events_OnOverwrite(This, shellitem, appended);
++            IShellItem_Release(shellitem);
++            if (FAILED(hr)) return S_FALSE;
++        }
++    }
++
++    return events_OnFileOk(This) == S_OK ? S_OK : S_FALSE;
++}
++
++/* Shows the native macOS panel in place of the Wine dialog; returns E_NOTIMPL when the Wine dialog should be used instead */
++static HRESULT show_mac_dialog(FileDialogImpl *This, HWND owner)
++{
++    struct mac_file_dialog_funcs funcs;
++    HWND root = owner ? GetAncestor(owner, GA_ROOT) : NULL;
++    BOOL owner_enabled = FALSE, first = TRUE;
++    char *unix_dir, *paths;
++    WCHAR *filters;
++    UINT flags = 0, status, needed, filter_index;
++    UINT64 handle;
++    HRESULT hr;
++    MSG msg;
++
++    if (!get_mac_file_dialog_funcs(This, &funcs)) return E_NOTIMPL;
++
++    if (This->dlg_type == ITEMDLG_TYPE_SAVE) flags |= MAC_FILE_DIALOG_SAVE;
++    if (This->options & FOS_ALLOWMULTISELECT) flags |= MAC_FILE_DIALOG_MULTISELECT;
++    if (This->options & FOS_PICKFOLDERS) flags |= MAC_FILE_DIALOG_FOLDERS;
++    if (This->options & FOS_FORCESHOWHIDDEN) flags |= MAC_FILE_DIALOG_HIDDEN;
++
++    unix_dir = get_mac_start_dir(This);
++    filters = get_mac_filters(This);
++
++    if (!GetCurrentActCtx(&This->user_actctx))
++        This->user_actctx = INVALID_HANDLE_VALUE;
++
++    for (;;)
++    {
++        handle = funcs.show(flags, This->custom_title, This->custom_okbutton, unix_dir, This->set_filename, filters,
++                            This->filterspec_count, This->filetypeindex);
++        if (!handle)
++        {
++            hr = first ? E_NOTIMPL : E_FAIL;
++            break;
++        }
++        if (first && root) owner_enabled = !EnableWindow(root, FALSE);
++        first = FALSE;
++
++        while ((status = funcs.result(handle, NULL, 0, &needed, &filter_index)) == MAC_FILE_DIALOG_PENDING)
++        {
++            MsgWaitForMultipleObjectsEx(0, NULL, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
++            while (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE))
++            {
++                if (msg.message == WM_QUIT)
++                {
++                    PostQuitMessage(msg.wParam);
++                    break;
++                }
++                TranslateMessage(&msg);
++                DispatchMessageW(&msg);
++            }
++            if (msg.message == WM_QUIT) break;
++        }
++
++        paths = NULL;
++        if (status == MAC_FILE_DIALOG_OK && (paths = malloc(needed)))
++            funcs.result(handle, paths, needed, &needed, &filter_index);
++        funcs.close(handle);
++
++        if (!paths)
++        {
++            hr = HRESULT_FROM_WIN32(ERROR_CANCELLED);
++            break;
++        }
++
++        hr = set_mac_results(This, paths, filter_index);
++        free(paths);
++        if (hr != S_FALSE) break;
++    }
++
++    if (This->user_actctx != INVALID_HANDLE_VALUE)
++    {
++        ReleaseActCtx(This->user_actctx);
++        This->user_actctx = INVALID_HANDLE_VALUE;
++    }
++    if (owner_enabled) EnableWindow(root, TRUE);
++    if (root && hr != E_NOTIMPL) SetForegroundWindow(root);
++
++    HeapFree(GetProcessHeap(), 0, unix_dir);
++    free(filters);
++    return hr;
++}
++
+ static HRESULT WINAPI IFileDialog2_fnShow(IFileDialog2 *iface, HWND hwndOwner)
+ {
+     FileDialogImpl *This = impl_from_IFileDialog2(iface);
++    HRESULT hr;
+     TRACE("%p (%p)\n", iface, hwndOwner);
+ 
+     This->opendropdown_has_selection = FALSE;
+ 
++    if ((hr = show_mac_dialog(This, hwndOwner)) != E_NOTIMPL)
++        return hr;
++
+     return create_dialog(This, hwndOwner);
+ }
+ 
+diff --git a/dlls/winemac.drv/Makefile.in b/dlls/winemac.drv/Makefile.in
+--- a/dlls/winemac.drv/Makefile.in
++++ b/dlls/winemac.drv/Makefile.in
+@@ -23,6 +23,7 @@ SOURCES = \
+ 	cocoa_cursorclipping.m \
+ 	cocoa_display.m \
+ 	cocoa_event.m \
++	cocoa_filedialog.m \
+ 	cocoa_main.m \
+ 	cocoa_opengl.m \
+ 	cocoa_status_item.m \
+@@ -40,4 +41,5 @@ SOURCES = \
+ 	systray.c \
+ 	vulkan.c \
+ 	window.c \
++	winemac.drv.spec \
+ 	winemac.rc
+diff --git a/dlls/winemac.drv/cocoa_filedialog.m b/dlls/winemac.drv/cocoa_filedialog.m
+new file mode 100644
+--- /dev/null
++++ b/dlls/winemac.drv/cocoa_filedialog.m
+@@ -0,0 +1,265 @@
++/* MACDRV Cocoa open and save panels; LGPL 2.1 or later, like the rest of Wine */
++
++#import <AppKit/AppKit.h>
++#include <fnmatch.h>
++#include "macdrv_cocoa.h"
++#import "cocoa_app.h"
++
++
++@interface WineFileDialog : NSObject <NSOpenSavePanelDelegate>
++{
++@public
++    unsigned int flags;
++    NSString* title;
++    NSString* prompt;
++    NSString* directory;
++    NSString* name;
++    NSArray* filterNames;
++    NSArray* filterPatterns;
++    NSInteger filterIndex;
++    NSSavePanel* panel;
++    NSPopUpButton* popup;
++    NSArray* paths;
++    int status;
++}
++@end
++
++
++@implementation WineFileDialog
++
++    - (void) dealloc
++    {
++        [title release];
++        [prompt release];
++        [directory release];
++        [name release];
++        [filterNames release];
++        [filterPatterns release];
++        [panel release];
++        [popup release];
++        [paths release];
++        [super dealloc];
++    }
++
++    static BOOL pattern_matches_all(NSString* pattern)
++    {
++        return [pattern isEqualToString:@"*"] || [pattern isEqualToString:@"*.*"];
++    }
++
++    /* Only plain "*.ext" patterns can become allowed file types; anything else leaves the save panel unrestricted */
++    static NSArray* extensions_for_patterns(NSArray* patterns)
++    {
++        NSCharacterSet* wildcards = [NSCharacterSet characterSetWithCharactersInString:@"*?["];
++        NSMutableArray* extensions = [NSMutableArray array];
++
++        for (NSString* pattern in patterns)
++        {
++            NSString* extension;
++
++            if (![pattern hasPrefix:@"*."] || pattern.length <= 2) return nil;
++            extension = [pattern substringFromIndex:2];
++            if ([extension rangeOfCharacterFromSet:wildcards].location != NSNotFound) return nil;
++            [extensions addObject:extension];
++        }
++
++        return extensions.count ? extensions : nil;
++    }
++
++    - (NSArray*) currentPatterns
++    {
++        if (filterIndex < 0 || filterIndex >= (NSInteger)filterPatterns.count) return nil;
++        return filterPatterns[filterIndex];
++    }
++
++    - (void) applyFilter
++    {
++        if (flags & MACDRV_FILE_DIALOG_SAVE)
++        {
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wdeprecated-declarations"
++            panel.allowedFileTypes = extensions_for_patterns([self currentPatterns]);
++#pragma clang diagnostic pop
++        }
++        else
++            [(NSOpenPanel*)panel validateVisibleColumns];
++    }
++
++    - (void) filterChanged:(id)sender
++    {
++        filterIndex = [popup indexOfSelectedItem];
++        [self applyFilter];
++    }
++
++    - (BOOL) panel:(id)sender shouldEnableURL:(NSURL*)url
++    {
++        NSArray* patterns = [self currentPatterns];
++        NSNumber* isDirectory;
++        const char* filename;
++
++        if (!patterns.count || (flags & MACDRV_FILE_DIALOG_FOLDERS)) return YES;
++        if ([url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL] && isDirectory.boolValue)
++            return YES;
++
++        filename = url.lastPathComponent.fileSystemRepresentation;
++        for (NSString* pattern in patterns)
++        {
++            if (pattern_matches_all(pattern) || !fnmatch(pattern.fileSystemRepresentation, filename, FNM_CASEFOLD))
++                return YES;
++        }
++        return NO;
++    }
++
++    - (NSView*) filterAccessoryView
++    {
++        NSTextField* label = [NSTextField labelWithString:@"File type:"];
++        NSStackView* stack;
++
++        popup = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
++        for (NSString* filterName in filterNames)
++            [popup.menu addItemWithTitle:filterName action:NULL keyEquivalent:@""];
++        [popup selectItemAtIndex:filterIndex];
++        popup.target = self;
++        popup.action = @selector(filterChanged:);
++
++        stack = [NSStackView stackViewWithViews:@[label, popup]];
++        stack.edgeInsets = NSEdgeInsetsMake(8, 20, 8, 20);
++        [stack setFrameSize:stack.fittingSize];
++        return stack;
++    }
++
++    - (void) show
++    {
++        if (flags & MACDRV_FILE_DIALOG_SAVE)
++            panel = [[NSSavePanel savePanel] retain];
++        else
++        {
++            NSOpenPanel* openPanel = [NSOpenPanel openPanel];
++            openPanel.canChooseFiles = !(flags & MACDRV_FILE_DIALOG_FOLDERS);
++            openPanel.canChooseDirectories = (flags & MACDRV_FILE_DIALOG_FOLDERS) != 0;
++            openPanel.allowsMultipleSelection = (flags & MACDRV_FILE_DIALOG_MULTISELECT) != 0;
++            panel = [openPanel retain];
++        }
++
++        panel.delegate = self;
++        panel.canCreateDirectories = YES;
++        panel.showsHiddenFiles = (flags & MACDRV_FILE_DIALOG_HIDDEN) != 0;
++        /* Save panels show a title bar and open panels do not, so the title goes to one place or the other */
++        if (title.length && (flags & MACDRV_FILE_DIALOG_SAVE))
++            panel.title = title;
++        else if (title.length)
++            panel.message = title;
++        if (prompt.length) panel.prompt = prompt;
++        if (directory.length)
++            panel.directoryURL = [NSURL fileURLWithPath:directory.stringByResolvingSymlinksInPath isDirectory:YES];
++        if ((flags & MACDRV_FILE_DIALOG_SAVE) && name.length) panel.nameFieldStringValue = name;
++        if (filterNames.count > 1 && !(flags & MACDRV_FILE_DIALOG_FOLDERS))
++        {
++            panel.accessoryView = [self filterAccessoryView];
++            if (!(flags & MACDRV_FILE_DIALOG_SAVE))
++                ((NSOpenPanel*)panel).accessoryViewDisclosed = YES;
++        }
++        [self applyFilter];
++
++        [NSApp activateIgnoringOtherApps:YES];
++        [self retain];
++        [panel beginWithCompletionHandler:^(NSModalResponse response){
++            if (response == NSModalResponseOK)
++            {
++                if (flags & MACDRV_FILE_DIALOG_SAVE)
++                    paths = [@[panel.URL.path] retain];
++                else
++                    paths = [[((NSOpenPanel*)panel).URLs valueForKey:@"path"] retain];
++            }
++            __atomic_store_n(&status, response == NSModalResponseOK ? MACDRV_FILE_DIALOG_OK : MACDRV_FILE_DIALOG_CANCEL,
++                             __ATOMIC_RELEASE);
++            [self release];
++        }];
++    }
++
++@end
++
++
++/* Shows a native open or save panel without waiting for it; poll it with macdrv_file_dialog_status */
++macdrv_file_dialog macdrv_file_dialog_start(unsigned int flags, CFStringRef title, CFStringRef prompt,
++                                            CFStringRef directory, CFStringRef name, CFArrayRef filter_names,
++                                            CFArrayRef filter_specs, unsigned int filter_index)
++{
++@autoreleasepool
++{
++    WineFileDialog* dialog = [[WineFileDialog alloc] init];
++    NSMutableArray* patterns = [NSMutableArray array];
++
++    for (NSString* spec in (NSArray*)filter_specs)
++    {
++        NSMutableArray* specPatterns = [NSMutableArray array];
++        for (NSString* pattern in [spec componentsSeparatedByString:@";"])
++        {
++            pattern = [pattern stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
++            if (pattern.length) [specPatterns addObject:pattern];
++        }
++        [patterns addObject:specPatterns];
++    }
++
++    dialog->flags = flags;
++    dialog->title = [(NSString*)title copy];
++    dialog->prompt = [(NSString*)prompt copy];
++    dialog->directory = [(NSString*)directory copy];
++    dialog->name = [(NSString*)name copy];
++    dialog->filterNames = [(NSArray*)filter_names copy];
++    dialog->filterPatterns = [patterns copy];
++    dialog->filterIndex = filter_index;
++
++    [dialog retain];
++    OnMainThreadAsync(^{
++        [dialog show];
++        [dialog release];
++    });
++
++    return (macdrv_file_dialog)dialog;
++}
++}
++
++int macdrv_file_dialog_status(macdrv_file_dialog d)
++{
++    WineFileDialog* dialog = (WineFileDialog*)d;
++    return __atomic_load_n(&dialog->status, __ATOMIC_ACQUIRE);
++}
++
++/* Copies the chosen paths as consecutive nul-terminated UTF-8 strings followed by an empty one, and returns the size that needs */
++unsigned int macdrv_file_dialog_result(macdrv_file_dialog d, char* buffer, unsigned int size,
++                                       unsigned int* filter_index)
++{
++@autoreleasepool
++{
++    WineFileDialog* dialog = (WineFileDialog*)d;
++    unsigned int needed = 1, pos = 0;
++
++    if (macdrv_file_dialog_status(d) != MACDRV_FILE_DIALOG_OK) return 0;
++
++    *filter_index = dialog->filterIndex;
++    for (NSString* path in dialog->paths)
++        needed += strlen(path.fileSystemRepresentation) + 1;
++    if (!buffer || size < needed) return needed;
++
++    for (NSString* path in dialog->paths)
++    {
++        const char* utf8 = path.fileSystemRepresentation;
++        strcpy(buffer + pos, utf8);
++        pos += strlen(utf8) + 1;
++    }
++    buffer[pos] = 0;
++    return needed;
++}
++}
++
++/* Cancels the panel if it is still open and releases it */
++void macdrv_file_dialog_close(macdrv_file_dialog d)
++{
++    WineFileDialog* dialog = (WineFileDialog*)d;
++
++    OnMainThreadAsync(^{
++        if (!macdrv_file_dialog_status(d) && dialog->panel)
++            [dialog->panel cancel:nil];
++        [dialog release];
++    });
++}
+diff --git a/dlls/winemac.drv/dllmain.c b/dlls/winemac.drv/dllmain.c
+--- a/dlls/winemac.drv/dllmain.c
++++ b/dlls/winemac.drv/dllmain.c
+@@ -369,6 +369,38 @@ cleanup:
+ }
+ 
+ 
++/* comdlg32 shows the native open and save panels through these three exports; the handle is 0 on failure */
++UINT64 CDECL wine_file_dialog_show(UINT flags, const WCHAR *title, const WCHAR *prompt, const char *unix_dir,
++                                   const WCHAR *name, const WCHAR *filters, UINT filter_count, UINT filter_index)
++{
++    struct file_dialog_start_params params =
++    {
++        .flags = flags, .filter_count = filter_count, .filter_index = filter_index,
++        .title = (UINT_PTR)title, .prompt = (UINT_PTR)prompt, .unix_dir = (UINT_PTR)unix_dir,
++        .name = (UINT_PTR)name, .filters = (UINT_PTR)filters,
++    };
++
++    if (MACDRV_CALL(file_dialog_start, &params)) return 0;
++    return params.handle;
++}
++
++UINT CDECL wine_file_dialog_result(UINT64 handle, char *buffer, UINT size, UINT *needed, UINT *filter_index)
++{
++    struct file_dialog_result_params params = { .handle = handle, .buffer = (UINT_PTR)buffer, .size = size };
++
++    MACDRV_CALL(file_dialog_result, &params);
++    *needed = params.needed;
++    *filter_index = params.filter_index;
++    return params.status;
++}
++
++void CDECL wine_file_dialog_close(UINT64 handle)
++{
++    struct file_dialog_close_params params = { .handle = handle };
++    MACDRV_CALL(file_dialog_close, &params);
++}
++
++
+ static BOOL process_attach(void)
+ {
+     struct init_params params;
+diff --git a/dlls/winemac.drv/macdrv_cocoa.h b/dlls/winemac.drv/macdrv_cocoa.h
+--- a/dlls/winemac.drv/macdrv_cocoa.h
++++ b/dlls/winemac.drv/macdrv_cocoa.h
+@@ -210,6 +210,31 @@ extern void macdrv_set_mouse_capture_window(macdrv_window window);
+ extern void macdrv_set_cocoa_retina_mode(bool new_mode);
+ 
+ 
++/* file dialog */
++typedef struct opaque_macdrv_file_dialog* macdrv_file_dialog;
++
++enum {
++    MACDRV_FILE_DIALOG_SAVE         = 0x1,
++    MACDRV_FILE_DIALOG_MULTISELECT  = 0x2,
++    MACDRV_FILE_DIALOG_FOLDERS      = 0x4,
++    MACDRV_FILE_DIALOG_HIDDEN       = 0x8,
++};
++
++enum {
++    MACDRV_FILE_DIALOG_PENDING,
++    MACDRV_FILE_DIALOG_OK,
++    MACDRV_FILE_DIALOG_CANCEL,
++};
++
++extern macdrv_file_dialog macdrv_file_dialog_start(unsigned int flags, CFStringRef title, CFStringRef prompt,
++                                                   CFStringRef directory, CFStringRef name, CFArrayRef filter_names,
++                                                   CFArrayRef filter_specs, unsigned int filter_index);
++extern int macdrv_file_dialog_status(macdrv_file_dialog dialog);
++extern unsigned int macdrv_file_dialog_result(macdrv_file_dialog dialog, char *buffer, unsigned int size,
++                                              unsigned int *filter_index);
++extern void macdrv_file_dialog_close(macdrv_file_dialog dialog);
++
++
+ /* cursor */
+ extern void macdrv_set_cursor(CFStringRef name, CFArrayRef frames);
+ extern int macdrv_cursor_name_available(CFStringRef name);
+diff --git a/dlls/winemac.drv/macdrv_main.c b/dlls/winemac.drv/macdrv_main.c
+--- a/dlls/winemac.drv/macdrv_main.c
++++ b/dlls/winemac.drv/macdrv_main.c
+@@ -605,10 +605,85 @@ static NTSTATUS macdrv_quit_result(void *arg)
+ }
+ 
+ 
++static CFStringRef cfstring_from_wstr(const WCHAR *str)
++{
++    size_t len = 0;
++
++    if (!str) return NULL;
++    while (str[len]) len++;
++    return CFStringCreateWithCharacters(NULL, (const UniChar *)str, len);
++}
++
++static NTSTATUS macdrv_file_dialog_start_call(void *arg)
++{
++    struct file_dialog_start_params *params = arg;
++    CFMutableArrayRef names = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
++    CFMutableArrayRef specs = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
++    CFStringRef title = cfstring_from_wstr(param_ptr(params->title));
++    CFStringRef prompt = cfstring_from_wstr(param_ptr(params->prompt));
++    CFStringRef name = cfstring_from_wstr(param_ptr(params->name));
++    CFStringRef dir = NULL;
++    const WCHAR *filter = param_ptr(params->filters);
++    UINT i;
++
++    if (params->unix_dir)
++        dir = CFStringCreateWithCString(NULL, param_ptr(params->unix_dir), kCFStringEncodingUTF8);
++
++    for (i = 0; filter && i < params->filter_count; i++)
++    {
++        CFStringRef str = cfstring_from_wstr(filter);
++        CFArrayAppendValue(names, str);
++        CFRelease(str);
++        while (*filter) filter++;
++        filter++;
++
++        str = cfstring_from_wstr(filter);
++        CFArrayAppendValue(specs, str);
++        CFRelease(str);
++        while (*filter) filter++;
++        filter++;
++    }
++
++    params->handle = (UINT_PTR)macdrv_file_dialog_start(params->flags, title, prompt, dir, name, names, specs,
++                                                        params->filter_index);
++
++    if (title) CFRelease(title);
++    if (prompt) CFRelease(prompt);
++    if (name) CFRelease(name);
++    if (dir) CFRelease(dir);
++    CFRelease(names);
++    CFRelease(specs);
++    return params->handle ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
++}
++
++static NTSTATUS macdrv_file_dialog_result_call(void *arg)
++{
++    struct file_dialog_result_params *params = arg;
++    macdrv_file_dialog dialog = param_ptr(params->handle);
++
++    params->status = macdrv_file_dialog_status(dialog);
++    params->needed = 0;
++    if (params->status == MACDRV_FILE_DIALOG_OK)
++        params->needed = macdrv_file_dialog_result(dialog, param_ptr(params->buffer), params->size,
++                                                   &params->filter_index);
++    return STATUS_SUCCESS;
++}
++
++static NTSTATUS macdrv_file_dialog_close_call(void *arg)
++{
++    struct file_dialog_close_params *params = arg;
++    macdrv_file_dialog_close(param_ptr(params->handle));
++    return STATUS_SUCCESS;
++}
++
++
+ const unixlib_entry_t __wine_unix_call_funcs[] =
+ {
+     macdrv_init,
+     macdrv_quit_result,
++    macdrv_file_dialog_start_call,
++    macdrv_file_dialog_result_call,
++    macdrv_file_dialog_close_call,
+ };
+ 
+ C_ASSERT( ARRAYSIZE(__wine_unix_call_funcs) == unix_funcs_count );
+@@ -635,6 +710,9 @@ const unixlib_entry_t __wine_unix_call_wow64_funcs[] =
+ {
+     wow64_init,
+     macdrv_quit_result,
++    macdrv_file_dialog_start_call,
++    macdrv_file_dialog_result_call,
++    macdrv_file_dialog_close_call,
+ };
+ 
+ C_ASSERT( ARRAYSIZE(__wine_unix_call_wow64_funcs) == unix_funcs_count );
+diff --git a/dlls/winemac.drv/unixlib.h b/dlls/winemac.drv/unixlib.h
+--- a/dlls/winemac.drv/unixlib.h
++++ b/dlls/winemac.drv/unixlib.h
+@@ -23,6 +23,9 @@ enum macdrv_funcs
+ {
+     unix_init,
+     unix_quit_result,
++    unix_file_dialog_start,
++    unix_file_dialog_result,
++    unix_file_dialog_close,
+     unix_funcs_count
+ };
+ 
+@@ -49,6 +52,36 @@ struct quit_result_params
+     int result;
+ };
+ 
++/* Pointers are carried in UINT64 fields, so 32-bit callers use the same layout */
++struct file_dialog_start_params
++{
++    UINT32 flags;
++    UINT32 filter_count;
++    UINT32 filter_index;
++    UINT32 padding;
++    UINT64 title;
++    UINT64 prompt;
++    UINT64 unix_dir;
++    UINT64 name;
++    UINT64 filters;
++    UINT64 handle;
++};
++
++struct file_dialog_result_params
++{
++    UINT64 handle;
++    UINT64 buffer;
++    UINT32 size;
++    UINT32 status;
++    UINT32 needed;
++    UINT32 filter_index;
++};
++
++struct file_dialog_close_params
++{
++    UINT64 handle;
++};
++
+ /* macdrv_app_icon result */
+ struct app_icon_entry
+ {
+diff --git a/dlls/winemac.drv/winemac.drv.spec b/dlls/winemac.drv/winemac.drv.spec
+new file mode 100644
+--- /dev/null
++++ b/dlls/winemac.drv/winemac.drv.spec
+@@ -0,0 +1,3 @@
++@ cdecl wine_file_dialog_show(long wstr wstr str wstr ptr long long)
++@ cdecl wine_file_dialog_result(int64 ptr long ptr ptr)
++@ cdecl wine_file_dialog_close(int64)
