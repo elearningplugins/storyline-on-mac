@@ -10,6 +10,8 @@ unset DOTNET_ROOT DOTNET_ROOT_X64 DOTNET_ROOT_X86 DOTNET_ROOT_ARM64
 export WINE_D3D_FL_RELAX=1
 # Patched winemac (patch 0010): menu bar and Dock names per exe instead of "wine".
 export WINE_MAC_APP_NAMES="Articulate 360 Desktop App.exe=Articulate 360;Storyline.exe=Storyline 360"
+# Patched win32u (patch 0020): with RetinaMode on, Wine doubles Storyline's DPI-unaware windows with xBR instead of blurring them with halftone.
+export WINE_SCALE_FILTER=xbr
 . "$HERE/../Resources/storyline-args.sh"
 mkdir -p "$LAB/logs/launcher"
 # Start the Desktop Service now instead of when Storyline asks for it seconds later; a second copy exits on its own if one is already running.

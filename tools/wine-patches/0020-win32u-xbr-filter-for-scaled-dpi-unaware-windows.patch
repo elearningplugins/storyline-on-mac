@@ -1,0 +1,199 @@
+diff --git a/dlls/win32u/dce.c b/dlls/win32u/dce.c
+--- a/dlls/win32u/dce.c
++++ b/dlls/win32u/dce.c
+@@ -25,6 +25,8 @@
+ 
+ #include <assert.h>
+ #include <pthread.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "ntstatus.h"
+ #include "ntgdi_private.h"
+ #include "ntuser_private.h"
+@@ -161,6 +163,159 @@
+     if (hrgn) NtGdiDeleteObjectApp( hrgn );
+ }
+ 
++enum scale_filter { SCALE_HALFTONE, SCALE_NEAREST, SCALE_XBR };
++
++/* WINE_SCALE_FILTER=nearest|xbr picks how DPI-unaware windows are enlarged instead of the default halftone smoothing. */
++static enum scale_filter get_scale_filter(void)
++{
++    static int cached = -1;
++    if (cached < 0)
++    {
++        const char *env = getenv( "WINE_SCALE_FILTER" );
++        cached = !env ? SCALE_HALFTONE : !strcmp( env, "nearest" ) ? SCALE_NEAREST : !strcmp( env, "xbr" ) ? SCALE_XBR : SCALE_HALFTONE;
++    }
++    return cached;
++}
++
++static void *window_surface_get_color( struct window_surface *surface, BITMAPINFO *info );
++
++static UINT xbr_yuv( UINT p )
++{
++    int r = (p >> 16) & 0xff, g = (p >> 8) & 0xff, b = p & 0xff;
++    int y = (299 * r + 587 * g + 114 * b) / 1000;
++    int u = (-169 * r - 331 * g + 500 * b) / 1000 + 128;
++    int v = (500 * r - 419 * g - 81 * b) / 1000 + 128;
++    return (y << 16) | (u << 8) | v;
++}
++
++static UINT xbr_df( UINT a, UINT b )
++{
++    UINT ya, yb;
++    if (a == b) return 0;
++    ya = xbr_yuv( a );
++    yb = xbr_yuv( b );
++    return abs( (int)(ya >> 16) - (int)(yb >> 16) ) + abs( (int)((ya >> 8) & 0xff) - (int)((yb >> 8) & 0xff) )
++           + abs( (int)(ya & 0xff) - (int)(yb & 0xff) );
++}
++
++static BOOL xbr_eq( UINT a, UINT b )
++{
++    return xbr_df( a, b ) < 155;
++}
++
++/* blends src into dst with weight n/8 per 8-bit channel, alpha included */
++static UINT xbr_blend( UINT dst, UINT src, int n )
++{
++    UINT out = 0;
++    int shift;
++    for (shift = 0; shift < 32; shift += 8)
++    {
++        int d = (dst >> shift) & 0xff, s = (src >> shift) & 0xff;
++        out |= (UINT)(d + (s - d) * n / 8) << shift;
++    }
++    return out;
++}
++
++/* xBR level 2 at exactly 2x: src/dst are 32bpp top-down, rect is in source pixels and already clipped to both surfaces */
++static void xbr_scale2x( const UINT *src, int sw, int sh, int sstride, UINT *dst, int dstride, const RECT *rect )
++{
++    static const int rot[4][4] = {{1, 0, 0, 1}, {0, 1, -1, 0}, {-1, 0, 0, -1}, {0, -1, 1, 0}};
++    int x, y, r;
++
++    for (y = rect->top; y < rect->bottom; y++)
++    {
++        for (x = rect->left; x < rect->right; x++)
++        {
++            UINT out[4], e = src[y * sstride + x];
++            out[0] = out[1] = out[2] = out[3] = e;
++            for (r = 0; r < 4; r++)
++            {
++                const int *m = rot[r];
++#define XBR_PX(dx, dy) src[min( max( y + m[2] * (dx) + m[3] * (dy), 0 ), sh - 1 ) * sstride + \
++                           min( max( x + m[0] * (dx) + m[1] * (dy), 0 ), sw - 1 )]
++#define XBR_SUB(dx, dy) ((m[0] * (dx) + m[1] * (dy) > 0) + 2 * (m[2] * (dx) + m[3] * (dy) > 0))
++                UINT pi = XBR_PX( 1, 1 ), ph = XBR_PX( 0, 1 ), pf = XBR_PX( 1, 0 ), pg = XBR_PX( -1, 1 );
++                UINT pc = XBR_PX( 1, -1 ), pd = XBR_PX( -1, 0 ), pb = XBR_PX( 0, -1 );
++                UINT h5 = XBR_PX( 0, 2 ), i5 = XBR_PX( 1, 2 ), f4 = XBR_PX( 2, 0 ), i4 = XBR_PX( 2, 1 );
++                int n1 = XBR_SUB( 1, -1 ), n2 = XBR_SUB( -1, 1 ), n3 = XBR_SUB( 1, 1 );
++                UINT ev, iv, px;
++
++                if (e == ph || e == pf) continue;
++                ev = xbr_df( e, pc ) + xbr_df( e, pg ) + xbr_df( pi, h5 ) + xbr_df( pi, f4 ) + (xbr_df( ph, pf ) << 2);
++                iv = xbr_df( ph, pd ) + xbr_df( ph, i5 ) + xbr_df( pf, i4 ) + xbr_df( pf, pb ) + (xbr_df( e, pi ) << 2);
++                if (ev > iv) continue;
++                px = xbr_df( e, pf ) <= xbr_df( e, ph ) ? pf : ph;
++                if (ev < iv && ((!xbr_eq( pf, pb ) && !xbr_eq( ph, pd )) || (xbr_eq( e, pi ) && !xbr_eq( pf, i4 ) && !xbr_eq( ph, i5 ))
++                                || xbr_eq( e, pg ) || xbr_eq( e, pc )))
++                {
++                    UINT ke = xbr_df( pf, pg ), ki = xbr_df( ph, pc );
++                    BOOL left = (ke << 1) <= ki && e != pg && pd != pg;
++                    BOOL up = ke >= (ki << 1) && e != pc && pb != pc;
++                    if (left && up)
++                    {
++                        out[n3] = xbr_blend( out[n3], px, 7 );
++                        out[n2] = xbr_blend( out[n2], px, 2 );
++                        out[n1] = out[n2];
++                    }
++                    else if (left)
++                    {
++                        out[n3] = xbr_blend( out[n3], px, 6 );
++                        out[n2] = xbr_blend( out[n2], px, 2 );
++                    }
++                    else if (up)
++                    {
++                        out[n3] = xbr_blend( out[n3], px, 6 );
++                        out[n1] = xbr_blend( out[n1], px, 2 );
++                    }
++                    else out[n3] = xbr_blend( out[n3], px, 4 );
++                }
++                else out[n3] = xbr_blend( out[n3], px, 4 );
++#undef XBR_PX
++#undef XBR_SUB
++            }
++            dst[(2 * y) * dstride + 2 * x] = out[0];
++            dst[(2 * y) * dstride + 2 * x + 1] = out[1];
++            dst[(2 * y + 1) * dstride + 2 * x] = out[2];
++            dst[(2 * y + 1) * dstride + 2 * x + 1] = out[3];
++        }
++    }
++}
++
++/* returns FALSE when the surfaces are not plain 32bpp at exactly 2x, so the caller falls back to StretchBlt */
++static BOOL xbr_flush( struct window_surface *window_surface, struct window_surface *target, const RECT *src_rect,
++                       const RECT *dst_rect, const BITMAPINFO *color_info, const void *color_bits )
++{
++    char buffer[FIELD_OFFSET( BITMAPINFO, bmiColors[256] )];
++    BITMAPINFO *tinfo = (BITMAPINFO *)buffer;
++    const BITMAPINFOHEADER *sh = &color_info->bmiHeader;
++    RECT rect = *src_rect;
++    UINT *tbits;
++    int sw, shh, tw, th;
++
++    if (window_surface->alpha_mask || !color_bits) return FALSE;
++    if (dst_rect->right - dst_rect->left != 2 * (src_rect->right - src_rect->left)) return FALSE;
++    if (dst_rect->bottom - dst_rect->top != 2 * (src_rect->bottom - src_rect->top)) return FALSE;
++    if (dst_rect->left != 2 * src_rect->left || dst_rect->top != 2 * src_rect->top) return FALSE;
++    if (sh->biBitCount != 32 || sh->biHeight >= 0) return FALSE;
++    if (!(tbits = window_surface_get_color( target, tinfo ))) return FALSE;
++    if (tinfo->bmiHeader.biBitCount != 32 || tinfo->bmiHeader.biHeight >= 0) return FALSE;
++
++    sw = sh->biWidth;
++    shh = -sh->biHeight;
++    tw = tinfo->bmiHeader.biWidth;
++    th = -tinfo->bmiHeader.biHeight;
++    rect.right = min( min( rect.right, sw ), tw / 2 );
++    rect.bottom = min( min( rect.bottom, shh ), th / 2 );
++    rect.left = max( rect.left, 0 );
++    rect.top = max( rect.top, 0 );
++    if (rect.left >= rect.right || rect.top >= rect.bottom) return TRUE;
++
++    window_surface_lock( target );
++    xbr_scale2x( color_bits, sw, shh, sw, tbits, tw, &rect );
++    window_surface_unlock( target );
++    return TRUE;
++}
++
+ static BOOL scaled_surface_flush( struct window_surface *window_surface, const RECT *rect, const RECT *dirty,
+                                   const BITMAPINFO *color_info, const void *color_bits, BOOL shape_changed,
+                                   const BITMAPINFO *shape_info, const void *shape_bits )
+@@ -176,6 +331,9 @@
+ 
+     dst = map_dpi_rect( src, surface->dpi_from, surface->dpi_to );
+ 
++    if (get_scale_filter() == SCALE_XBR && xbr_flush( window_surface, surface->target_surface, &src, &dst, color_info, color_bits ))
++        goto done;
++
+     hdc_dst = NtGdiCreateCompatibleDC( 0 );
+     hdc_src = NtGdiCreateCompatibleDC( 0 );
+ 
+@@ -183,7 +341,7 @@
+     NtGdiSelectBitmap( hdc_dst, surface->target_surface->color_bitmap );
+ 
+     /* FIXME: implement HALFTONE with alpha for layered surfaces */
+-    if (!window_surface->alpha_mask) set_stretch_blt_mode( hdc_dst, STRETCH_HALFTONE );
++    if (!window_surface->alpha_mask && get_scale_filter() != SCALE_NEAREST) set_stretch_blt_mode( hdc_dst, STRETCH_HALFTONE );
+ 
+     NtGdiStretchBlt( hdc_dst, dst.left, dst.top, dst.right - dst.left, dst.bottom - dst.top,
+                      hdc_src, src.left, src.top, src.right - src.left, src.bottom - src.top,
+@@ -192,6 +350,7 @@
+     NtGdiDeleteObjectApp( hdc_dst );
+     NtGdiDeleteObjectApp( hdc_src );
+ 
++done:
+     window_surface_lock( surface->target_surface );
+     add_bounds_rect( &surface->target_surface->bounds, &dst );
+     window_surface_unlock( surface->target_surface );

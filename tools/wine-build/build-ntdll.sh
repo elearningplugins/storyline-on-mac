@@ -67,6 +67,9 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P10" 2>/dev/null; then git a
 # (patch 0016: the Windows wait and app-starting cursors show AppKit's busy cursor instead of the Windows hourglass)
 P16="$HERE/../wine-patches/0016-winemac-show-the-AppKit-busy-cursor-for-the-wait-cursors.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P16" 2>/dev/null; then git apply "$P16"; elif git apply --check -R "$P16" 2>/dev/null; then echo "winemac busy-cursor patch already applied"; else echo "patch 0016 does not apply"; exit 1; fi
+# (patch 0029: a process that finds the initial display mode key waits until its creator has finished writing it; reading it half-written turned Retina mode off for that process, e.g. Storyline opening at 720x407 when started alongside the Desktop Service)
+P29="$HERE/../wine-patches/0029-winemac-wait-for-the-initial-display-mode-to-be-written.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P29" 2>/dev/null; then git apply "$P29"; elif git apply --check -R "$P29" 2>/dev/null; then echo "initial display mode patch already applied"; else echo "patch 0029 does not apply"; exit 1; fi
 # (patch 0031: the common item dialog shows the native NSOpenPanel/NSSavePanel through new winemac.drv exports, so Insert > Audio, Save As and Publish's folder picker look like Mac dialogs; WINE_MAC_FILE_DIALOGS=0 brings back Wine's own dialog)
 P31="$HERE/../wine-patches/0031-winemac-comdlg32-show-the-native-macOS-open-and-save-panels.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P31" 2>/dev/null; then git apply "$P31"; elif git apply --check -R "$P31" 2>/dev/null; then echo "native file dialog patch already applied"; else echo "patch 0031 does not apply"; exit 1; fi
@@ -107,11 +110,16 @@ P9="$HERE/../wine-patches/0009-perf-log-instrumentation.patch"
 if git apply --check "$P9" 2>/dev/null; then git apply "$P9"
 elif git apply --reverse --check "$P9" 2>/dev/null; then echo "perf instrumentation patch already applied"
 else echo "patch 0009 neither applies nor is already applied; it needs 0004, 0006 and 0008 first" >&2; exit 1; fi
+# (patch 0020: WINE_SCALE_FILTER=xbr enlarges DPI-unaware windows with xBR instead of halftone, which the Retina launchers set)
+P20="$HERE/../wine-patches/0020-win32u-xbr-filter-for-scaled-dpi-unaware-windows.patch"
+if git apply --check "$P20" 2>/dev/null; then git apply "$P20"
+elif git apply --reverse --check "$P20" 2>/dev/null; then echo "scale filter patch already applied"
+else echo "patch 0020 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/win32u/win32u.so dlls/win32u/x86_64-windows/win32u.dll dlls/d2d1/x86_64-windows/d2d1.dll > make-win32u.log 2>&1
 rm -f "$M/lib/wine/x86_64-unix/win32u.so"; cp "$B/dlls/win32u/win32u.so" "$M/lib/wine/x86_64-unix/win32u.so"
 rm -f "$M/lib/wine/x86_64-windows/win32u.dll"; cp "$B/dlls/win32u/x86_64-windows/win32u.dll" "$M/lib/wine/x86_64-windows/win32u.dll"
 rm -f "$M/lib/wine/x86_64-windows/d2d1.dll"; cp "$B/dlls/d2d1/x86_64-windows/d2d1.dll" "$M/lib/wine/x86_64-windows/d2d1.dll"
-echo "patched win32u.so, win32u.dll and d2d1.dll (with 0009) in $M"
+echo "patched win32u.so (with 0009, 0020), win32u.dll and d2d1.dll (with 0009) in $M"
 # --- kernelbase (PE) : GetLocaleInfoEx answers LOCALE_SNAME for unknown well-formed names like Windows 10 (patch 0012); without it Storyline reloads its player on every click ---
 P12="$HERE/../wine-patches/0012-kernelbase-answer-LOCALE_SNAME-for-unknown-well-formed-locale-names.patch"; cd "$SRC/wine-wine-11.16"
 if git apply --check "$P12" 2>/dev/null; then git apply "$P12"
