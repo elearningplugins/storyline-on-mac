@@ -6,7 +6,7 @@ Run the genuine Articulate 360 Desktop App and Storyline 360 directly on an Inte
 
 **Requirements:** an Intel Mac (Apple Silicon is not tested), MacPorts, and your own Articulate 360 subscription. No Articulate software is included. Setup is currently a sequence of scripts; see [Set up](#set-up). A prebuilt, one-command installer is planned in [#32](https://github.com/elearningplugins/storyline-on-mac/issues/32).
 
-**How it got here:** every problem was investigated and fixed in a numbered run under [runs/](runs/), with sanitized logs under [logs/](logs/) and the original plan in [docs/research-plan.md](docs/research-plan.md). Licensed binaries and Wine prefixes are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
+**How it got here:** each problem was investigated, and most were fixed, in a numbered run under [runs/](runs/), with sanitized logs under [logs/](logs/) and the original plan in [docs/research-plan.md](docs/research-plan.md). Licensed binaries and Wine prefixes are kept outside this repo; [SHA256SUMS](SHA256SUMS) pins the exact inputs.
 
 ## Set up
 
