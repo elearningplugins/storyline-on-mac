@@ -76,7 +76,10 @@ cd "$SRC/wine-wine-11.16" && if git apply --check "$P31" 2>/dev/null; then git a
 # (patch 0033: the date picker's drop-down shows the native macOS calendar popover through more winemac.drv exports, and one-digit date fields are sized to their text; WINE_MAC_DATE_PICKER=0 brings back Wine's month calendar)
 P33="$HERE/../wine-patches/0033-winemac-comctl32-show-the-native-macOS-calendar-for-date-pickers.patch"
 cd "$SRC/wine-wine-11.16" && if git apply --check "$P33" 2>/dev/null; then git apply "$P33"; elif git apply --check -R "$P33" 2>/dev/null; then echo "native date picker patch already applied"; else echo "patch 0033 does not apply"; exit 1; fi
-# 0031 and 0033 add winemac.drv.spec, cocoa_filedialog.m and cocoa_datepicker.m to Makefile.in, so the generated Makefile has to be refreshed before building
+# (patch 0035: GDI reads from a screen DC go to a new macdrv_GetImage, fed by a ScreenCaptureKit stream with a CoreGraphics fallback; winemac had no screen read, so Storyline's screen recordings were black)
+P35="$HERE/../wine-patches/0035-winemac-read-the-screen-for-GDI-screen-DCs-through-ScreenCaptureKit.patch"
+cd "$SRC/wine-wine-11.16" && if git apply --check "$P35" 2>/dev/null; then git apply "$P35"; elif git apply --check -R "$P35" 2>/dev/null; then echo "screen capture patch already applied"; else echo "patch 0035 does not apply"; exit 1; fi
+# 0031, 0033 and 0035 add winemac.drv.spec, cocoa_filedialog.m, cocoa_datepicker.m and cocoa_screencapture.m to Makefile.in, so the generated Makefile has to be refreshed before building
 cd "$B" && make Makefile > make-makefile.log 2>&1
 cd "$B" && make -j4 dlls/winemac.drv/winemac.so dlls/ntdll/ntdll.so dlls/winemac.drv/x86_64-windows/winemac.drv dlls/winemac.drv/i386-windows/winemac.drv \
   dlls/comdlg32/x86_64-windows/comdlg32.dll dlls/comdlg32/i386-windows/comdlg32.dll \
@@ -189,5 +192,13 @@ else echo "patch 0027 neither applies nor is already applied" >&2; exit 1; fi
 cd "$B" && make -j4 dlls/imm32/x86_64-windows/imm32.dll dlls/imm32/i386-windows/imm32.dll > make-imm32.log 2>&1
 for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/imm32.dll"; cp "$B/dlls/imm32/$a-windows/imm32.dll" "$M/lib/wine/$a-windows/imm32.dll"; done
 echo "patched imm32.dll (64- and 32-bit) in $M"
+# --- winmm (PE) : mixerOpen honours MIXER_OBJECTF_WAVEIN and the other object types in fdwOpen (patch 0034); Storyline's 32-bit recording helper opened the Mac mic's mixer by wave-in ID, got the first output device's mixer, and filed the mic under Speakers ---
+P34="$HERE/../wine-patches/0034-winmm-mixerOpen-honours-the-object-type-in-fdwOpen.patch"; cd "$SRC/wine-wine-11.16"
+if git apply --check "$P34" 2>/dev/null; then git apply "$P34"
+elif git apply --reverse --check "$P34" 2>/dev/null; then echo "mixerOpen object type patch already applied"
+else echo "patch 0034 neither applies nor is already applied" >&2; exit 1; fi
+cd "$B" && make -j4 dlls/winmm/x86_64-windows/winmm.dll dlls/winmm/i386-windows/winmm.dll > make-winmm.log 2>&1
+for a in x86_64 i386; do rm -f "$M/lib/wine/$a-windows/winmm.dll"; cp "$B/dlls/winmm/$a-windows/winmm.dll" "$M/lib/wine/$a-windows/winmm.dll"; done
+echo "patched winmm.dll (64- and 32-bit) in $M"
 # Optional prefix name: also install the patched PE modules into that prefix's system32.
 if [ -n "${1:-}" ]; then "$HERE/install-into-prefix.sh" "$1"; else echo "pass a prefix name, or run tools/wine-build/install-into-prefix.sh <prefix>"; fi

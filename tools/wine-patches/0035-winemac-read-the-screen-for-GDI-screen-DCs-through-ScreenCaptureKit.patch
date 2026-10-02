@@ -1,0 +1,486 @@
+diff --git a/dlls/winemac.drv/Makefile.in b/dlls/winemac.drv/Makefile.in
+--- a/dlls/winemac.drv/Makefile.in
++++ b/dlls/winemac.drv/Makefile.in
+@@ -4,14 +4,17 @@ IMPORTS   = uuid rpcrt4 user32 gdi32 win32u
+ DELAYIMPORTS = ole32 shell32 imm32
+ UNIX_LIBS    = \
+ 	-lwin32u \
++	-framework Accelerate \
+ 	-framework AppKit \
+ 	-framework Carbon \
++	-framework CoreMedia \
+ 	-framework CoreVideo \
+ 	-framework Foundation \
+ 	-framework IOKit \
+ 	-framework Metal \
+ 	-framework OpenGL \
+ 	-framework QuartzCore \
++	-framework ScreenCaptureKit \
+ 	-framework Security \
+ 
+ VER_FILEDESCRIPTION_STR = "Wine Mac driver"
+@@ -27,6 +30,7 @@ SOURCES = \
+ 	cocoa_filedialog.m \
+ 	cocoa_main.m \
+ 	cocoa_opengl.m \
++	cocoa_screencapture.m \
+ 	cocoa_status_item.m \
+ 	cocoa_window.m \
+ 	display.c \
+diff --git a/dlls/winemac.drv/cocoa_screencapture.m b/dlls/winemac.drv/cocoa_screencapture.m
+new file mode 100644
+--- /dev/null
++++ b/dlls/winemac.drv/cocoa_screencapture.m
+@@ -0,0 +1,297 @@
++/* MACDRV screen capture through a ScreenCaptureKit stream; SPDX-License-Identifier: LGPL-2.1-or-later */
++
++#import <Cocoa/Cocoa.h>
++#import <ScreenCaptureKit/ScreenCaptureKit.h>
++#import <CoreMedia/CoreMedia.h>
++#import <Accelerate/Accelerate.h>
++#include <pthread.h>
++#include "macdrv_cocoa.h"
++
++#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
++
++
++/* seconds without a capture request before a display's stream is stopped */
++static const NSTimeInterval idle_timeout = 3.0;
++
++
++API_AVAILABLE(macos(12.3))
++@interface WineScreenCapturer : NSObject <SCStreamOutput, SCStreamDelegate>
++{
++@public
++    CGDirectDisplayID displayID;
++    SCStream* stream;
++    CVPixelBufferRef latest;
++    NSTimeInterval lastUse;
++    BOOL failed;
++    BOOL stopped;
++    pthread_mutex_t mutex;
++    pthread_cond_t cond;
++}
++@end
++
++
++static pthread_mutex_t capturers_mutex = PTHREAD_MUTEX_INITIALIZER;
++static NSMutableDictionary* capturers;
++static dispatch_queue_t capture_queue;
++static dispatch_source_t idle_timer;
++static NSTimeInterval disabled_until;
++
++
++@implementation WineScreenCapturer
++
++    - (instancetype) initWithDisplay:(CGDirectDisplayID)display
++    {
++        if ((self = [super init]))
++        {
++            displayID = display;
++            pthread_mutex_init(&mutex, NULL);
++            pthread_cond_init(&cond, NULL);
++        }
++        return self;
++    }
++
++    - (void) dealloc
++    {
++        if (latest) CVPixelBufferRelease(latest);
++        [stream release];
++        pthread_cond_destroy(&cond);
++        pthread_mutex_destroy(&mutex);
++        [super dealloc];
++    }
++
++    - (void) fail
++    {
++        pthread_mutex_lock(&mutex);
++        failed = YES;
++        pthread_cond_broadcast(&cond);
++        pthread_mutex_unlock(&mutex);
++    }
++
++    - (void) start
++    {
++        [SCShareableContent getShareableContentExcludingDesktopWindows:NO onScreenWindowsOnly:YES
++                                                     completionHandler:^(SCShareableContent* content, NSError* error){
++            SCDisplay* display = nil;
++            if (error)
++            {
++                disabled_until = [NSDate timeIntervalSinceReferenceDate] + 10.0;
++                [self fail];
++                return;
++            }
++            for (SCDisplay* d in content.displays)
++                if (d.displayID == displayID) display = d;
++            if (!display)
++            {
++                [self fail];
++                return;
++            }
++
++            CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayID);
++            size_t width = mode ? CGDisplayModeGetPixelWidth(mode) : display.width;
++            size_t height = mode ? CGDisplayModeGetPixelHeight(mode) : display.height;
++            CGDisplayModeRelease(mode);
++
++            SCContentFilter* filter = [[SCContentFilter alloc] initWithDisplay:display excludingWindows:@[]];
++            SCStreamConfiguration* config = [[SCStreamConfiguration alloc] init];
++            config.width = width;
++            config.height = height;
++            config.pixelFormat = kCVPixelFormatType_32BGRA;
++            config.minimumFrameInterval = CMTimeMake(1, 30);
++            config.queueDepth = 3;
++            config.showsCursor = NO;
++
++            SCStream* newStream = [[SCStream alloc] initWithFilter:filter configuration:config delegate:self];
++            [filter release];
++            [config release];
++            NSError* addError = nil;
++            if (![newStream addStreamOutput:self type:SCStreamOutputTypeScreen sampleHandlerQueue:capture_queue error:&addError])
++            {
++                [newStream release];
++                [self fail];
++                return;
++            }
++            pthread_mutex_lock(&mutex);
++            if (stopped)
++            {
++                pthread_mutex_unlock(&mutex);
++                [newStream release];
++                return;
++            }
++            stream = newStream;
++            pthread_mutex_unlock(&mutex);
++            [newStream startCaptureWithCompletionHandler:^(NSError* startError){
++                if (startError) [self fail];
++            }];
++        }];
++    }
++
++    - (void) stopStream
++    {
++        SCStream* oldStream;
++        pthread_mutex_lock(&mutex);
++        oldStream = stream;
++        stream = nil;
++        stopped = YES;
++        pthread_mutex_unlock(&mutex);
++        if (!oldStream) return;
++        [self retain];
++        [oldStream stopCaptureWithCompletionHandler:^(NSError* error){
++            [oldStream release];
++            [self release];
++        }];
++    }
++
++    - (void) stream:(SCStream*)s didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(SCStreamOutputType)type
++    {
++        if (type != SCStreamOutputTypeScreen) return;
++
++        CFArrayRef attachments = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false);
++        if (attachments && CFArrayGetCount(attachments))
++        {
++            NSDictionary* info = (NSDictionary*)CFArrayGetValueAtIndex(attachments, 0);
++            NSNumber* status = info[SCStreamFrameInfoStatus];
++            if (status && status.integerValue != SCFrameStatusComplete) return;
++        }
++
++        CVPixelBufferRef buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
++        if (!buffer) return;
++        CVPixelBufferRetain(buffer);
++        pthread_mutex_lock(&mutex);
++        if (latest) CVPixelBufferRelease(latest);
++        latest = buffer;
++        pthread_cond_broadcast(&cond);
++        pthread_mutex_unlock(&mutex);
++    }
++
++    - (void) stream:(SCStream*)s didStopWithError:(NSError*)error
++    {
++        [self fail];
++    }
++
++@end
++
++
++static void stop_idle_capturers(void) API_AVAILABLE(macos(12.3))
++{
++    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
++    NSMutableArray* idle = [NSMutableArray array];
++
++    pthread_mutex_lock(&capturers_mutex);
++    for (NSNumber* key in capturers)
++    {
++        WineScreenCapturer* capturer = capturers[key];
++        if (now - capturer->lastUse > idle_timeout || capturer->failed) [idle addObject:key];
++    }
++    for (NSNumber* key in idle)
++    {
++        [(WineScreenCapturer*)capturers[key] stopStream];
++        [capturers removeObjectForKey:key];
++    }
++    if (!capturers.count && idle_timer)
++    {
++        dispatch_source_cancel(idle_timer);
++        dispatch_release(idle_timer);
++        idle_timer = NULL;
++    }
++    pthread_mutex_unlock(&capturers_mutex);
++}
++
++
++static WineScreenCapturer* get_capturer(CGDirectDisplayID display) API_AVAILABLE(macos(12.3))
++{
++    WineScreenCapturer* capturer;
++    NSNumber* key = @(display);
++
++    pthread_mutex_lock(&capturers_mutex);
++    if (!capturers)
++    {
++        capturers = [[NSMutableDictionary alloc] init];
++        capture_queue = dispatch_queue_create("org.winehq.wine.winemac.screencapture", DISPATCH_QUEUE_SERIAL);
++    }
++    capturer = [capturers[key] retain];
++    if (!capturer)
++    {
++        capturer = [[WineScreenCapturer alloc] initWithDisplay:display];
++        capturers[key] = capturer;
++        [capturer start];
++    }
++    capturer->lastUse = [NSDate timeIntervalSinceReferenceDate];
++    if (!idle_timer)
++    {
++        idle_timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, capture_queue);
++        dispatch_source_set_timer(idle_timer, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), NSEC_PER_SEC, NSEC_PER_SEC / 4);
++        dispatch_source_set_event_handler(idle_timer, ^{ stop_idle_capturers(); });
++        dispatch_resume(idle_timer);
++    }
++    pthread_mutex_unlock(&capturers_mutex);
++    return capturer;
++}
++
++
++/* Copy rect (Mac points, global display space) scaled into a top-down width x height BGRX buffer; returns 0 without a stream frame */
++int macdrv_capture_screen(CGRect rect, void *bits, int width, int height)
++{
++    if (@available(macOS 12.3, *))
++    {
++        CGDirectDisplayID display;
++        uint32_t count;
++        WineScreenCapturer* capturer;
++        CVPixelBufferRef buffer = NULL;
++        struct timespec deadline;
++        int ret = 0;
++
++        if ([NSDate timeIntervalSinceReferenceDate] < disabled_until) return 0;
++        if (CGGetDisplaysWithRect(rect, 1, &display, &count) != kCGErrorSuccess || count != 1) return 0;
++        CGRect bounds = CGDisplayBounds(display);
++        if (!CGRectContainsRect(bounds, CGRectIntegral(rect)) && !CGRectContainsRect(bounds, rect)) return 0;
++
++        @autoreleasepool
++        {
++            capturer = get_capturer(display);
++
++            clock_gettime(CLOCK_REALTIME, &deadline);
++            deadline.tv_sec += 2;
++            pthread_mutex_lock(&capturer->mutex);
++            while (!capturer->latest && !capturer->failed)
++                if (pthread_cond_timedwait(&capturer->cond, &capturer->mutex, &deadline)) break;
++            if (capturer->latest) buffer = CVPixelBufferRetain(capturer->latest);
++            pthread_mutex_unlock(&capturer->mutex);
++            [capturer release];
++        }
++        if (!buffer) return 0;
++
++        if (CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly) == kCVReturnSuccess)
++        {
++            size_t buf_width = CVPixelBufferGetWidth(buffer), buf_height = CVPixelBufferGetHeight(buffer);
++            size_t row_bytes = CVPixelBufferGetBytesPerRow(buffer);
++            unsigned char* base = CVPixelBufferGetBaseAddress(buffer);
++            double scale_x = buf_width / bounds.size.width, scale_y = buf_height / bounds.size.height;
++            long x = lround((rect.origin.x - bounds.origin.x) * scale_x);
++            long y = lround((rect.origin.y - bounds.origin.y) * scale_y);
++            long w = lround(rect.size.width * scale_x), h = lround(rect.size.height * scale_y);
++
++            if (x < 0) x = 0;
++            if (y < 0) y = 0;
++            if (x + w > (long)buf_width) w = buf_width - x;
++            if (y + h > (long)buf_height) h = buf_height - y;
++            if (w > 0 && h > 0)
++            {
++                vImage_Buffer src = { base + y * row_bytes + x * 4, h, w, row_bytes };
++                vImage_Buffer dst = { bits, height, width, (size_t)width * 4 };
++
++                if (w == width && h == height)
++                {
++                    for (long row = 0; row < h; row++)
++                        memcpy((unsigned char*)bits + row * width * 4, (unsigned char*)src.data + row * row_bytes, width * 4);
++                    ret = 1;
++                }
++                else
++                    ret = vImageScale_ARGB8888(&src, &dst, NULL, kvImageNoFlags) == kvImageNoError;
++            }
++            CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly);
++        }
++        CVPixelBufferRelease(buffer);
++        return ret;
++    }
++    return 0;
++}
+diff --git a/dlls/winemac.drv/gdi.c b/dlls/winemac.drv/gdi.c
+--- a/dlls/winemac.drv/gdi.c
++++ b/dlls/winemac.drv/gdi.c
+@@ -25,6 +25,7 @@
+ 
+ #include "config.h"
+ 
++#include <dlfcn.h>
+ #include "macdrv.h"
+ #include "winreg.h"
+ 
+@@ -231,12 +232,132 @@ static INT macdrv_GetDeviceCaps(PHYSDEV dev, INT cap)
+ }
+ 
+ 
++static CGImageRef (*pCGWindowListCreateImage)(CGRect, CGWindowListOption, CGWindowID, CGWindowImageOption);
++
++static void load_screen_capture(void)
++{
++    void *h = dlopen("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics", RTLD_LAZY | RTLD_LOCAL);
++    if (h) pCGWindowListCreateImage = dlsym(h, "CGWindowListCreateImage");
++    if (!CGPreflightScreenCaptureAccess()) CGRequestScreenCaptureAccess();
++}
++
++static void free_screen_bits(struct gdi_image_bits *bits)
++{
++    free(bits->ptr);
++}
++
++
++static BOOL capture_with_cgimage(CGRect rect, void *ptr, int width, int height)
++{
++    CGColorSpaceRef colorspace;
++    CGContextRef context;
++    CGImageRef image = NULL;
++
++    if (pCGWindowListCreateImage)
++        image = pCGWindowListCreateImage(rect, kCGWindowListOptionOnScreenOnly, kCGNullWindowID,
++                                         width <= CGRectGetWidth(rect) ? kCGWindowImageNominalResolution
++                                                                       : kCGWindowImageDefault);
++    colorspace = CGColorSpaceCreateDeviceRGB();
++    context = CGBitmapContextCreate(ptr, width, height, 8, width * 4, colorspace,
++                                    kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
++    CGColorSpaceRelease(colorspace);
++    if (!context)
++    {
++        if (image) CGImageRelease(image);
++        return FALSE;
++    }
++    CGContextSetRGBFillColor(context, 0, 0, 0, 1);
++    CGContextFillRect(context, CGRectMake(0, 0, width, height));
++    if (image)
++    {
++        CGContextSetInterpolationQuality(context, CGImageGetWidth(image) == width ? kCGInterpolationNone
++                                                                                  : kCGInterpolationDefault);
++        CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
++        CGImageRelease(image);
++    }
++    CGContextRelease(context);
++    return TRUE;
++}
++
++
++/* GetImage (MACDRV.@) */
++static DWORD macdrv_GetImage(PHYSDEV dev, BITMAPINFO *info, struct gdi_image_bits *bits, struct bitblt_coords *src)
++{
++    static pthread_once_t once = PTHREAD_ONCE_INIT;
++    CGRect rect;
++    RECT raw, virt;
++    POINT org;
++    double scale_x, scale_y;
++    int x, y, width, height;
++    void *ptr;
++
++    info->bmiHeader.biSize          = sizeof(info->bmiHeader);
++    info->bmiHeader.biPlanes        = 1;
++    info->bmiHeader.biBitCount      = 32;
++    info->bmiHeader.biCompression   = BI_RGB;
++    info->bmiHeader.biXPelsPerMeter = 0;
++    info->bmiHeader.biYPelsPerMeter = 0;
++    info->bmiHeader.biClrUsed       = 0;
++    info->bmiHeader.biClrImportant  = 0;
++
++    if (!bits) return ERROR_SUCCESS;
++
++    x = src->visrect.left;
++    y = src->visrect.top;
++    width = src->visrect.right - x;
++    height = src->visrect.bottom - y;
++    if (width <= 0 || height <= 0) return ERROR_INVALID_PARAMETER;
++
++    pthread_once(&once, load_screen_capture);
++
++    if (!NtGdiGetDCPoint(dev->hdc, NtGdiGetDCOrg, &org)) org.x = org.y = 0;
++    raw = NtUserGetVirtualScreenRect(MDT_RAW_DPI);
++    virt.left = NtUserGetSystemMetrics(SM_XVIRTUALSCREEN);
++    virt.top = NtUserGetSystemMetrics(SM_YVIRTUALSCREEN);
++    virt.right = virt.left + NtUserGetSystemMetrics(SM_CXVIRTUALSCREEN);
++    virt.bottom = virt.top + NtUserGetSystemMetrics(SM_CYVIRTUALSCREEN);
++    /* DPI-unaware callers see a scaled virtual screen, so map their coordinates to raw pixels */
++    scale_x = virt.right > virt.left ? (double)(raw.right - raw.left) / (virt.right - virt.left) : 1.0;
++    scale_y = virt.bottom > virt.top ? (double)(raw.bottom - raw.top) / (virt.bottom - virt.top) : 1.0;
++    rect = cgrect_mac_from_win(CGRectMake(raw.left + (org.x + x - virt.left) * scale_x,
++                                          raw.top + (org.y + y - virt.top) * scale_y,
++                                          width * scale_x, height * scale_y));
++
++    if (!(ptr = malloc((size_t)width * height * 4))) return ERROR_OUTOFMEMORY;
++
++    if (macdrv_capture_screen(rect, ptr, width, height))
++        TRACE("captured from stream\n");
++    else if (!capture_with_cgimage(rect, ptr, width, height))
++    {
++        free(ptr);
++        return ERROR_OUTOFMEMORY;
++    }
++
++    TRACE("hdc %p org %s rect %s -> %s\n", dev->hdc, wine_dbgstr_point(&org),
++          wine_dbgstr_rect(&src->visrect), wine_dbgstr_cgrect(rect));
++
++    src->x -= x;
++    src->y -= y;
++    OffsetRect(&src->visrect, -x, -y);
++
++    info->bmiHeader.biWidth     = width;
++    info->bmiHeader.biHeight    = -height;
++    info->bmiHeader.biSizeImage = width * height * 4;
++    bits->ptr     = ptr;
++    bits->is_copy = TRUE;
++    bits->free    = free_screen_bits;
++    bits->param   = NULL;
++    return ERROR_SUCCESS;
++}
++
++
+ static const struct user_driver_funcs macdrv_funcs =
+ {
+     .dc_funcs.pCreateCompatibleDC = macdrv_CreateCompatibleDC,
+     .dc_funcs.pCreateDC = macdrv_CreateDC,
+     .dc_funcs.pDeleteDC = macdrv_DeleteDC,
+     .dc_funcs.pGetDeviceCaps = macdrv_GetDeviceCaps,
++    .dc_funcs.pGetImage = macdrv_GetImage,
+     .dc_funcs.pGetDeviceGammaRamp = macdrv_GetDeviceGammaRamp,
+     .dc_funcs.pSetDeviceGammaRamp = macdrv_SetDeviceGammaRamp,
+     .dc_funcs.priority = GDI_PRIORITY_GRAPHICS_DRV,
+diff --git a/dlls/winemac.drv/macdrv_cocoa.h b/dlls/winemac.drv/macdrv_cocoa.h
+--- a/dlls/winemac.drv/macdrv_cocoa.h
++++ b/dlls/winemac.drv/macdrv_cocoa.h
+@@ -625,4 +625,7 @@ extern pthread_mutex_t ime_composition_rect_mutex;
+ extern CGRect ime_composition_rect;
+ extern void macdrv_clear_ime_text(void);
+ 
++/* screen capture */
++extern int macdrv_capture_screen(CGRect rect, void *bits, int width, int height);
++
+ #endif  /* __WINE_MACDRV_COCOA_H */

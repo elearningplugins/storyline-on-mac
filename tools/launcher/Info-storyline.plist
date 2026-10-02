@@ -11,4 +11,6 @@
   <key>CFBundleIconFile</key><string>Storyline360</string>
   <key>LSMinimumSystemVersion</key><string>15.0</string>
   <key>NSHighResolutionCapable</key><true/>
+  <key>NSMicrophoneUsageDescription</key><string>Storyline 360 records narration and screen recordings with your microphone.</string>
+  <key>NSCameraUsageDescription</key><string>Storyline 360 records webcam video with your camera.</string>
 </dict></plist>
